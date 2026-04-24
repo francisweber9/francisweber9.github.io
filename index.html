@@ -1,10 +1,295 @@
 <!doctype html>
-<html>
-  <head><meta charset="utf-8"><title>Francis Weber</title></head>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Francis Weber | Built Stuff</title>
+    <style>
+      :root {
+        --bg: #f5f1ea;
+        --panel: #fffdf9;
+        --ink: #1b1c1d;
+        --muted: #555f67;
+        --line: #d5cabc;
+        --accent: #e95e2a;
+        --accent-2: #0f6a80;
+        --shadow: 0 14px 30px rgba(27, 28, 29, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Avenir Next", "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 12% 8%, rgba(233, 94, 42, 0.2), transparent 40%),
+          radial-gradient(circle at 84% 20%, rgba(15, 106, 128, 0.2), transparent 38%),
+          linear-gradient(160deg, #f8f5ee 0%, #efe7db 100%);
+        min-height: 100vh;
+      }
+
+      .wrap {
+        width: min(1000px, 92vw);
+        margin: 0 auto;
+        padding: 56px 0 72px;
+      }
+
+      .hero {
+        margin-bottom: 28px;
+      }
+
+      .kicker {
+        display: inline-block;
+        padding: 6px 12px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        letter-spacing: 0.08em;
+        font-size: 12px;
+        text-transform: uppercase;
+        background: rgba(255, 253, 249, 0.82);
+      }
+
+      h1 {
+        margin: 14px 0 10px;
+        font-size: clamp(34px, 6vw, 62px);
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+      }
+
+      .lead {
+        margin: 0;
+        max-width: 70ch;
+        color: var(--muted);
+        font-size: clamp(16px, 2.4vw, 20px);
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .tabs {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        border-bottom: 1px solid var(--line);
+        background: #f9f4ed;
+      }
+
+      .tab {
+        appearance: none;
+        border: 0;
+        border-right: 1px solid var(--line);
+        background: transparent;
+        padding: 18px 10px;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        color: var(--muted);
+        cursor: pointer;
+        transition: background 160ms ease, color 160ms ease;
+      }
+
+      .tab:last-child {
+        border-right: 0;
+      }
+
+      .tab[aria-selected="true"] {
+        background: #fff;
+        color: var(--ink);
+      }
+
+      .panes {
+        padding: 24px;
+      }
+
+      .pane {
+        display: none;
+        animation: rise 280ms ease;
+      }
+
+      .pane.active {
+        display: block;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 14px;
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 16px;
+        background: #fff;
+      }
+
+      .card h3 {
+        margin: 0 0 6px;
+        font-size: 18px;
+      }
+
+      .card p {
+        margin: 0 0 12px;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      .pill {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        padding: 6px 10px;
+        border-radius: 999px;
+        color: #fff;
+      }
+
+      .pill.web {
+        background: var(--accent-2);
+      }
+
+      .pill.data {
+        background: var(--accent);
+      }
+
+      .pill.misc {
+        background: #5f4b8b;
+      }
+
+      a.link {
+        color: var(--ink);
+        font-weight: 700;
+        text-underline-offset: 3px;
+      }
+
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 700px) {
+        .wrap {
+          padding-top: 40px;
+        }
+
+        .tabs {
+          grid-template-columns: 1fr;
+        }
+
+        .tab {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .tab:last-child {
+          border-bottom: 0;
+        }
+      }
+    </style>
+  </head>
   <body>
-    <h1>Stuff I've Built</h1>
-    <p>My projects coming soon.</p>
+    <main class="wrap">
+      <header class="hero">
+        <span class="kicker">Francis Weber</span>
+        <h1>Stuff I Have Built</h1>
+        <p class="lead">
+          A fast look at projects, experiments, and work in progress. Swap tabs to browse different categories.
+        </p>
+      </header>
+
+      <section class="panel" aria-label="Project categories">
+        <div class="tabs" role="tablist" aria-label="Project tabs">
+          <button class="tab" role="tab" id="tab-web" aria-selected="true" aria-controls="pane-web" data-pane="web">Web Apps</button>
+          <button class="tab" role="tab" id="tab-data" aria-selected="false" aria-controls="pane-data" data-pane="data">Data & Scripts</button>
+          <button class="tab" role="tab" id="tab-lab" aria-selected="false" aria-controls="pane-lab" data-pane="lab">Lab Notes</button>
+        </div>
+
+        <div class="panes">
+          <section class="pane active" role="tabpanel" id="pane-web" aria-labelledby="tab-web">
+            <div class="grid">
+              <article class="card">
+                <span class="pill web">Web</span>
+                <h3>Portfolio v2</h3>
+                <p>Responsive personal site with cleaner navigation and dynamic project sections.</p>
+                <a class="link" href="#">Live demo</a>
+              </article>
+              <article class="card">
+                <span class="pill web">Web</span>
+                <h3>Team Dashboard</h3>
+                <p>Internal tracker for project status, blockers, and weekly updates.</p>
+                <a class="link" href="#">Preview</a>
+              </article>
+            </div>
+          </section>
+
+          <section class="pane" role="tabpanel" id="pane-data" aria-labelledby="tab-data">
+            <div class="grid">
+              <article class="card">
+                <span class="pill data">Data</span>
+                <h3>Game Scraper</h3>
+                <p>Automated script pipeline to collect and store match stats for analysis.</p>
+                <a class="link" href="#">Read more</a>
+              </article>
+              <article class="card">
+                <span class="pill data">Data</span>
+                <h3>Report Builder</h3>
+                <p>Command-line utility that transforms raw data into clean summary tables.</p>
+                <a class="link" href="#">GitHub repo</a>
+              </article>
+            </div>
+          </section>
+
+          <section class="pane" role="tabpanel" id="pane-lab" aria-labelledby="tab-lab">
+            <div class="grid">
+              <article class="card">
+                <span class="pill misc">Lab</span>
+                <h3>UI Motion Tests</h3>
+                <p>Small animation and interaction studies for future front-end work.</p>
+                <a class="link" href="#">Notes</a>
+              </article>
+              <article class="card">
+                <span class="pill misc">Lab</span>
+                <h3>Automation Ideas</h3>
+                <p>Draft scripts and process experiments to speed up repetitive tasks.</p>
+                <a class="link" href="#">Details</a>
+              </article>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const tabs = document.querySelectorAll(".tab");
+      const panes = document.querySelectorAll(".pane");
+
+      function activateTab(targetPane) {
+        tabs.forEach((tab) => {
+          const active = tab.dataset.pane === targetPane;
+          tab.setAttribute("aria-selected", active ? "true" : "false");
+        });
+
+        panes.forEach((pane) => {
+          pane.classList.toggle("active", pane.id === `pane-${targetPane}`);
+        });
+      }
+
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => activateTab(tab.dataset.pane));
+      });
+    </script>
   </body>
 </html>
-HTML
-
