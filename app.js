@@ -717,10 +717,16 @@
           .filter((p) => !selected.has(p.id))
           .filter((p) => !q || normalizeForSearch(p.name).includes(q))
           .sort((a, b) => {
+            if (!q) {
+              const aGames = Number(a.points?.[a.points.length - 1]?.g || 0);
+              const bGames = Number(b.points?.[b.points.length - 1]?.g || 0);
+              if (bGames !== aGames) return bGames - aGames;
+              return a.name.localeCompare(b.name);
+            }
             const an = normalizeForSearch(a.name);
             const bn = normalizeForSearch(b.name);
-            const aStarts = q && an.startsWith(q) ? 0 : 1;
-            const bStarts = q && bn.startsWith(q) ? 0 : 1;
+            const aStarts = an.startsWith(q) ? 0 : 1;
+            const bStarts = bn.startsWith(q) ? 0 : 1;
             if (aStarts !== bStarts) return aStarts - bStarts;
             return a.name.localeCompare(b.name);
           })
