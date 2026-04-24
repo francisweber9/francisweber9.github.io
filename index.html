@@ -249,7 +249,7 @@
 
       .wowy-controls {
         display: grid;
-        grid-template-columns: repeat(5, minmax(140px, 1fr));
+        grid-template-columns: 1.5fr 1fr auto;
         gap: 10px;
         margin-bottom: 12px;
       }
@@ -275,7 +275,7 @@
         display: flex;
         align-items: center;
         gap: 8px;
-        padding-top: 20px;
+        padding-top: 24px;
       }
 
       .wowy-toggle input {
@@ -285,6 +285,86 @@
       .wowy-meta {
         margin-bottom: 8px;
         font-size: 12px;
+        color: var(--muted);
+      }
+
+      .wowy-selected {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      .wowy-selected-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border: 1px solid var(--line);
+        background: #fff;
+        border-radius: 999px;
+        padding: 4px 10px 4px 4px;
+        font-size: 13px;
+      }
+
+      .wowy-selected-chip button {
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .wowy-pool {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(138px, 1fr));
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .wowy-player-btn {
+        border: 1px solid var(--line);
+        background: #fff;
+        padding: 10px 8px;
+        cursor: pointer;
+        text-align: center;
+      }
+
+      .wowy-player-btn.selected {
+        border-color: #88b79b;
+        background: #edf7f1;
+      }
+
+      .wowy-player-btn .head {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: 0 auto 8px;
+        border: 2px solid #d8d1c5;
+        background: #ece7de;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .wowy-player-btn .head img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .wowy-player-btn .name {
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.2;
+      }
+
+      .wowy-player-btn .mins {
+        margin-top: 2px;
+        font-size: 11px;
         color: var(--muted);
       }
 
@@ -299,9 +379,9 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        padding: 4px 8px 4px 4px;
+        padding: 8px 14px 8px 8px;
         border-radius: 999px;
-        font-size: 12px;
+        font-size: 16px;
         border: 1px solid var(--line);
         background: #fff;
       }
@@ -317,8 +397,8 @@
       }
 
       .wowy-avatar {
-        width: 24px;
-        height: 24px;
+        width: 54px;
+        height: 54px;
         border-radius: 50%;
         overflow: hidden;
         background: #e7e3db;
@@ -326,7 +406,7 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 10px;
+        font-size: 18px;
         font-weight: 700;
       }
 
@@ -382,11 +462,31 @@
         }
 
         .wowy-controls {
-          grid-template-columns: 1fr;
+          grid-template-columns: 1fr 1fr;
         }
 
         .wowy-toggle {
           padding-top: 0;
+        }
+
+        .wowy-pool {
+          grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+        }
+
+        .wowy-player-btn .head {
+          width: 56px;
+          height: 56px;
+        }
+
+        .wowy-player {
+          font-size: 13px;
+          padding: 6px 10px 6px 6px;
+        }
+
+        .wowy-avatar {
+          width: 40px;
+          height: 40px;
+          font-size: 12px;
         }
 
         th,
@@ -469,14 +569,6 @@
                   <select id="wowy-team"></select>
                 </div>
                 <div>
-                  <label for="wowy-player-a">Player 1</label>
-                  <select id="wowy-player-a"></select>
-                </div>
-                <div>
-                  <label for="wowy-player-b">Player 2 (optional)</label>
-                  <select id="wowy-player-b"></select>
-                </div>
-                <div>
                   <label for="wowy-min-minutes">Min Minutes</label>
                   <input id="wowy-min-minutes" type="number" min="0" step="1" value="20" />
                 </div>
@@ -486,6 +578,8 @@
                 </div>
               </div>
 
+              <div id="wowy-selected" class="wowy-selected"></div>
+              <div id="wowy-pool" class="wowy-pool"></div>
               <div class="wowy-meta" id="wowy-meta">Loading WOWY data...</div>
               <div class="table-wrap">
                 <table id="wowy-table">
@@ -587,6 +681,7 @@
       let rapmMode = "luck";
       let rapmSort = { key: "netRAPM", direction: "desc" };
       let rapmSearchQuery = "";
+      let wowySelectedPlayers = [];
 
       const rapmBody = document.getElementById("rapm-body");
       const rapmStatus = document.getElementById("rapm-status");
@@ -598,12 +693,12 @@
       let wowyData = null;
 
       const wowyTeam = document.getElementById("wowy-team");
-      const wowyPlayerA = document.getElementById("wowy-player-a");
-      const wowyPlayerB = document.getElementById("wowy-player-b");
       const wowyMinMinutes = document.getElementById("wowy-min-minutes");
       const wowyLuckToggle = document.getElementById("wowy-luck-toggle");
       const wowyMeta = document.getElementById("wowy-meta");
       const wowyBody = document.getElementById("wowy-body");
+      const wowyPool = document.getElementById("wowy-pool");
+      const wowySelected = document.getElementById("wowy-selected");
 
       function titleFromUnderscore(value) {
         if (typeof value !== "string") return "-";
@@ -701,10 +796,7 @@
       }
 
       function selectedWOWYPlayers() {
-        const out = [];
-        if (wowyPlayerA.value) out.push(wowyPlayerA.value);
-        if (wowyPlayerB.value && wowyPlayerB.value !== wowyPlayerA.value) out.push(wowyPlayerB.value);
-        return out.slice(0, 2);
+        return wowySelectedPlayers.slice(0, 2);
       }
 
       function buildWOWYPools(rows) {
@@ -739,6 +831,67 @@
         return `<span class="wowy-avatar">${htmlEscape(initials(name))}</span>`;
       }
 
+      function renderWOWYSelected(playersMap) {
+        if (!wowySelectedPlayers.length) {
+          wowySelected.innerHTML = "";
+          return;
+        }
+        wowySelected.innerHTML = wowySelectedPlayers
+          .map((pid) => {
+            const player = playersMap[pid];
+            const name = player ? player.name : pid;
+            return `
+              <span class="wowy-selected-chip">
+                ${wowyHeadshot(pid, name)}
+                <span>${htmlEscape(name)}</span>
+                <button type="button" data-remove-player="${htmlEscape(pid)}">×</button>
+              </span>
+            `;
+          })
+          .join("");
+      }
+
+      function toggleWOWYPlayer(pid) {
+        const idx = wowySelectedPlayers.indexOf(pid);
+        if (idx >= 0) {
+          wowySelectedPlayers.splice(idx, 1);
+        } else {
+          if (wowySelectedPlayers.length >= 2) {
+            wowySelectedPlayers.shift();
+          }
+          wowySelectedPlayers.push(pid);
+        }
+      }
+
+      function renderWOWYPool() {
+        if (!wowyData) return;
+        const team = wowyTeam.value;
+        const playersMap = wowyData.pools.byTeam[team] || {};
+        const players = Object.values(playersMap).sort((a, b) => {
+          if (b.seconds !== a.seconds) return b.seconds - a.seconds;
+          return a.name.localeCompare(b.name);
+        });
+
+        wowyPool.innerHTML = players
+          .map((player) => {
+            const selected = wowySelectedPlayers.includes(player.id);
+            const src = wowyData?.headshots?.[player.id];
+            const head = src
+              ? `<div class="head"><img src="${htmlEscape(src)}" alt="${htmlEscape(player.name)}" loading="lazy" /></div>`
+              : `<div class="head">${htmlEscape(initials(player.name))}</div>`;
+            return `
+              <button type="button" class="wowy-player-btn ${selected ? "selected" : ""}" data-player-id="${htmlEscape(player.id)}">
+                ${head}
+                <div class="name">${htmlEscape(player.name)}</div>
+                <div class="mins">${formatValue(player.seconds / 60, 0)} mins</div>
+              </button>
+            `;
+          })
+          .join("");
+
+        renderWOWYSelected(playersMap);
+      }
+
       function renderWOWYState(players, bits, playerNames) {
         return players
           .map((pid, i) => {
@@ -760,7 +913,7 @@
       }
 
       function formatPercentile(value) {
-        return Number.isFinite(value) ? `P${value}` : "-";
+        return Number.isFinite(value) ? `${value}` : "-";
       }
 
       function buildPercentilesForMode(mode) {
@@ -1020,14 +1173,8 @@
           if (b.seconds !== a.seconds) return b.seconds - a.seconds;
           return a.name.localeCompare(b.name);
         });
-
-        const options = [{ value: "", label: "Select player..." }, ...sortedPlayers.map((p) => ({ value: p.id, label: p.name }))];
-        setSelectOptions(wowyPlayerA, options, wowyPlayerA.value);
-        setSelectOptions(wowyPlayerB, [{ value: "", label: "None" }, ...sortedPlayers.map((p) => ({ value: p.id, label: p.name }))], wowyPlayerB.value);
-
-        if (wowyPlayerA.value && wowyPlayerA.value === wowyPlayerB.value) {
-          wowyPlayerB.value = "";
-        }
+        wowySelectedPlayers = sortedPlayers.slice(0, 2).map((p) => p.id);
+        renderWOWYPool();
       }
 
       async function initWOWY() {
@@ -1085,16 +1232,22 @@
         refreshWOWYPlayers();
         renderWOWYTable();
       });
-      wowyPlayerA.addEventListener("change", () => {
-        if (wowyPlayerA.value && wowyPlayerA.value === wowyPlayerB.value) {
-          wowyPlayerB.value = "";
-        }
+      wowyPool.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-player-id]");
+        if (!button) return;
+        const pid = String(button.getAttribute("data-player-id") || "");
+        if (!pid) return;
+        toggleWOWYPlayer(pid);
+        renderWOWYPool();
         renderWOWYTable();
       });
-      wowyPlayerB.addEventListener("change", () => {
-        if (wowyPlayerB.value && wowyPlayerB.value === wowyPlayerA.value) {
-          wowyPlayerB.value = "";
-        }
+      wowySelected.addEventListener("click", (event) => {
+        const removeBtn = event.target.closest("[data-remove-player]");
+        if (!removeBtn) return;
+        const pid = String(removeBtn.getAttribute("data-remove-player") || "");
+        if (!pid) return;
+        wowySelectedPlayers = wowySelectedPlayers.filter((id) => id !== pid);
+        renderWOWYPool();
         renderWOWYTable();
       });
       wowyMinMinutes.addEventListener("input", () => renderWOWYTable());
