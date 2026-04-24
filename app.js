@@ -88,6 +88,10 @@
       const nbaShotSummary = document.getElementById("nba-shot-summary");
       const nbaSvgZones = document.getElementById("nba-svg-zones");
       const nbaZoneStatsLayer = document.getElementById("nba-zone-stats-layer");
+      const nbaCourtContainer = document.getElementById("nba-court-container");
+      const nbaShot3d = document.getElementById("nba-shot-3d");
+      const nbaViewToggle = document.getElementById("nba-view-toggle");
+      let nbaShotsCache = [];
       const nbaZoneMap = {
         LeftThree: "LeftThree",
         LeftClose: "LeftClose",
@@ -342,6 +346,70 @@
         nbaZoneStatsLayer.appendChild(frag);
       }
 
+      function renderNbaShot3d(shots) {
+        if (!nbaShot3d || typeof Plotly === "undefined") return;
+        const made = shots.filter((s) => s.made);
+        const miss = shots.filter((s) => !s.made);
+        const shotTrace = (items, color, symbol, name) => ({
+          type: "scatter3d",
+          mode: "markers",
+          name,
+          x: items.map((s) => s.rx),
+          y: items.map((s) => s.ry),
+          z: items.map((s) => {
+            const distFt = Math.sqrt(s.rx * s.rx + s.ry * s.ry) / 10;
+            return Math.max(1, Math.min(16, 3.5 + distFt * 0.26));
+          }),
+          marker: {
+            size: 2.8,
+            color,
+            symbol,
+            opacity: 0.9,
+            line: { width: 0.5, color },
+          },
+          hovertemplate: "X %{x:.0f}<br>Y %{y:.0f}<extra></extra>",
+        });
+
+        const layout = {
+          margin: { l: 0, r: 0, b: 0, t: 0 },
+          paper_bgcolor: "#eef2f8",
+          plot_bgcolor: "#eef2f8",
+          showlegend: false,
+          scene: {
+            aspectmode: "manual",
+            aspectratio: { x: 1.1, y: 1, z: 0.5 },
+            xaxis: { range: [-260, 260], showgrid: false, showticklabels: false, zeroline: false, title: "" },
+            yaxis: { range: [-60, 430], showgrid: false, showticklabels: false, zeroline: false, title: "" },
+            zaxis: { range: [0, 18], showgrid: false, showticklabels: false, zeroline: false, title: "" },
+            camera: {
+              eye: { x: 1.32, y: 1.18, z: 0.82 },
+              up: { x: 0, y: 0, z: 1 },
+            },
+            dragmode: "turntable",
+          },
+        };
+        Plotly.react(
+          nbaShot3d,
+          [shotTrace(made, "#1b9b56", "circle", "Made"), shotTrace(miss, "#d75454", "x", "Missed")],
+          layout,
+          { displayModeBar: false, responsive: true }
+        );
+      }
+
+      function setNbaView(view) {
+        if (!nbaCourtContainer || !nbaShot3d || !nbaViewToggle) return;
+        const show3d = view === "3d";
+        nbaCourtContainer.style.display = show3d ? "none" : "";
+        nbaShot3d.style.display = show3d ? "block" : "none";
+        nbaViewToggle.querySelectorAll("button[data-view]").forEach((btn) => {
+          btn.dataset.active = btn.dataset.view === view ? "true" : "false";
+        });
+        if (show3d && typeof Plotly !== "undefined" && nbaShotsCache.length) {
+          renderNbaShot3d(nbaShotsCache);
+          Plotly.Plots.resize(nbaShot3d);
+        }
+      }
+
       async function initNbaShotChart() {
         if (!nbaShotLayer || !nbaShotSummary) return;
         try {
@@ -367,14 +435,19 @@
               return {
                 cx: pos.x,
                 cy: pos.y,
+                rx: x,
+                ry: y,
                 made: Number(r.SHOT_MADE_FLAG) === 1,
                 zone: r.zone,
               };
             })
             .filter(Boolean)
             .filter((s) => s.cx >= 0 && s.cx <= 100 && s.cy >= 0 && s.cy <= 100);
+          nbaShotsCache = shots;
           renderNbaShotChart(shots);
           renderNbaZoneStats(shots, zoneRows);
+          renderNbaShot3d(shots);
+          setNbaView("2d");
         } catch (error) {
           nbaShotSummary.textContent = `Failed to load shot chart: ${error.message}`;
         }
@@ -1202,6 +1275,12 @@
       });
       wowyLuckToggle.addEventListener("change", () => renderWOWYTable());
       dpmMetric.addEventListener("change", () => renderDpmChart());
+      nbaViewToggle?.addEventListener("click", (event) => {
+        const button = event.target.closest("button[data-view]");
+        if (!button) return;
+        const view = String(button.dataset.view || "2d");
+        setNbaView(view === "3d" ? "3d" : "2d");
+      });
       dpmSearch.addEventListener("focus", () => renderDpmSearchResults());
       dpmSearch.addEventListener("input", () => renderDpmSearchResults());
       dpmSearch.addEventListener("keydown", (event) => {

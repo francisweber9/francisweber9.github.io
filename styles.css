@@ -166,6 +166,27 @@
         gap: 6px;
       }
 
+      .nba-view-toggle {
+        display: inline-flex;
+        border: 1px solid #d4dcea;
+        margin-top: 6px;
+      }
+
+      .nba-view-toggle button {
+        border: 0;
+        background: #fff;
+        color: #546177;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 10px;
+        cursor: pointer;
+      }
+
+      .nba-view-toggle button[data-active="true"] {
+        background: #eaf0fb;
+        color: #1b2a46;
+      }
+
       .nba-shot-legend .dot {
         width: 10px;
         height: 10px;
@@ -181,14 +202,29 @@
         background: #d75454;
       }
 
-      .nba-court-container {
+      .nba-shot-frame {
         position: relative;
         width: min(338px, 100%);
         aspect-ratio: 2002 / 1880;
         margin: 0 auto;
+      }
+
+      .nba-court-container {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
         background: #ede9df;
         border: 1px solid #d8d2c7;
         overflow: hidden;
+      }
+
+      .nba-shot-3d {
+        position: absolute;
+        inset: 0;
+        border: 1px solid #d8d2c7;
+        background: #eef2f8;
+        display: none;
       }
 
       #nba-svg-zones,

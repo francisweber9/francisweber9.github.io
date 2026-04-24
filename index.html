@@ -143,15 +143,22 @@
                 <h3>Jayson Tatum - 2025 Shot Chart</h3>
                 <div id="nba-shot-summary" class="nba-shot-summary">Loading shot data...</div>
               </div>
+              <div id="nba-view-toggle" class="nba-view-toggle" role="group" aria-label="Shot chart view toggle">
+                <button type="button" data-view="2d" data-active="true">2D</button>
+                <button type="button" data-view="3d" data-active="false">3D</button>
+              </div>
               <div class="nba-shot-legend">
                 <span><i class="dot made"></i> Made</span>
                 <span><i class="dot miss"></i> Missed</span>
               </div>
-              <div id="nba-court-container" class="nba-court-container" aria-label="Jayson Tatum shot chart">
-                <svg id="nba-svg-zones" viewBox="0 0 2002 1880" preserveAspectRatio="xMidYMid meet"></svg>
-                <img id="nba-court-overlay" src="analytics/images/nba/zones_bones.png" alt="Basketball court" />
-                <div id="nba-shot-layer" class="nba-shot-layer"></div>
-                <div id="nba-zone-stats-layer" class="nba-zone-stats-layer"></div>
+              <div id="nba-shot-frame" class="nba-shot-frame">
+                <div id="nba-court-container" class="nba-court-container" aria-label="Jayson Tatum shot chart">
+                  <svg id="nba-svg-zones" viewBox="0 0 2002 1880" preserveAspectRatio="xMidYMid meet"></svg>
+                  <img id="nba-court-overlay" src="analytics/images/nba/zones_bones.png" alt="Basketball court" />
+                  <div id="nba-shot-layer" class="nba-shot-layer"></div>
+                  <div id="nba-zone-stats-layer" class="nba-zone-stats-layer"></div>
+                </div>
+                <div id="nba-shot-3d" class="nba-shot-3d" aria-label="Jayson Tatum 3D shot chart"></div>
               </div>
               <div class="nba-shot-foot">Source: <code>analytics/data/nba/jayson_tatum_shots_2025.csv</code></div>
             </div>
@@ -168,6 +175,7 @@
       </section>
     </main>
 
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" defer></script>
     <script src="app.js" defer></script>
   </body>
 </html>
