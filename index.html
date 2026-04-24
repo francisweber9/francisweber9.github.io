@@ -247,6 +247,101 @@
         font-size: 13px;
       }
 
+      .wowy-controls {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(140px, 1fr));
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .wowy-controls label {
+        display: block;
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+
+      .wowy-controls select,
+      .wowy-controls input[type="number"] {
+        width: 100%;
+        border: 1px solid var(--line);
+        background: #fff;
+        color: var(--ink);
+        padding: 8px 10px;
+        font-size: 13px;
+      }
+
+      .wowy-toggle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-top: 20px;
+      }
+
+      .wowy-toggle input {
+        margin: 0;
+      }
+
+      .wowy-meta {
+        margin-bottom: 8px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .wowy-state {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .wowy-player {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 8px 4px 4px;
+        border-radius: 999px;
+        font-size: 12px;
+        border: 1px solid var(--line);
+        background: #fff;
+      }
+
+      .wowy-player.on {
+        background: #eaf7ef;
+        border-color: #b8dec1;
+      }
+
+      .wowy-player.off {
+        background: #f6f0f0;
+        border-color: #ddc8c8;
+      }
+
+      .wowy-avatar {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        overflow: hidden;
+        background: #e7e3db;
+        border: 1px solid var(--line);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 700;
+      }
+
+      .wowy-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .wowy-value {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+
       @media (max-width: 900px) {
         .tabs {
           grid-template-columns: 1fr;
@@ -284,6 +379,14 @@
 
         .toggle button {
           flex: 1;
+        }
+
+        .wowy-controls {
+          grid-template-columns: 1fr;
+        }
+
+        .wowy-toggle {
+          padding-top: 0;
         }
 
         th,
@@ -360,8 +463,46 @@
             </section>
 
             <section class="pane" role="tabpanel" id="subpane-wowy" aria-labelledby="subtab-wowy">
-              <div class="content-box">
-                <p>WOWY Analysis section placeholder. Add your lineup on/off pair data and filters here next.</p>
+              <div class="wowy-controls">
+                <div>
+                  <label for="wowy-team">Team</label>
+                  <select id="wowy-team"></select>
+                </div>
+                <div>
+                  <label for="wowy-player-a">Player 1</label>
+                  <select id="wowy-player-a"></select>
+                </div>
+                <div>
+                  <label for="wowy-player-b">Player 2 (optional)</label>
+                  <select id="wowy-player-b"></select>
+                </div>
+                <div>
+                  <label for="wowy-min-minutes">Min Minutes</label>
+                  <input id="wowy-min-minutes" type="number" min="0" step="1" value="20" />
+                </div>
+                <div class="wowy-toggle">
+                  <input id="wowy-luck-toggle" type="checkbox" />
+                  <label for="wowy-luck-toggle">Luck Adjust</label>
+                </div>
+              </div>
+
+              <div class="wowy-meta" id="wowy-meta">Loading WOWY data...</div>
+              <div class="table-wrap">
+                <table id="wowy-table">
+                  <thead>
+                    <tr>
+                      <th>State</th>
+                      <th>Minutes</th>
+                      <th>Off</th>
+                      <th>Def</th>
+                      <th>Net</th>
+                      <th>Tm 3P%</th>
+                      <th>Opp 3P%</th>
+                      <th>Lineups</th>
+                    </tr>
+                  </thead>
+                  <tbody id="wowy-body"></tbody>
+                </table>
               </div>
             </section>
 
@@ -453,6 +594,16 @@
       const toggleLuck = document.getElementById("toggle-luck");
       const rapmSearch = document.getElementById("rapm-search");
       const percentileKeys = ["oRAPM", "dRAPM", "netRAPM", "rawNetRating"];
+      const WOWY_URL = "analytics/data/wowy_2025_2026.json";
+      let wowyData = null;
+
+      const wowyTeam = document.getElementById("wowy-team");
+      const wowyPlayerA = document.getElementById("wowy-player-a");
+      const wowyPlayerB = document.getElementById("wowy-player-b");
+      const wowyMinMinutes = document.getElementById("wowy-min-minutes");
+      const wowyLuckToggle = document.getElementById("wowy-luck-toggle");
+      const wowyMeta = document.getElementById("wowy-meta");
+      const wowyBody = document.getElementById("wowy-body");
 
       function titleFromUnderscore(value) {
         if (typeof value !== "string") return "-";
@@ -502,6 +653,105 @@
             playerSearch: normalizeForSearch(playerName),
           };
         });
+      }
+
+      function initials(name) {
+        const parts = String(name || "")
+          .trim()
+          .split(/\s+/)
+          .filter(Boolean);
+        if (!parts.length) return "??";
+        const first = (parts[0][0] || "").toUpperCase();
+        const second = parts.length > 1 ? (parts[1][0] || "").toUpperCase() : first;
+        return `${first}${second}`;
+      }
+
+      function fmtPct(value, digits = 1) {
+        if (!Number.isFinite(value)) return "-";
+        return `${value.toFixed(digits)}%`;
+      }
+
+      function htmlEscape(value) {
+        return String(value ?? "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      function safeRate(points, poss) {
+        if (!Number.isFinite(points) || !Number.isFinite(poss) || poss <= 0) return null;
+        return (points / poss) * 100;
+      }
+
+      function safePct(made, attempts) {
+        if (!Number.isFinite(made) || !Number.isFinite(attempts) || attempts <= 0) return null;
+        return (made / attempts) * 100;
+      }
+
+      function setSelectOptions(selectEl, options, selected = "") {
+        const previous = selected || selectEl.value;
+        selectEl.innerHTML = options
+          .map((opt) => `<option value="${htmlEscape(opt.value)}">${htmlEscape(opt.label)}</option>`)
+          .join("");
+        if (options.some((opt) => opt.value === previous)) {
+          selectEl.value = previous;
+        }
+      }
+
+      function selectedWOWYPlayers() {
+        const out = [];
+        if (wowyPlayerA.value) out.push(wowyPlayerA.value);
+        if (wowyPlayerB.value && wowyPlayerB.value !== wowyPlayerA.value) out.push(wowyPlayerB.value);
+        return out.slice(0, 2);
+      }
+
+      function buildWOWYPools(rows) {
+        const teams = new Set();
+        const byTeam = new Map();
+
+        rows.forEach((row) => {
+          const team = String(row.team || "");
+          if (!team) return;
+          teams.add(team);
+          if (!byTeam.has(team)) byTeam.set(team, new Map());
+          const pool = byTeam.get(team);
+          (row.lineup_person_ids || []).forEach((pid, i) => {
+            const id = String(pid || "");
+            if (!id) return;
+            const name = formatPlayerName((row.lineup || [])[i] || id);
+            if (!pool.has(id)) {
+              pool.set(id, { id, name, seconds: 0 });
+            }
+            pool.get(id).seconds += Number(row.seconds || 0);
+          });
+        });
+
+        return { teams: Array.from(teams).sort((a, b) => a.localeCompare(b)), byTeam };
+      }
+
+      function wowyHeadshot(pid, name) {
+        const src = wowyData?.headshots?.[pid];
+        if (src) {
+          return `<span class="wowy-avatar"><img src="${htmlEscape(src)}" alt="${htmlEscape(name)}" loading="lazy" /></span>`;
+        }
+        return `<span class="wowy-avatar">${htmlEscape(initials(name))}</span>`;
+      }
+
+      function renderWOWYState(players, bits, playerNames) {
+        return players
+          .map((pid, i) => {
+            const on = bits[i] === "1";
+            const name = playerNames.get(pid) || pid;
+            return `
+              <span class="wowy-player ${on ? "on" : "off"}">
+                ${wowyHeadshot(pid, name)}
+                <span>${htmlEscape(name)} ${on ? "ON" : "OFF"}</span>
+              </span>
+            `;
+          })
+          .join("");
       }
 
       function formatValue(value, decimals = 2) {
@@ -669,6 +919,141 @@
           .join("");
       }
 
+      function renderWOWYTable() {
+        if (!wowyData) return;
+        const allRows = wowyData.rows || [];
+        const team = wowyTeam.value;
+        const minMinutes = Number(wowyMinMinutes.value || 0);
+        const useLuck = wowyLuckToggle.checked;
+        const rowsByTeam = allRows.filter((row) => row.team === team && (Number(row.seconds || 0) / 60) >= minMinutes);
+        const players = selectedWOWYPlayers();
+
+        if (!players.length) {
+          wowyMeta.textContent = `Year ${wowyData.year} · ${team || "No team selected"} · select 1-2 players.`;
+          wowyBody.innerHTML = '<tr><td colspan="8">Select at least one player to view WOWY states.</td></tr>';
+          return;
+        }
+
+        const playerNames = new Map();
+        rowsByTeam.forEach((row) => {
+          (row.lineup_person_ids || []).forEach((pid, i) => {
+            if (!playerNames.has(pid)) {
+              playerNames.set(pid, formatPlayerName((row.lineup || [])[i] || pid));
+            }
+          });
+        });
+
+        const totalStates = Math.pow(2, players.length);
+        const combos = new Map();
+        for (let i = 0; i < totalStates; i++) {
+          const key = i.toString(2).padStart(players.length, "0");
+          combos.set(key, {
+            key,
+            seconds: 0,
+            poss_for: 0,
+            poss_against: 0,
+            points_for: 0,
+            points_against: 0,
+            points_for_luck: 0,
+            points_against_luck: 0,
+            three_pa_for: 0,
+            three_pm_for: 0,
+            three_pa_against: 0,
+            three_pm_against: 0,
+            lineups: 0,
+          });
+        }
+
+        rowsByTeam.forEach((row) => {
+          const lineupSet = new Set((row.lineup_person_ids || []).map((pid) => String(pid)));
+          const key = players.map((pid) => (lineupSet.has(pid) ? "1" : "0")).join("");
+          const agg = combos.get(key);
+          if (!agg) return;
+          agg.seconds += Number(row.seconds || 0);
+          agg.poss_for += Number(row.poss_for || 0);
+          agg.poss_against += Number(row.poss_against || 0);
+          agg.points_for += Number(row.points_for || 0);
+          agg.points_against += Number(row.points_against || 0);
+          agg.points_for_luck += Number(row.points_for_luck || 0);
+          agg.points_against_luck += Number(row.points_against_luck || 0);
+          agg.three_pa_for += Number(row.three_pa_for || 0);
+          agg.three_pm_for += Number(row.three_pm_for || 0);
+          agg.three_pa_against += Number(row.three_pa_against || 0);
+          agg.three_pm_against += Number(row.three_pm_against || 0);
+          agg.lineups += 1;
+        });
+
+        const rows = Array.from(combos.values()).sort((a, b) => b.seconds - a.seconds);
+        wowyMeta.textContent = `Year ${wowyData.year} · ${team} · ${useLuck ? "Luck-adjusted" : "Raw"} · ${rowsByTeam.length} lineup rows`;
+
+        wowyBody.innerHTML = rows
+          .map((row) => {
+            const pointsFor = useLuck ? row.points_for_luck : row.points_for;
+            const pointsAgainst = useLuck ? row.points_against_luck : row.points_against;
+            const off = safeRate(pointsFor, row.poss_for);
+            const def = safeRate(pointsAgainst, row.poss_against);
+            const net = Number.isFinite(off) && Number.isFinite(def) ? off - def : null;
+            const team3 = safePct(row.three_pm_for, row.three_pa_for);
+            const opp3 = safePct(row.three_pm_against, row.three_pa_against);
+            return `
+              <tr>
+                <td><div class="wowy-state">${renderWOWYState(players, row.key, playerNames)}</div></td>
+                <td class="wowy-value">${formatValue(row.seconds / 60, 1)}</td>
+                <td class="wowy-value">${Number.isFinite(off) ? formatValue(off, 1) : "-"}</td>
+                <td class="wowy-value">${Number.isFinite(def) ? formatValue(def, 1) : "-"}</td>
+                <td class="wowy-value">${Number.isFinite(net) ? formatValue(net, 1) : "-"}</td>
+                <td class="wowy-value">${fmtPct(team3, 1)}</td>
+                <td class="wowy-value">${fmtPct(opp3, 1)}</td>
+                <td class="wowy-value">${row.lineups}</td>
+              </tr>
+            `;
+          })
+          .join("");
+      }
+
+      function refreshWOWYPlayers() {
+        if (!wowyData) return;
+        const pools = wowyData.pools;
+        const team = wowyTeam.value;
+        const playersMap = pools.byTeam[team] || {};
+        const sortedPlayers = Object.values(playersMap).sort((a, b) => {
+          if (b.seconds !== a.seconds) return b.seconds - a.seconds;
+          return a.name.localeCompare(b.name);
+        });
+
+        const options = [{ value: "", label: "Select player..." }, ...sortedPlayers.map((p) => ({ value: p.id, label: p.name }))];
+        setSelectOptions(wowyPlayerA, options, wowyPlayerA.value);
+        setSelectOptions(wowyPlayerB, [{ value: "", label: "None" }, ...sortedPlayers.map((p) => ({ value: p.id, label: p.name }))], wowyPlayerB.value);
+
+        if (wowyPlayerA.value && wowyPlayerA.value === wowyPlayerB.value) {
+          wowyPlayerB.value = "";
+        }
+      }
+
+      async function initWOWY() {
+        try {
+          const response = await fetch(WOWY_URL, { cache: "no-store" });
+          wowyData = await response.json();
+          const pools = buildWOWYPools(wowyData.rows || []);
+          const byTeamObj = {};
+          pools.byTeam.forEach((value, key) => {
+            byTeamObj[key] = Object.fromEntries(value);
+          });
+          wowyData.pools = { teams: pools.teams, byTeam: byTeamObj };
+
+          setSelectOptions(
+            wowyTeam,
+            pools.teams.map((team) => ({ value: team, label: team })),
+            pools.teams[0] || ""
+          );
+          refreshWOWYPlayers();
+          renderWOWYTable();
+        } catch (error) {
+          wowyMeta.textContent = `Failed to load ${WOWY_URL}`;
+          wowyBody.innerHTML = '<tr><td colspan="8">WOWY data could not be loaded.</td></tr>';
+        }
+      }
+
       function setRapmMode(mode) {
         rapmMode = mode;
         toggleLuck.dataset.active = mode === "luck" ? "true" : "false";
@@ -696,6 +1081,24 @@
         rapmSearchQuery = normalizeForSearch(event.target.value);
         renderRAPMTable();
       });
+      wowyTeam.addEventListener("change", () => {
+        refreshWOWYPlayers();
+        renderWOWYTable();
+      });
+      wowyPlayerA.addEventListener("change", () => {
+        if (wowyPlayerA.value && wowyPlayerA.value === wowyPlayerB.value) {
+          wowyPlayerB.value = "";
+        }
+        renderWOWYTable();
+      });
+      wowyPlayerB.addEventListener("change", () => {
+        if (wowyPlayerB.value && wowyPlayerB.value === wowyPlayerA.value) {
+          wowyPlayerB.value = "";
+        }
+        renderWOWYTable();
+      });
+      wowyMinMinutes.addEventListener("input", () => renderWOWYTable());
+      wowyLuckToggle.addEventListener("change", () => renderWOWYTable());
 
       async function initRAPM() {
         try {
@@ -718,6 +1121,7 @@
       }
 
       initRAPM();
+      initWOWY();
     </script>
   </body>
 </html>
