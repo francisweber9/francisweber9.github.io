@@ -30,11 +30,11 @@
             <p class="section-copy">Sub-sections for RAPM, WOWY analysis, and lineup evaluation.</p>
 
             <div class="subtabs" role="tablist" aria-label="Analytics subtabs">
-              <button class="subtab" role="tab" id="subtab-rapm" aria-selected="true" aria-controls="subpane-rapm" data-pane="rapm">
-                RAPM
-              </button>
               <button class="subtab" role="tab" id="subtab-wowy" aria-selected="false" aria-controls="subpane-wowy" data-pane="wowy">
                 WOWY Analysis
+              </button>
+              <button class="subtab" role="tab" id="subtab-rapm" aria-selected="true" aria-controls="subpane-rapm" data-pane="rapm">
+                RAPM
               </button>
               <button class="subtab" role="tab" id="subtab-lineup" aria-selected="false" aria-controls="subpane-lineup" data-pane="lineup">
                 Lineup Evaluation
@@ -148,8 +148,10 @@
                 <span><i class="dot miss"></i> Missed</span>
               </div>
               <div id="nba-court-container" class="nba-court-container" aria-label="Jayson Tatum shot chart">
+                <svg id="nba-svg-zones" viewBox="0 0 2002 1880" preserveAspectRatio="xMidYMid meet"></svg>
                 <img id="nba-court-overlay" src="analytics/images/nba/zones_bones.png" alt="Basketball court" />
                 <div id="nba-shot-layer" class="nba-shot-layer"></div>
+                <div id="nba-zone-stats-layer" class="nba-zone-stats-layer"></div>
               </div>
               <div class="nba-shot-foot">Source: <code>analytics/data/nba/jayson_tatum_shots_2025.csv</code></div>
             </div>

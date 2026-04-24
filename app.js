@@ -63,6 +63,8 @@
       const WOWY_URL = "analytics/data/wowy_2025_2026.json";
       const DPM_URL = "analytics/data/dpm_trajectory.json";
       const NBA_TATUM_SHOTS_URL = "analytics/data/nba/jayson_tatum_shots_2025.csv";
+      const NBA_TATUM_ZONE_URL = "analytics/data/nba/tatum_zone_colours_2025.csv";
+      const NBA_ZONE_SVG_URL = "analytics/images/nba/total.svg";
       let wowyData = null;
       let dpmData = null;
 
@@ -84,6 +86,38 @@
       let dpmSelectedIds = [];
       const nbaShotLayer = document.getElementById("nba-shot-layer");
       const nbaShotSummary = document.getElementById("nba-shot-summary");
+      const nbaSvgZones = document.getElementById("nba-svg-zones");
+      const nbaZoneStatsLayer = document.getElementById("nba-zone-stats-layer");
+      const nbaZoneMap = {
+        LeftThree: "LeftThree",
+        LeftClose: "LeftClose",
+        RightThree: "RightThree",
+        TopThree: "TopThree",
+        Charge: "Charge",
+        TopClose: "TopClose",
+        DeepThree: "DeepThree",
+        LeftCorner: "LeftCorner",
+        LeftMid: "LeftMid",
+        RightClose: "RightClose",
+        RightCorner: "RightCorner",
+        TopMid: "TopMid",
+        RightMid: "RightMid",
+      };
+      const nbaZonePositions = {
+        LeftThree: { x: 8, y: 55 },
+        LeftClose: { x: 30, y: 15 },
+        RightThree: { x: 92, y: 55 },
+        TopThree: { x: 50, y: 70 },
+        Charge: { x: 50, y: 5 },
+        TopClose: { x: 50, y: 30 },
+        DeepThree: { x: 50, y: 90 },
+        LeftCorner: { x: 5, y: 5 },
+        LeftMid: { x: 15, y: 15 },
+        RightClose: { x: 70, y: 15 },
+        RightCorner: { x: 95, y: 5 },
+        TopMid: { x: 50, y: 50 },
+        RightMid: { x: 85, y: 15 },
+      };
 
       function titleFromUnderscore(value) {
         if (typeof value !== "string") return "-";
@@ -263,11 +297,67 @@
         nbaShotLayer.appendChild(frag);
       }
 
+      function colorNbaZones(zoneRows) {
+        if (!nbaSvgZones) return;
+        const tatum = zoneRows.find((r) => normalizeForSearch(r.player_name) === "jayson tatum");
+        if (!tatum) return;
+        nbaSvgZones.querySelectorAll("path[id]").forEach((path) => {
+          const id = path.id;
+          const zoneKey = Object.keys(nbaZoneMap).find((k) => nbaZoneMap[k] === id);
+          if (!zoneKey) return;
+          const fill = tatum[zoneKey];
+          if (fill) {
+            path.style.fill = fill;
+            path.style.fillOpacity = "0.8";
+          }
+        });
+      }
+
+      function renderNbaZoneStats(shots, zoneRows) {
+        if (!nbaZoneStatsLayer) return;
+        nbaZoneStatsLayer.innerHTML = "";
+        const tatum = zoneRows.find((r) => normalizeForSearch(r.player_name) === "jayson tatum");
+        const league = zoneRows.find((r) => normalizeForSearch(r.player_name) === "league");
+        if (!tatum || !league) return;
+
+        const frag = document.createDocumentFragment();
+        Object.keys(nbaZoneMap).forEach((zoneKey) => {
+          const pct = Number(tatum[`${zoneKey}_percentage`]);
+          const lgPct = Number(league[`${zoneKey}_percentage`]);
+          const zoneShots = shots.filter((s) => s.zone === zoneKey);
+          const makes = zoneShots.filter((s) => s.made).length;
+          const att = zoneShots.length;
+          const pos = nbaZonePositions[zoneKey] || { x: 50, y: 50 };
+          const stat = document.createElement("div");
+          stat.className = "nba-zone-stat";
+          stat.style.left = `${pos.x}%`;
+          stat.style.top = `${pos.y}%`;
+          stat.innerHTML = `
+            <div class="fg">${Number.isFinite(pct) ? pct.toFixed(1) : "-"}%</div>
+            <div class="att">${makes}/${att}</div>
+            <div class="lg">Lg ${Number.isFinite(lgPct) ? lgPct.toFixed(1) : "-"}%</div>
+          `;
+          frag.appendChild(stat);
+        });
+        nbaZoneStatsLayer.appendChild(frag);
+      }
+
       async function initNbaShotChart() {
         if (!nbaShotLayer || !nbaShotSummary) return;
         try {
-          const rows = await fetchCsvStrict(NBA_TATUM_SHOTS_URL);
-          const shots = rows
+          const [svgResponse, shotRows, zoneRows] = await Promise.all([
+            fetch(NBA_ZONE_SVG_URL, { cache: "no-store" }),
+            fetchCsvStrict(NBA_TATUM_SHOTS_URL),
+            fetchCsvStrict(NBA_TATUM_ZONE_URL),
+          ]);
+          if (!svgResponse.ok) {
+            throw new Error(`${NBA_ZONE_SVG_URL} returned HTTP ${svgResponse.status}`);
+          }
+          const svgText = await svgResponse.text();
+          if (nbaSvgZones) nbaSvgZones.innerHTML = svgText;
+          colorNbaZones(zoneRows);
+
+          const shots = shotRows
             .filter((r) => normalizeForSearch(r.PLAYER_NAME) === "jayson tatum")
             .map((r) => {
               const x = Number(r.LOC_X);
@@ -278,11 +368,13 @@
                 cx: pos.x,
                 cy: pos.y,
                 made: Number(r.SHOT_MADE_FLAG) === 1,
+                zone: r.zone,
               };
             })
             .filter(Boolean)
             .filter((s) => s.cx >= 0 && s.cx <= 100 && s.cy >= 0 && s.cy <= 100);
           renderNbaShotChart(shots);
+          renderNbaZoneStats(shots, zoneRows);
         } catch (error) {
           nbaShotSummary.textContent = `Failed to load shot chart: ${error.message}`;
         }
