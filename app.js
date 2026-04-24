@@ -350,6 +350,8 @@
 
       function renderNbaShot3d(binRows) {
         if (!nbaShot3d || typeof Plotly === "undefined") return;
+        const PRIOR_ATTEMPTS = 20;
+        const LOW_ATTEMPT_BLEND = 4;
         const rows = binRows
           .map((r) => ({
             x: Number(r.x_center),
@@ -366,21 +368,48 @@
         const yi = new Map(yVals.map((v, i) => [v, i]));
 
         const z = Array.from({ length: yVals.length }, () => Array(xVals.length).fill(0));
-        const c = Array.from({ length: yVals.length }, () => Array(xVals.length).fill(0.95));
+        const c = Array.from({ length: yVals.length }, () => Array(xVals.length).fill(1.05));
         let maxAttempts = 1;
-        const ppsValues = [];
-        rows.forEach((r) => {
+        const weightedRows = rows.filter((r) => r.attempts > 0 && Number.isFinite(r.pps));
+        const leaguePps =
+          weightedRows.reduce((acc, r) => acc + r.pps * r.attempts, 0) /
+            Math.max(1, weightedRows.reduce((acc, r) => acc + r.attempts, 0)) || 1.05;
+
+        const adjustedRows = rows.map((r) => {
+          if (!(r.attempts > 0) || !Number.isFinite(r.pps)) {
+            return { ...r, adjPps: leaguePps };
+          }
+          // Empirical-Bayes shrinkage prevents tiny bins (e.g. 1/1 for 3) from dominating the color scale.
+          const shrunk = (r.pps * r.attempts + leaguePps * PRIOR_ATTEMPTS) / (r.attempts + PRIOR_ATTEMPTS);
+          const blend = Math.min(1, r.attempts / LOW_ATTEMPT_BLEND);
+          return { ...r, adjPps: leaguePps + (shrunk - leaguePps) * blend };
+        });
+
+        function weightedQuantile(items, q) {
+          if (!items.length) return leaguePps;
+          const sorted = items
+            .filter((r) => Number.isFinite(r.adjPps) && r.attempts > 0)
+            .slice()
+            .sort((a, b) => a.adjPps - b.adjPps);
+          const totalW = sorted.reduce((acc, r) => acc + r.attempts, 0);
+          let run = 0;
+          for (const row of sorted) {
+            run += row.attempts;
+            if (run / totalW >= q) return row.adjPps;
+          }
+          return sorted[sorted.length - 1]?.adjPps ?? leaguePps;
+        }
+
+        const cMin = weightedQuantile(adjustedRows, 0.08);
+        const cMax = weightedQuantile(adjustedRows, 0.92);
+
+        adjustedRows.forEach((r) => {
           const xIdx = xi.get(r.x);
           const yIdx = yi.get(r.y);
           z[yIdx][xIdx] = r.attempts;
-          if (Number.isFinite(r.pps) && r.attempts > 0) {
-            c[yIdx][xIdx] = r.pps;
-            ppsValues.push(r.pps);
-          }
+          c[yIdx][xIdx] = Math.max(cMin, Math.min(cMax, r.adjPps));
           if (r.attempts > maxAttempts) maxAttempts = r.attempts;
         });
-        const cMin = ppsValues.length ? Math.min(...ppsValues) : 0.8;
-        const cMax = ppsValues.length ? Math.max(...ppsValues) : 1.2;
 
         const layout = {
           margin: { l: 0, r: 0, b: 0, t: 0 },
@@ -416,6 +445,7 @@
               ],
               cmin: cMin,
               cmax: cMax,
+              cmid: leaguePps,
               opacity: 0.96,
               hovertemplate:
                 "X %{x:.0f}<br>Y %{y:.0f}<br>Attempts %{z:.0f}<br>PPS %{surfacecolor:.3f}<extra></extra>",

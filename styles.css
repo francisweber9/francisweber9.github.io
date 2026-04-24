@@ -435,7 +435,7 @@
 
       .wowy-controls {
         display: grid;
-        grid-template-columns: 1fr auto;
+        grid-template-columns: 1fr;
         gap: 10px;
         margin-bottom: 12px;
       }
@@ -457,11 +457,18 @@
         font-size: 13px;
       }
 
+      .wowy-table-tools {
+        width: min(1200px, 92%);
+        margin: 0 auto 8px;
+        display: flex;
+        justify-content: flex-end;
+      }
+
       .wowy-toggle {
         display: flex;
         align-items: center;
         gap: 8px;
-        padding-top: 24px;
+        padding-top: 0;
       }
 
       .wowy-toggle input {
@@ -469,6 +476,9 @@
       }
 
       .wowy-meta {
+        width: min(1200px, 92%);
+        margin-left: auto;
+        margin-right: auto;
         margin-bottom: 8px;
         font-size: 12px;
         color: var(--muted);
@@ -896,6 +906,8 @@
       }
 
       .wowy-table-wrap {
+        width: min(1200px, 92%);
+        margin: 0 auto;
         max-height: none;
         overflow: visible;
       }
@@ -969,6 +981,12 @@
 
         .wowy-toggle {
           padding-top: 0;
+        }
+
+        .wowy-table-tools,
+        .wowy-meta,
+        .wowy-table-wrap {
+          width: 100%;
         }
 
         .wowy-pool {
