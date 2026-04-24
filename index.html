@@ -184,7 +184,7 @@
       .table-wrap {
         border: 1px solid var(--line);
         max-height: 520px;
-        overflow-y: auto;
+        overflow: auto;
         background: #fff;
       }
 
@@ -249,7 +249,7 @@
 
       .wowy-controls {
         display: grid;
-        grid-template-columns: 1.5fr 1fr auto;
+        grid-template-columns: 1fr auto;
         gap: 10px;
         margin-bottom: 12px;
       }
@@ -315,13 +315,17 @@
       }
 
       .wowy-pool {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(138px, 1fr));
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overflow-y: hidden;
         gap: 10px;
         margin-bottom: 12px;
+        padding-bottom: 6px;
       }
 
       .wowy-player-btn {
+        flex: 0 0 146px;
         border: 1px solid var(--line);
         background: #fff;
         padding: 10px 8px;
@@ -422,6 +426,11 @@
         font-variant-numeric: tabular-nums;
       }
 
+      #wowy-table {
+        table-layout: fixed;
+        min-width: 1180px;
+      }
+
       @media (max-width: 900px) {
         .tabs {
           grid-template-columns: 1fr;
@@ -470,12 +479,16 @@
         }
 
         .wowy-pool {
-          grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+          gap: 8px;
         }
 
         .wowy-player-btn .head {
           width: 56px;
           height: 56px;
+        }
+
+        .wowy-player-btn {
+          flex-basis: 118px;
         }
 
         .wowy-player {
@@ -567,10 +580,6 @@
                 <div>
                   <label for="wowy-team">Team</label>
                   <select id="wowy-team"></select>
-                </div>
-                <div>
-                  <label for="wowy-min-minutes">Min Minutes</label>
-                  <input id="wowy-min-minutes" type="number" min="0" step="1" value="20" />
                 </div>
                 <div class="wowy-toggle">
                   <input id="wowy-luck-toggle" type="checkbox" />
@@ -896,7 +905,7 @@
         return players
           .map((pid, i) => {
             const on = bits[i] === "1";
-            const name = playerNames.get(pid) || pid;
+            const name = playerNames.get(pid) || formatPlayerName(pid);
             return `
               <span class="wowy-player ${on ? "on" : "off"}">
                 ${wowyHeadshot(pid, name)}
@@ -913,7 +922,7 @@
       }
 
       function formatPercentile(value) {
-        return Number.isFinite(value) ? `${value}` : "-";
+        return Number.isFinite(value) ? `P${value}` : "-";
       }
 
       function buildPercentilesForMode(mode) {
@@ -1079,6 +1088,7 @@
         const minMinutes = Number(wowyMinMinutes.value || 0);
         const useLuck = wowyLuckToggle.checked;
         const rowsByTeam = allRows.filter((row) => row.team === team && (Number(row.seconds || 0) / 60) >= minMinutes);
+        const leagueRows = allRows.filter((row) => (Number(row.seconds || 0) / 60) >= minMinutes);
         const players = selectedWOWYPlayers();
 
         if (!players.length) {
@@ -1088,6 +1098,10 @@
         }
 
         const playerNames = new Map();
+        const teamPool = wowyData?.pools?.byTeam?.[team] || {};
+        Object.values(teamPool).forEach((player) => {
+          playerNames.set(player.id, player.name);
+        });
         rowsByTeam.forEach((row) => {
           (row.lineup_person_ids || []).forEach((pid, i) => {
             if (!playerNames.has(pid)) {
@@ -1137,27 +1151,65 @@
         });
 
         const rows = Array.from(combos.values()).sort((a, b) => b.seconds - a.seconds);
-        wowyMeta.textContent = `Year ${wowyData.year} · ${team} · ${useLuck ? "Luck-adjusted" : "Raw"} · ${rowsByTeam.length} lineup rows`;
+        const leagueTotals = leagueRows.reduce(
+          (acc, row) => {
+            const pointsFor = useLuck ? Number(row.points_for_luck || 0) : Number(row.points_for || 0);
+            const pointsAgainst = useLuck ? Number(row.points_against_luck || 0) : Number(row.points_against || 0);
+            acc.pointsFor += pointsFor;
+            acc.pointsAgainst += pointsAgainst;
+            acc.possFor += Number(row.poss_for || 0);
+            acc.possAgainst += Number(row.poss_against || 0);
+            return acc;
+          },
+          { pointsFor: 0, pointsAgainst: 0, possFor: 0, possAgainst: 0 }
+        );
 
-        wowyBody.innerHTML = rows
-          .map((row) => {
-            const pointsFor = useLuck ? row.points_for_luck : row.points_for;
-            const pointsAgainst = useLuck ? row.points_against_luck : row.points_against;
-            const off = safeRate(pointsFor, row.poss_for);
-            const def = safeRate(pointsAgainst, row.poss_against);
-            const net = Number.isFinite(off) && Number.isFinite(def) ? off - def : null;
-            const team3 = safePct(row.three_pm_for, row.three_pa_for);
-            const opp3 = safePct(row.three_pm_against, row.three_pa_against);
+        const leagueOff = safeRate(leagueTotals.pointsFor, leagueTotals.possFor);
+        const leagueDef = safeRate(leagueTotals.pointsAgainst, leagueTotals.possAgainst);
+
+        function metricBg(delta, maxAbs) {
+          if (!Number.isFinite(delta) || !Number.isFinite(maxAbs) || maxAbs <= 0) return "";
+          const strength = Math.min(Math.abs(delta) / maxAbs, 1);
+          if (delta >= 0) {
+            return `background: hsl(135 38% ${95 - strength * 16}%);`;
+          }
+          return `background: hsl(9 72% ${95 - strength * 14}%);`;
+        }
+
+        const rowMetrics = rows.map((row) => {
+          const pointsFor = useLuck ? row.points_for_luck : row.points_for;
+          const pointsAgainst = useLuck ? row.points_against_luck : row.points_against;
+          const off = safeRate(pointsFor, row.poss_for);
+          const def = safeRate(pointsAgainst, row.poss_against);
+          const net = Number.isFinite(off) && Number.isFinite(def) ? off - def : null;
+          const team3 = safePct(row.three_pm_for, row.three_pa_for);
+          const opp3 = safePct(row.three_pm_against, row.three_pa_against);
+          const offDelta = Number.isFinite(off) && Number.isFinite(leagueOff) ? off - leagueOff : null;
+          const defDelta = Number.isFinite(def) && Number.isFinite(leagueDef) ? leagueDef - def : null;
+          const netDelta = Number.isFinite(net) ? net : null;
+          return { row, off, def, net, team3, opp3, offDelta, defDelta, netDelta };
+        });
+
+        const maxAbsOff = Math.max(1, ...rowMetrics.map((m) => Math.abs(m.offDelta || 0)));
+        const maxAbsDef = Math.max(1, ...rowMetrics.map((m) => Math.abs(m.defDelta || 0)));
+        const maxAbsNet = Math.max(1, ...rowMetrics.map((m) => Math.abs(m.netDelta || 0)));
+
+        wowyMeta.textContent =
+          `Year ${wowyData.year} · ${team} · ${useLuck ? "Luck-adjusted" : "Raw"} · ${rowsByTeam.length} lineup rows` +
+          ` · League Off ${Number.isFinite(leagueOff) ? formatValue(leagueOff, 1) : "-"} / Def ${Number.isFinite(leagueDef) ? formatValue(leagueDef, 1) : "-"}`;
+
+        wowyBody.innerHTML = rowMetrics
+          .map((m) => {
             return `
               <tr>
-                <td><div class="wowy-state">${renderWOWYState(players, row.key, playerNames)}</div></td>
-                <td class="wowy-value">${formatValue(row.seconds / 60, 1)}</td>
-                <td class="wowy-value">${Number.isFinite(off) ? formatValue(off, 1) : "-"}</td>
-                <td class="wowy-value">${Number.isFinite(def) ? formatValue(def, 1) : "-"}</td>
-                <td class="wowy-value">${Number.isFinite(net) ? formatValue(net, 1) : "-"}</td>
-                <td class="wowy-value">${fmtPct(team3, 1)}</td>
-                <td class="wowy-value">${fmtPct(opp3, 1)}</td>
-                <td class="wowy-value">${row.lineups}</td>
+                <td><div class="wowy-state">${renderWOWYState(players, m.row.key, playerNames)}</div></td>
+                <td class="wowy-value">${formatValue(m.row.seconds / 60, 1)}</td>
+                <td class="wowy-value" style="${metricBg(m.offDelta, maxAbsOff)}">${Number.isFinite(m.off) ? formatValue(m.off, 1) : "-"}</td>
+                <td class="wowy-value" style="${metricBg(m.defDelta, maxAbsDef)}">${Number.isFinite(m.def) ? formatValue(m.def, 1) : "-"}</td>
+                <td class="wowy-value" style="${metricBg(m.netDelta, maxAbsNet)}">${Number.isFinite(m.net) ? formatValue(m.net, 1) : "-"}</td>
+                <td class="wowy-value">${fmtPct(m.team3, 1)}</td>
+                <td class="wowy-value">${fmtPct(m.opp3, 1)}</td>
+                <td class="wowy-value">${m.row.lineups}</td>
               </tr>
             `;
           })
@@ -1173,7 +1225,7 @@
           if (b.seconds !== a.seconds) return b.seconds - a.seconds;
           return a.name.localeCompare(b.name);
         });
-        wowySelectedPlayers = sortedPlayers.slice(0, 2).map((p) => p.id);
+        wowySelectedPlayers = sortedPlayers.slice(0, 1).map((p) => p.id);
         renderWOWYPool();
       }
 
