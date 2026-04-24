@@ -663,6 +663,33 @@
         return out;
       }
 
+      function niceStep(range, targetTicks = 6) {
+        if (!Number.isFinite(range) || range <= 0) return 1;
+        const rough = range / Math.max(2, targetTicks - 1);
+        const power = 10 ** Math.floor(Math.log10(rough));
+        const scaled = rough / power;
+        let nice = 1;
+        if (scaled > 5) nice = 10;
+        else if (scaled > 2) nice = 5;
+        else if (scaled > 1) nice = 2;
+        return nice * power;
+      }
+
+      function buildYTicks(minY, maxY, targetTicks = 6) {
+        const step = niceStep(maxY - minY, targetTicks);
+        const start = Math.floor(minY / step) * step;
+        const end = Math.ceil(maxY / step) * step;
+        const ticks = [];
+        for (let t = start; t <= end + step * 0.5; t += step) {
+          ticks.push(Number(t.toFixed(6)));
+        }
+        if (!ticks.some((t) => Math.abs(t) < 1e-9)) {
+          ticks.push(0);
+          ticks.sort((a, b) => a - b);
+        }
+        return ticks;
+      }
+
       function updateDpmDatalist() {
         if (!dpmData) return;
         const selected = new Set(dpmSelectedIds);
@@ -746,29 +773,49 @@
 
         const allPoints = series.flatMap((s) => s.points);
         const maxX = Math.max(1, ...allPoints.map((p) => p.x));
-        const maxAbsY = Math.max(0.5, ...allPoints.map((p) => Math.abs(p.y)));
-        const ySpan = Math.max(2, maxAbsY * 1.2);
+        const minYPoint = Math.min(...allPoints.map((p) => p.y));
+        const maxYPoint = Math.max(...allPoints.map((p) => p.y));
+        const yPad = Math.max(0.2, (maxYPoint - minYPoint) * 0.12);
+        let yMin = Math.min(minYPoint - yPad, 0);
+        let yMax = Math.max(maxYPoint + yPad, 0);
+        if (Math.abs(yMax - yMin) < 0.8) {
+          const mid = (yMax + yMin) / 2;
+          yMin = mid - 0.4;
+          yMax = mid + 0.4;
+        }
 
         const width = 1200;
-        const height = 480;
-        const margin = { top: 72, right: 30, bottom: 52, left: 70 };
+        const height = 460;
+        const margin = { top: 18, right: 20, bottom: 58, left: 70 };
         const plotW = width - margin.left - margin.right;
         const plotH = height - margin.top - margin.bottom;
         const xScale = (x) => margin.left + (x / maxX) * plotW;
-        const yScale = (y) => margin.top + ((ySpan - y) / (2 * ySpan)) * plotH;
+        const yScale = (y) => margin.top + ((yMax - y) / (yMax - yMin)) * plotH;
 
         const zeroY = yScale(0);
-        const xTicks = [0, Math.round(maxX * 0.25), Math.round(maxX * 0.5), Math.round(maxX * 0.75), maxX]
-          .filter((v, i, a) => i === 0 || v > a[i - 1]);
-        const yTicks = [-ySpan, -ySpan / 2, 0, ySpan / 2, ySpan].map((v) => Math.round(v * 10) / 10);
+        const xStep = Math.max(1, Math.ceil(maxX / 8));
+        const xTicks = [];
+        for (let x = 0; x <= maxX; x += xStep) xTicks.push(x);
+        if (xTicks[xTicks.length - 1] !== maxX) xTicks.push(maxX);
+        const yTicks = buildYTicks(yMin, yMax, 6);
+
+        const formatTick = (value) => {
+          if (Math.abs(value) < 1e-9) return "0";
+          if (Math.abs(value) >= 100 || Number.isInteger(value)) return String(Math.round(value));
+          return value.toFixed(1).replace(/\.0$/, "");
+        };
+
         const gridY = yTicks
           .map((t) => `<line x1="${margin.left}" y1="${yScale(t)}" x2="${margin.left + plotW}" y2="${yScale(t)}" stroke="${t === 0 ? "#b9c3d3" : "#dce2ec"}" stroke-width="${t === 0 ? 1.5 : 1}" stroke-dasharray="${t === 0 ? "6 4" : "3 6"}" />`)
           .join("");
+        const gridX = xTicks
+          .map((t) => `<line x1="${xScale(t)}" y1="${margin.top}" x2="${xScale(t)}" y2="${margin.top + plotH}" stroke="#e8edf4" stroke-width="1" />`)
+          .join("");
         const xLabels = xTicks
-          .map((t) => `<text x="${xScale(t)}" y="${height - 16}" text-anchor="middle" font-size="12" fill="#6a7588">${t}</text>`)
+          .map((t) => `<text x="${xScale(t)}" y="${height - 20}" text-anchor="middle" font-size="13" fill="#5a6578">${Math.round(t)}</text>`)
           .join("");
         const yLabels = yTicks
-          .map((t) => `<text x="${margin.left - 10}" y="${yScale(t) + 4}" text-anchor="end" font-size="12" fill="#6a7588">${t}</text>`)
+          .map((t) => `<text x="${margin.left - 10}" y="${yScale(t) + 4}" text-anchor="end" font-size="13" fill="#5a6578">${formatTick(t)}</text>`)
           .join("");
 
         const pointCloud = series
@@ -788,29 +835,15 @@
             const endX = xScale(end.x);
             const endY = yScale(end.y);
             return `
-              <path d="${d}" fill="none" stroke="${s.color}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"></path>
+              <path d="${d}" fill="none" stroke="${s.color}" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"></path>
               <circle cx="${endX}" cy="${endY}" r="4" fill="${s.color}"></circle>
-            `;
-          })
-          .join("");
-
-        const legendTop = series
-          .filter((s) => s.points.length)
-          .map((s, idx) => {
-            const x = margin.left + 120 + idx * 220;
-            const y = 42;
-            return `
-              <line x1="${x}" y1="${y}" x2="${x + 36}" y2="${y}" stroke="${s.color}" stroke-width="4" stroke-linecap="round"></line>
-              <circle cx="${x + 18}" cy="${y}" r="4" fill="${s.color}"></circle>
-              <text x="${x + 46}" y="${y + 5}" font-size="16" fill="#445065">${htmlEscape(s.name)}</text>
             `;
           })
           .join("");
 
         dpmChart.innerHTML = `
           <rect x="0" y="0" width="${width}" height="${height}" fill="#f8fafc"></rect>
-          <text x="${width / 2}" y="34" text-anchor="middle" font-size="44" fill="#111827" font-weight="800">${metricLabel(metric)} Career Progression</text>
-          ${legendTop}
+          ${gridX}
           ${gridY}
           ${pointCloud}
           ${linePaths}
@@ -818,7 +851,7 @@
           <line x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${margin.top + plotH}" stroke="#c7d0de"></line>
           ${xLabels}
           ${yLabels}
-          <text x="${margin.left + plotW / 2}" y="${height - 2}" text-anchor="middle" font-size="14" fill="#4a5568" font-weight="700">Career Game Number</text>
+          <text x="${margin.left + plotW / 2}" y="${height - 4}" text-anchor="middle" font-size="14" fill="#4a5568" font-weight="700">Career Game Number</text>
           <text x="22" y="${margin.top + plotH / 2}" text-anchor="middle" font-size="14" fill="#4a5568" font-weight="700" transform="rotate(-90 22 ${margin.top + plotH / 2})">${metricLabel(metric)}</text>
           <text x="${margin.left + 8}" y="${zeroY - 8}" font-size="12" fill="#55627a">0</text>
         `;
