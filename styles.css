@@ -367,22 +367,13 @@
 
       .wowy-state {
         display: flex;
-        gap: 10px;
-        align-items: flex-start;
+        gap: 8px;
+        align-items: center;
         flex-wrap: wrap;
       }
 
       .wowy-state-col {
-        min-width: 210px;
-      }
-
-      .wowy-state-footer {
-        margin-top: 8px;
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        color: #6a6a6a;
-        text-transform: uppercase;
+        min-width: 168px;
       }
 
       .wowy-player {
@@ -390,12 +381,12 @@
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
-        gap: 4px;
-        width: 86px;
-        min-height: 114px;
-        padding: 8px 6px;
-        border-radius: 14px;
-        font-size: 12px;
+        gap: 2px;
+        width: 78px;
+        min-height: 88px;
+        padding: 6px 5px;
+        border-radius: 12px;
+        font-size: 11px;
         border: 1px solid var(--line);
         background: #fff;
       }
@@ -411,14 +402,14 @@
       }
 
       .wowy-player-name {
-        font-size: 11px;
+        font-size: 10px;
         font-weight: 700;
         line-height: 1.1;
         text-align: center;
       }
 
       .wowy-player-tag {
-        font-size: 10px;
+        font-size: 9px;
         font-weight: 800;
         letter-spacing: 0.06em;
         text-transform: uppercase;
@@ -426,8 +417,8 @@
       }
 
       .wowy-avatar {
-        width: 58px;
-        height: 58px;
+        width: 42px;
+        height: 42px;
         border-radius: 50%;
         overflow: hidden;
         background: #e7e3db;
@@ -454,15 +445,23 @@
 
       .wowy-metric-main {
         display: block;
-        font-size: 16px;
-        line-height: 1.05;
+        font-size: 14px;
+        line-height: 1.1;
       }
 
       .wowy-metric-sub {
         display: block;
-        margin-top: 4px;
-        font-size: 12px;
+        margin-top: 2px;
+        font-size: 11px;
         font-weight: 700;
+      }
+
+      .wowy-metric-faint {
+        display: block;
+        margin-top: 8px;
+        font-size: 11px;
+        color: #97a0af;
+        font-weight: 600;
       }
 
       .wowy-metric-sub.pos {
@@ -709,8 +708,18 @@
 
       #wowy-table th,
       #wowy-table td {
-        padding-top: 14px;
-        padding-bottom: 14px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+
+      #wowy-table th.state-col,
+      #wowy-table td.wowy-state-col {
+        text-align: left;
+      }
+
+      #wowy-table th.numeric-col,
+      #wowy-table td.wowy-value {
+        text-align: right;
       }
 
       @media (max-width: 900px) {

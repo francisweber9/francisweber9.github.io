@@ -312,12 +312,6 @@
           .join("");
       }
 
-      function singlePlayerStateFooter(players, bits) {
-        if (players.length !== 1) return "";
-        const isOn = bits[0] === "1";
-        return `<div class="wowy-state-footer">${isOn ? "ON" : "OFF"}</div>`;
-      }
-
       function formatValue(value, decimals = 2) {
         if (typeof value !== "number") return "-";
         return value.toFixed(decimals);
@@ -494,7 +488,7 @@
 
         if (!players.length) {
           wowyMeta.textContent = `Year ${wowyData.year} · ${team || "No team selected"} · select 1-2 players.`;
-          wowyBody.innerHTML = '<tr><td colspan="8">Select at least one player to view WOWY states.</td></tr>';
+          wowyBody.innerHTML = '<tr><td colspan="6">Select at least one player to view WOWY states.</td></tr>';
           return;
         }
 
@@ -599,23 +593,22 @@
               <tr>
                 <td class="wowy-state-col">
                   <div class="wowy-state">${renderWOWYState(players, m.row.key, playerNames)}</div>
-                  ${singlePlayerStateFooter(players, m.row.key)}
                 </td>
                 <td class="wowy-value"><span class="wowy-metric-main">${formatValue(m.row.seconds / 60, 1)}</span></td>
                 <td class="wowy-value">
                   <span class="wowy-metric-main">${Number.isFinite(m.off) ? formatValue(m.off, 1) : "-"}</span>
                   <span class="wowy-metric-sub ${deltaClass(m.offDelta)}">${formatSigned(m.offDelta, 1)}</span>
+                  <span class="wowy-metric-faint">3P% ${fmtPct(m.team3, 1)}</span>
                 </td>
                 <td class="wowy-value">
                   <span class="wowy-metric-main">${Number.isFinite(m.def) ? formatValue(m.def, 1) : "-"}</span>
                   <span class="wowy-metric-sub ${deltaClass(m.defDelta)}">${formatSigned(m.defDelta, 1)}</span>
+                  <span class="wowy-metric-faint">3P% ${fmtPct(m.opp3, 1)}</span>
                 </td>
                 <td class="wowy-value">
                   <span class="wowy-metric-main">${Number.isFinite(m.net) ? formatValue(m.net, 1) : "-"}</span>
                   <span class="wowy-metric-sub ${deltaClass(m.netDelta)}">${formatSigned(m.netDelta, 1)}</span>
                 </td>
-                <td class="wowy-value">${fmtPct(m.team3, 1)}</td>
-                <td class="wowy-value">${fmtPct(m.opp3, 1)}</td>
                 <td class="wowy-value">${m.row.lineups}</td>
               </tr>
             `;
@@ -960,7 +953,7 @@
           renderWOWYTable();
         } catch (error) {
           wowyMeta.textContent = `Failed to load WOWY data: ${error.message}`;
-          wowyBody.innerHTML = '<tr><td colspan="8">WOWY data could not be loaded.</td></tr>';
+          wowyBody.innerHTML = '<tr><td colspan="6">WOWY data could not be loaded.</td></tr>';
         }
       }
 
