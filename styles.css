@@ -128,6 +128,109 @@
         padding: 16px;
       }
 
+      .nba-shotcard {
+        border: 1px solid var(--line);
+        background: #fcfbf8;
+        padding: 12px;
+      }
+
+      .nba-shotcard-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .nba-shotcard h3 {
+        margin: 0;
+        font-size: 18px;
+      }
+
+      .nba-shot-summary {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .nba-shot-legend {
+        display: flex;
+        gap: 12px;
+        margin: 8px 0 10px;
+        font-size: 12px;
+        color: #374151;
+      }
+
+      .nba-shot-legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .nba-shot-legend .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+
+      .nba-shot-legend .dot.made {
+        background: #1b9b56;
+      }
+
+      .nba-shot-legend .dot.miss {
+        background: #d75454;
+      }
+
+      .nba-court-container {
+        position: relative;
+        width: min(900px, 100%);
+        aspect-ratio: 2002 / 1880;
+        margin: 0 auto;
+        background: #ede9df;
+        border: 1px solid #d8d2c7;
+        overflow: hidden;
+      }
+
+      #nba-court-overlay,
+      .nba-shot-layer {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      #nba-court-overlay {
+        object-fit: contain;
+      }
+
+      .nba-shot-layer {
+        pointer-events: none;
+      }
+
+      .nba-shot {
+        position: absolute;
+        width: 0.9%;
+        aspect-ratio: 1;
+        transform: translate(-50%, -50%);
+        border: 1px solid;
+      }
+
+      .nba-shot.made {
+        border-color: #1b9b56;
+        border-radius: 50%;
+      }
+
+      .nba-shot.miss {
+        border-color: #d75454;
+        transform: translate(-50%, -50%) rotate(45deg);
+      }
+
+      .nba-shot-foot {
+        margin-top: 8px;
+        font-size: 11px;
+        color: var(--muted);
+      }
+
       .rapm-controls {
         display: flex;
         align-items: center;
@@ -367,13 +470,14 @@
 
       .wowy-state {
         display: flex;
-        gap: 8px;
+        gap: 6px;
         align-items: center;
         flex-wrap: wrap;
+        justify-content: center;
       }
 
       .wowy-state-col {
-        min-width: 168px;
+        min-width: 156px;
       }
 
       .wowy-player {
@@ -382,10 +486,10 @@
         align-items: center;
         justify-content: flex-start;
         gap: 2px;
-        width: 78px;
-        min-height: 88px;
-        padding: 6px 5px;
-        border-radius: 12px;
+        width: 74px;
+        min-height: 80px;
+        padding: 5px 4px;
+        border-radius: 10px;
         font-size: 11px;
         border: 1px solid var(--line);
         background: #fff;
@@ -417,8 +521,8 @@
       }
 
       .wowy-avatar {
-        width: 42px;
-        height: 42px;
+        width: 36px;
+        height: 36px;
         border-radius: 50%;
         overflow: hidden;
         background: #e7e3db;
@@ -445,21 +549,21 @@
 
       .wowy-metric-main {
         display: block;
-        font-size: 14px;
+        font-size: 13px;
         line-height: 1.1;
       }
 
       .wowy-metric-sub {
         display: block;
         margin-top: 2px;
-        font-size: 11px;
+        font-size: 10px;
         font-weight: 700;
       }
 
       .wowy-metric-faint {
         display: block;
-        margin-top: 8px;
-        font-size: 11px;
+        margin-top: 6px;
+        font-size: 10px;
         color: #97a0af;
         font-weight: 600;
       }
@@ -708,18 +812,18 @@
 
       #wowy-table th,
       #wowy-table td {
-        padding-top: 10px;
-        padding-bottom: 10px;
+        padding-top: 8px;
+        padding-bottom: 8px;
       }
 
       #wowy-table th.state-col,
       #wowy-table td.wowy-state-col {
-        text-align: left;
+        text-align: center;
       }
 
       #wowy-table th.numeric-col,
       #wowy-table td.wowy-value {
-        text-align: right;
+        text-align: center;
       }
 
       @media (max-width: 900px) {

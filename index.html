@@ -95,7 +95,6 @@
                       <th class="numeric-col">Off</th>
                       <th class="numeric-col">Def</th>
                       <th class="numeric-col">Net</th>
-                      <th class="numeric-col">Lineups</th>
                     </tr>
                   </thead>
                   <tbody id="wowy-body"></tbody>
@@ -138,9 +137,21 @@
 
           <section class="pane" role="tabpanel" id="pane-nba" aria-labelledby="tab-nba">
             <h2 class="section-title">Visualisation (NBA)</h2>
-            <p class="section-copy">Interactive and static visual stories for NBA trends, player profiles, and team-level insights.</p>
-            <div class="content-box">
-              <p>Drop chart examples, dashboard links, and screenshots here.</p>
+            <p class="section-copy">Jayson Tatum shot chart (2025 season) using the same 2D court-coordinate method from the NBA project.</p>
+            <div class="nba-shotcard">
+              <div class="nba-shotcard-head">
+                <h3>Jayson Tatum - 2025 Shot Chart</h3>
+                <div id="nba-shot-summary" class="nba-shot-summary">Loading shot data...</div>
+              </div>
+              <div class="nba-shot-legend">
+                <span><i class="dot made"></i> Made</span>
+                <span><i class="dot miss"></i> Missed</span>
+              </div>
+              <div id="nba-court-container" class="nba-court-container" aria-label="Jayson Tatum shot chart">
+                <img id="nba-court-overlay" src="analytics/images/nba/zones_bones.png" alt="Basketball court" />
+                <div id="nba-shot-layer" class="nba-shot-layer"></div>
+              </div>
+              <div class="nba-shot-foot">Source: <code>analytics/data/nba/jayson_tatum_shots_2025.csv</code></div>
             </div>
           </section>
 

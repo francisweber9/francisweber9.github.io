@@ -62,6 +62,7 @@
       const percentileKeys = ["oRAPM", "dRAPM", "netRAPM", "rawNetRating"];
       const WOWY_URL = "analytics/data/wowy_2025_2026.json";
       const DPM_URL = "analytics/data/dpm_trajectory.json";
+      const NBA_TATUM_SHOTS_URL = "analytics/data/nba/jayson_tatum_shots_2025.csv";
       let wowyData = null;
       let dpmData = null;
 
@@ -81,6 +82,8 @@
       const dpmPalette = ["#4f86e5", "#e76f6f", "#45a36c"];
       const dpmChipClass = ["blue", "red", "green"];
       let dpmSelectedIds = [];
+      const nbaShotLayer = document.getElementById("nba-shot-layer");
+      const nbaShotSummary = document.getElementById("nba-shot-summary");
 
       function titleFromUnderscore(value) {
         if (typeof value !== "string") return "-";
@@ -186,6 +189,103 @@
           throw new Error(`${url} returned HTTP ${response.status}`);
         }
         return response.json();
+      }
+
+      function parseCsvText(text) {
+        const rows = [];
+        let row = [];
+        let cell = "";
+        let inQuotes = false;
+        for (let i = 0; i < text.length; i++) {
+          const ch = text[i];
+          if (ch === '"') {
+            if (inQuotes && text[i + 1] === '"') {
+              cell += '"';
+              i += 1;
+            } else {
+              inQuotes = !inQuotes;
+            }
+          } else if (ch === "," && !inQuotes) {
+            row.push(cell);
+            cell = "";
+          } else if ((ch === "\n" || ch === "\r") && !inQuotes) {
+            if (ch === "\r" && text[i + 1] === "\n") i += 1;
+            row.push(cell);
+            if (row.some((x) => x !== "")) rows.push(row);
+            row = [];
+            cell = "";
+          } else {
+            cell += ch;
+          }
+        }
+        row.push(cell);
+        if (row.some((x) => x !== "")) rows.push(row);
+        if (!rows.length) return [];
+        const headers = rows[0];
+        return rows.slice(1).map((vals) => {
+          const out = {};
+          headers.forEach((h, idx) => {
+            out[h] = vals[idx] ?? "";
+          });
+          return out;
+        });
+      }
+
+      async function fetchCsvStrict(url) {
+        const response = await fetch(url, { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error(`${url} returned HTTP ${response.status}`);
+        }
+        const text = await response.text();
+        return parseCsvText(text);
+      }
+
+      function transformShotCoordinate(x, y) {
+        const nx = ((x + 250) / 500) * 100;
+        const ny = ((y + 42) / 470) * 100;
+        return { x: nx, y: ny };
+      }
+
+      function renderNbaShotChart(rows) {
+        if (!nbaShotLayer || !nbaShotSummary) return;
+        nbaShotLayer.innerHTML = "";
+        const made = rows.filter((r) => r.made).length;
+        nbaShotSummary.textContent = `${rows.length} FGA · ${made} makes · ${rows.length ? ((made / rows.length) * 100).toFixed(1) : "0.0"} FG%`;
+
+        const frag = document.createDocumentFragment();
+        rows.forEach((shot) => {
+          const el = document.createElement("span");
+          el.className = `nba-shot ${shot.made ? "made" : "miss"}`;
+          el.style.left = `${shot.cx}%`;
+          el.style.top = `${shot.cy}%`;
+          frag.appendChild(el);
+        });
+        nbaShotLayer.appendChild(frag);
+      }
+
+      async function initNbaShotChart() {
+        if (!nbaShotLayer || !nbaShotSummary) return;
+        try {
+          const rows = await fetchCsvStrict(NBA_TATUM_SHOTS_URL);
+          const shots = rows
+            .filter((r) => normalizeForSearch(r.PLAYER_NAME) === "jayson tatum")
+            .map((r) => {
+              const x = Number(r.LOC_X);
+              const y = Number(r.LOC_Y);
+              if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+              const pos = transformShotCoordinate(x, y);
+              return {
+                cx: pos.x,
+                cy: pos.y,
+                made: Number(r.SHOT_MADE_FLAG) === 1,
+              };
+            })
+            .filter(Boolean)
+            .filter((s) => s.cx >= 0 && s.cx <= 100 && s.cy >= 0 && s.cy <= 100);
+          renderNbaShotChart(shots);
+        } catch (error) {
+          nbaShotSummary.textContent = `Failed to load shot chart: ${error.message}`;
+        }
       }
 
       function setSelectOptions(selectEl, options, selected = "") {
@@ -488,7 +588,7 @@
 
         if (!players.length) {
           wowyMeta.textContent = `Year ${wowyData.year} · ${team || "No team selected"} · select 1-2 players.`;
-          wowyBody.innerHTML = '<tr><td colspan="6">Select at least one player to view WOWY states.</td></tr>';
+          wowyBody.innerHTML = '<tr><td colspan="5">Select at least one player to view WOWY states.</td></tr>';
           return;
         }
 
@@ -594,7 +694,10 @@
                 <td class="wowy-state-col">
                   <div class="wowy-state">${renderWOWYState(players, m.row.key, playerNames)}</div>
                 </td>
-                <td class="wowy-value"><span class="wowy-metric-main">${formatValue(m.row.seconds / 60, 1)}</span></td>
+                <td class="wowy-value">
+                  <span class="wowy-metric-main">${formatValue(m.row.seconds / 60, 1)}</span>
+                  <span class="wowy-metric-faint">Lineups ${m.row.lineups}</span>
+                </td>
                 <td class="wowy-value">
                   <span class="wowy-metric-main">${Number.isFinite(m.off) ? formatValue(m.off, 1) : "-"}</span>
                   <span class="wowy-metric-sub ${deltaClass(m.offDelta)}">${formatSigned(m.offDelta, 1)}</span>
@@ -609,7 +712,6 @@
                   <span class="wowy-metric-main">${Number.isFinite(m.net) ? formatValue(m.net, 1) : "-"}</span>
                   <span class="wowy-metric-sub ${deltaClass(m.netDelta)}">${formatSigned(m.netDelta, 1)}</span>
                 </td>
-                <td class="wowy-value">${m.row.lineups}</td>
               </tr>
             `;
           })
@@ -953,7 +1055,7 @@
           renderWOWYTable();
         } catch (error) {
           wowyMeta.textContent = `Failed to load WOWY data: ${error.message}`;
-          wowyBody.innerHTML = '<tr><td colspan="6">WOWY data could not be loaded.</td></tr>';
+          wowyBody.innerHTML = '<tr><td colspan="5">WOWY data could not be loaded.</td></tr>';
         }
       }
 
@@ -1060,3 +1162,4 @@
       initRAPM();
       initWOWY();
       initDpm();
+      initNbaShotChart();
