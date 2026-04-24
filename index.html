@@ -139,8 +139,25 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        flex-wrap: wrap;
         gap: 10px;
         margin-bottom: 10px;
+      }
+
+      .rapm-tools {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .search-input {
+        border: 1px solid var(--line);
+        background: #fff;
+        color: var(--ink);
+        font-size: 13px;
+        padding: 8px 10px;
+        min-width: 220px;
       }
 
       .toggle {
@@ -166,7 +183,7 @@
 
       .table-wrap {
         border: 1px solid var(--line);
-        max-height: 640px;
+        max-height: 520px;
         overflow-y: auto;
         background: #fff;
       }
@@ -206,11 +223,23 @@
       td.metric {
         text-align: right;
         font-variant-numeric: tabular-nums;
+        vertical-align: middle;
       }
 
       td.count {
         text-align: right;
         font-variant-numeric: tabular-nums;
+      }
+
+      .metric-main {
+        display: block;
+      }
+
+      .metric-sub {
+        display: block;
+        margin-top: 2px;
+        font-size: 11px;
+        color: #4f4f4f;
       }
 
       .status {
@@ -238,6 +267,23 @@
 
         .subtabs {
           flex-wrap: wrap;
+        }
+
+        .rapm-tools {
+          width: 100%;
+        }
+
+        .search-input {
+          width: 100%;
+          min-width: 0;
+        }
+
+        .toggle {
+          width: 100%;
+        }
+
+        .toggle button {
+          flex: 1;
         }
 
         th,
@@ -286,9 +332,12 @@
             <section class="pane active" role="tabpanel" id="subpane-rapm" aria-labelledby="subtab-rapm">
               <div class="rapm-controls">
                 <div class="status" id="rapm-status">Loading RAPM data...</div>
-                <div class="toggle" role="group" aria-label="RAPM mode">
-                  <button id="toggle-luck" data-mode="luck" data-active="true">Luck Adjusted</button>
-                  <button id="toggle-raw" data-mode="raw" data-active="false">Raw</button>
+                <div class="rapm-tools">
+                  <input id="rapm-search" class="search-input" type="search" placeholder="Search player..." aria-label="Search player" />
+                  <div class="toggle" role="group" aria-label="RAPM mode">
+                    <button id="toggle-luck" data-mode="luck" data-active="true">Luck Adjusted</button>
+                    <button id="toggle-raw" data-mode="raw" data-active="false">Raw</button>
+                  </div>
                 </div>
               </div>
 
@@ -296,13 +345,13 @@
                 <table id="rapm-table">
                   <thead>
                     <tr>
-                      <th><button data-sort="playerName">Player Name</button></th>
-                      <th><button data-sort="teamName">Team Name</button></th>
-                      <th><button data-sort="games">Games</button></th>
-                      <th><button data-sort="oRAPM">oRAPM</button></th>
-                      <th><button data-sort="dRAPM">dRAPM</button></th>
-                      <th><button data-sort="netRAPM">netRAPM</button></th>
-                      <th><button data-sort="rawNetRating">Raw Net Rating</button></th>
+                      <th><button data-sort="playerName" data-label="Player Name">Player Name</button></th>
+                      <th><button data-sort="teamName" data-label="Team Name">Team Name</button></th>
+                      <th><button data-sort="games" data-label="Games">Games</button></th>
+                      <th><button data-sort="oRAPM" data-label="oRAPM">oRAPM</button></th>
+                      <th><button data-sort="dRAPM" data-label="dRAPM">dRAPM</button></th>
+                      <th><button data-sort="netRAPM" data-label="netRAPM">netRAPM</button></th>
+                      <th><button data-sort="rawNetRating" data-label="Raw Net Rating">Raw Net Rating</button></th>
                     </tr>
                   </thead>
                   <tbody id="rapm-body"></tbody>
@@ -393,17 +442,107 @@
       };
 
       const rapmData = { raw: [], luck: [] };
+      const percentileCache = { raw: {}, luck: {} };
       let rapmMode = "luck";
       let rapmSort = { key: "netRAPM", direction: "desc" };
+      let rapmSearchQuery = "";
 
       const rapmBody = document.getElementById("rapm-body");
       const rapmStatus = document.getElementById("rapm-status");
       const toggleRaw = document.getElementById("toggle-raw");
       const toggleLuck = document.getElementById("toggle-luck");
+      const rapmSearch = document.getElementById("rapm-search");
+      const percentileKeys = ["oRAPM", "dRAPM", "netRAPM", "rawNetRating"];
+
+      function titleFromUnderscore(value) {
+        if (typeof value !== "string") return "-";
+        const cleaned = value.replace(/_+/g, " ").replace(/\s+/g, " ").trim();
+        if (!cleaned) return "-";
+        const romans = new Set(["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x"]);
+        return cleaned
+          .split(" ")
+          .map((word) =>
+            word
+              .split("-")
+              .map((part) => {
+                const lower = part.toLowerCase();
+                if (romans.has(lower)) return lower.toUpperCase();
+                return lower.charAt(0).toUpperCase() + lower.slice(1);
+              })
+              .join("-")
+          )
+          .join(" ");
+      }
+
+      function formatPlayerName(value) {
+        if (typeof value !== "string") return "-";
+        return value.includes("_") ? titleFromUnderscore(value) : value.trim();
+      }
+
+      function formatTeamName(value) {
+        if (typeof value !== "string") return "-";
+        return value.replace(/_+/g, " ").replace(/\s*\/\s*/g, " / ").replace(/\s+/g, " ").trim();
+      }
+
+      function normalizeForSearch(value) {
+        return String(value ?? "")
+          .toLowerCase()
+          .replace(/_/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      function normalizeRows(rows) {
+        return rows.map((row) => {
+          const playerName = formatPlayerName(row.playerName);
+          return {
+            ...row,
+            playerName,
+            teamName: formatTeamName(row.teamName),
+            playerSearch: normalizeForSearch(playerName),
+          };
+        });
+      }
 
       function formatValue(value, decimals = 2) {
         if (typeof value !== "number") return "-";
         return value.toFixed(decimals);
+      }
+
+      function formatPercentile(value) {
+        return Number.isFinite(value) ? `P${value}` : "-";
+      }
+
+      function buildPercentilesForMode(mode) {
+        const rows = rapmData[mode];
+        percentileKeys.forEach((key) => {
+          const values = rows.map((row) => row[key]).filter((value) => typeof value === "number").sort((a, b) => a - b);
+          percentileCache[mode][key] = values;
+        });
+      }
+
+      function percentileFor(mode, key, value) {
+        if (typeof value !== "number") return null;
+        const values = percentileCache[mode][key] || [];
+        if (!values.length) return null;
+
+        let lo = 0;
+        let hi = values.length - 1;
+        let idx = -1;
+
+        while (lo <= hi) {
+          const mid = Math.floor((lo + hi) / 2);
+          if (values[mid] <= value) {
+            idx = mid;
+            lo = mid + 1;
+          } else {
+            hi = mid - 1;
+          }
+        }
+
+        if (idx < 0) return 0;
+        if (values.length === 1) return 100;
+        return Math.round((idx / (values.length - 1)) * 100);
       }
 
       function colorForValue(value, min, max) {
@@ -464,23 +603,33 @@
         document.querySelectorAll("#rapm-table th button").forEach((btn) => {
           const key = btn.dataset.sort;
           const arrow = key === rapmSort.key ? (rapmSort.direction === "asc" ? " ↑" : " ↓") : "";
-          btn.textContent = btn.textContent.replace(/ [↑↓]$/, "") + arrow;
+          btn.textContent = `${btn.dataset.label}${arrow}`;
         });
       }
 
+      function filteredRows(rows) {
+        if (!rapmSearchQuery) return rows;
+        return rows.filter((row) => row.playerSearch.includes(rapmSearchQuery));
+      }
+
       function renderRAPMTable() {
-        const rows = rapmData[rapmMode];
+        const modeRows = rapmData[rapmMode];
+        const rows = filteredRows(modeRows);
 
         if (!rows.length) {
+          rapmStatus.textContent = `No players found for "${rapmSearch.value.trim()}".`;
           rapmBody.innerHTML = '<tr><td colspan="7">No data available.</td></tr>';
           return;
         }
 
+        const modeLabel = rapmMode === "luck" ? "luck-adjusted RAPM" : "raw RAPM";
+        rapmStatus.textContent = `Showing ${modeLabel} (${rows.length}/${modeRows.length} players)`;
+
         const ordered = sortedRows(rows);
-        const rangeORapm = getColumnRange(rows, "oRAPM");
-        const rangeDRapm = getColumnRange(rows, "dRAPM");
-        const rangeNetRapm = getColumnRange(rows, "netRAPM");
-        const rangeRawNet = getColumnRange(rows, "rawNetRating");
+        const rangeORapm = getColumnRange(modeRows, "oRAPM");
+        const rangeDRapm = getColumnRange(modeRows, "dRAPM");
+        const rangeNetRapm = getColumnRange(modeRows, "netRAPM");
+        const rangeRawNet = getColumnRange(modeRows, "rawNetRating");
 
         rapmBody.innerHTML = ordered
           .map((row) => {
@@ -488,16 +637,32 @@
             const bgDRapm = colorForValue(row.dRAPM, rangeDRapm.min, rangeDRapm.max);
             const bgNetRapm = colorForValue(row.netRAPM, rangeNetRapm.min, rangeNetRapm.max);
             const bgRawNet = colorForValue(row.rawNetRating, rangeRawNet.min, rangeRawNet.max);
+            const pORapm = percentileFor(rapmMode, "oRAPM", row.oRAPM);
+            const pDRapm = percentileFor(rapmMode, "dRAPM", row.dRAPM);
+            const pNetRapm = percentileFor(rapmMode, "netRAPM", row.netRAPM);
+            const pRawNet = percentileFor(rapmMode, "rawNetRating", row.rawNetRating);
 
             return `
               <tr>
                 <td>${row.playerName ?? "-"}</td>
                 <td>${row.teamName ?? "-"}</td>
                 <td class="count">${row.games ?? "-"}</td>
-                <td class="metric" style="background:${bgORapm}">${formatValue(row.oRAPM, 3)}</td>
-                <td class="metric" style="background:${bgDRapm}">${formatValue(row.dRAPM, 3)}</td>
-                <td class="metric" style="background:${bgNetRapm}">${formatValue(row.netRAPM, 3)}</td>
-                <td class="metric" style="background:${bgRawNet}">${formatValue(row.rawNetRating, 1)}</td>
+                <td class="metric" style="background:${bgORapm}">
+                  <span class="metric-main">${formatValue(row.oRAPM, 3)}</span>
+                  <span class="metric-sub">${formatPercentile(pORapm)}</span>
+                </td>
+                <td class="metric" style="background:${bgDRapm}">
+                  <span class="metric-main">${formatValue(row.dRAPM, 3)}</span>
+                  <span class="metric-sub">${formatPercentile(pDRapm)}</span>
+                </td>
+                <td class="metric" style="background:${bgNetRapm}">
+                  <span class="metric-main">${formatValue(row.netRAPM, 3)}</span>
+                  <span class="metric-sub">${formatPercentile(pNetRapm)}</span>
+                </td>
+                <td class="metric" style="background:${bgRawNet}">
+                  <span class="metric-main">${formatValue(row.rawNetRating, 1)}</span>
+                  <span class="metric-sub">${formatPercentile(pRawNet)}</span>
+                </td>
               </tr>
             `;
           })
@@ -508,7 +673,6 @@
         rapmMode = mode;
         toggleLuck.dataset.active = mode === "luck" ? "true" : "false";
         toggleRaw.dataset.active = mode === "raw" ? "true" : "false";
-        rapmStatus.textContent = mode === "luck" ? "Showing luck-adjusted RAPM" : "Showing raw RAPM";
         renderRAPMTable();
       }
 
@@ -528,6 +692,10 @@
 
       toggleLuck.addEventListener("click", () => setRapmMode("luck"));
       toggleRaw.addEventListener("click", () => setRapmMode("raw"));
+      rapmSearch.addEventListener("input", (event) => {
+        rapmSearchQuery = normalizeForSearch(event.target.value);
+        renderRAPMTable();
+      });
 
       async function initRAPM() {
         try {
@@ -536,8 +704,10 @@
             fetch(RAPM_SOURCES.luck).then((res) => res.json())
           ]);
 
-          rapmData.raw = raw;
-          rapmData.luck = luck;
+          rapmData.raw = normalizeRows(raw);
+          rapmData.luck = normalizeRows(luck);
+          buildPercentilesForMode("raw");
+          buildPercentilesForMode("luck");
 
           renderSortIndicators();
           setRapmMode("luck");
