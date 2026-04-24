@@ -367,13 +367,13 @@
 
       .wowy-state {
         display: flex;
-        gap: 8px;
-        align-items: center;
+        gap: 10px;
+        align-items: flex-start;
         flex-wrap: wrap;
       }
 
       .wowy-state-col {
-        min-width: 300px;
+        min-width: 210px;
       }
 
       .wowy-state-footer {
@@ -387,11 +387,15 @@
 
       .wowy-player {
         display: inline-flex;
+        flex-direction: column;
         align-items: center;
-        gap: 6px;
-        padding: 8px 14px 8px 8px;
-        border-radius: 999px;
-        font-size: 16px;
+        justify-content: flex-start;
+        gap: 4px;
+        width: 86px;
+        min-height: 114px;
+        padding: 8px 6px;
+        border-radius: 14px;
+        font-size: 12px;
         border: 1px solid var(--line);
         background: #fff;
       }
@@ -406,9 +410,24 @@
         border-color: #ddc8c8;
       }
 
+      .wowy-player-name {
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 1.1;
+        text-align: center;
+      }
+
+      .wowy-player-tag {
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #666;
+      }
+
       .wowy-avatar {
-        width: 54px;
-        height: 54px;
+        width: 58px;
+        height: 58px;
         border-radius: 50%;
         overflow: hidden;
         background: #e7e3db;
@@ -435,7 +454,7 @@
 
       .wowy-metric-main {
         display: block;
-        font-size: 18px;
+        font-size: 16px;
         line-height: 1.05;
       }
 
@@ -459,8 +478,19 @@
       }
 
       #wowy-table {
-        table-layout: fixed;
-        min-width: 1180px;
+        table-layout: auto;
+        min-width: 0;
+      }
+
+      .wowy-table-wrap {
+        max-height: none;
+        overflow: visible;
+      }
+
+      #wowy-table th,
+      #wowy-table td {
+        padding-top: 14px;
+        padding-bottom: 14px;
       }
 
       @media (max-width: 900px) {
@@ -524,14 +554,16 @@
         }
 
         .wowy-player {
-          font-size: 13px;
-          padding: 6px 10px 6px 6px;
+          width: 78px;
+          min-height: 102px;
+          font-size: 11px;
+          padding: 6px 4px;
         }
 
         .wowy-avatar {
-          width: 40px;
-          height: 40px;
-          font-size: 12px;
+          width: 50px;
+          height: 50px;
+          font-size: 11px;
         }
 
         th,

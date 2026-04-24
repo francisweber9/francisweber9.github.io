@@ -142,6 +142,13 @@
         return `${sign}${value.toFixed(digits)}`;
       }
 
+      function lastNameOnly(name) {
+        const cleaned = String(name || "").trim();
+        if (!cleaned) return "-";
+        const parts = cleaned.split(/\s+/);
+        return parts[parts.length - 1];
+      }
+
       function htmlEscape(value) {
         return String(value ?? "")
           .replaceAll("&", "&amp;")
@@ -281,10 +288,12 @@
           .map((pid, i) => {
             const on = bits[i] === "1";
             const name = playerNames.get(pid) || formatPlayerName(pid);
+            const lastName = lastNameOnly(name);
             return `
               <span class="wowy-player ${on ? "on" : "off"}">
                 ${wowyHeadshot(pid, name)}
-                <span>${htmlEscape(name)} ${on ? "ON" : "OFF"}</span>
+                <span class="wowy-player-name">${htmlEscape(lastName)}</span>
+                <span class="wowy-player-tag">${on ? "ON" : "OFF"}</span>
               </span>
             `;
           })
