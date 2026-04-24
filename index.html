@@ -9,7 +9,7 @@
   <body>
     <main class="wrap">
       <h1>Stuff I Have Built</h1>
-      <p class="lead">Three focus areas. Clean layout. Quick navigation.</p>
+      <p class="lead">Francis Weber.</p>
 
       <section class="panel" aria-label="Project sections">
         <div class="tabs" role="tablist" aria-label="Project tabs">
@@ -106,8 +106,36 @@
             </section>
 
             <section class="pane" role="tabpanel" id="subpane-lineup" aria-labelledby="subtab-lineup">
+              <div class="dpm-controls">
+                <div>
+                  <label for="dpm-player-1">Player 1</label>
+                  <select id="dpm-player-1"></select>
+                </div>
+                <div>
+                  <label for="dpm-player-2">Player 2</label>
+                  <select id="dpm-player-2"></select>
+                </div>
+                <div>
+                  <label for="dpm-player-3">Player 3</label>
+                  <select id="dpm-player-3"></select>
+                </div>
+                <div>
+                  <label for="dpm-metric">Metric</label>
+                  <select id="dpm-metric">
+                    <option value="n">Net DPM</option>
+                    <option value="o">Off DPM</option>
+                    <option value="d">Def DPM</option>
+                  </select>
+                </div>
+              </div>
+              <div id="dpm-meta" class="dpm-meta">Loading DPM trajectory data...</div>
+              <div class="dpm-chart-wrap">
+                <svg id="dpm-chart" viewBox="0 0 1200 430" preserveAspectRatio="xMidYMid meet" aria-label="DPM trajectory chart"></svg>
+              </div>
+              <div id="dpm-legend" class="dpm-legend"></div>
+              <div class="dpm-note">X-axis: career games. Y-axis: selected DPM metric with fixed zero line.</div>
               <div class="content-box">
-                <p>Lineup Evaluation section placeholder. Add lineup net ratings, possessions, and sample thresholds here next.</p>
+                <p>DPM tracker loaded from `NBL/data/dpm` trajectory source.</p>
               </div>
             </section>
           </section>

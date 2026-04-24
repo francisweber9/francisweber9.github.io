@@ -61,7 +61,9 @@
       const rapmSearch = document.getElementById("rapm-search");
       const percentileKeys = ["oRAPM", "dRAPM", "netRAPM", "rawNetRating"];
       const WOWY_URL = "analytics/data/wowy_2025_2026.json";
+      const DPM_URL = "analytics/data/dpm_trajectory.json";
       let wowyData = null;
+      let dpmData = null;
 
       const wowyTeam = document.getElementById("wowy-team");
       const wowyLuckToggle = document.getElementById("wowy-luck-toggle");
@@ -69,6 +71,13 @@
       const wowyBody = document.getElementById("wowy-body");
       const wowyPool = document.getElementById("wowy-pool");
       const wowySelected = document.getElementById("wowy-selected");
+      const dpmPlayer1 = document.getElementById("dpm-player-1");
+      const dpmPlayer2 = document.getElementById("dpm-player-2");
+      const dpmPlayer3 = document.getElementById("dpm-player-3");
+      const dpmMetric = document.getElementById("dpm-metric");
+      const dpmMeta = document.getElementById("dpm-meta");
+      const dpmChart = document.getElementById("dpm-chart");
+      const dpmLegend = document.getElementById("dpm-legend");
 
       function titleFromUnderscore(value) {
         if (typeof value !== "string") return "-";
@@ -624,6 +633,139 @@
         renderWOWYPool();
       }
 
+      function selectedDpmPlayerIds() {
+        const ids = [dpmPlayer1.value, dpmPlayer2.value, dpmPlayer3.value].filter(Boolean);
+        return [...new Set(ids)].slice(0, 3);
+      }
+
+      function buildDpmOptions(players) {
+        const opts = [{ value: "", label: "None" }];
+        players.forEach((p) => opts.push({ value: p.id, label: p.name }));
+        return opts;
+      }
+
+      function metricLabel(key) {
+        if (key === "o") return "Off DPM";
+        if (key === "d") return "Def DPM";
+        return "Net DPM";
+      }
+
+      function renderDpmChart() {
+        if (!dpmData) return;
+        const selectedIds = selectedDpmPlayerIds();
+        const metric = dpmMetric.value || "n";
+        const selectedPlayers = selectedIds
+          .map((id) => dpmData.playerById[id])
+          .filter(Boolean);
+
+        if (!selectedPlayers.length) {
+          dpmMeta.textContent = "Select up to 3 players to plot DPM trajectory.";
+          dpmChart.innerHTML = "";
+          dpmLegend.innerHTML = "";
+          return;
+        }
+
+        const palette = ["#1f5f78", "#e95e2a", "#2a9d5b"];
+        const series = selectedPlayers.map((player, idx) => {
+          const points = (player.points || [])
+            .map((p) => ({ x: Number(p.g), y: p[metric] }))
+            .filter((p) => Number.isFinite(p.x) && Number.isFinite(p.y))
+            .sort((a, b) => a.x - b.x);
+          return { id: player.id, name: player.name, color: palette[idx % palette.length], points };
+        });
+
+        const hasPoints = series.some((s) => s.points.length > 0);
+        if (!hasPoints) {
+          dpmMeta.textContent = `No ${metricLabel(metric)} points available for selected players.`;
+          dpmChart.innerHTML = "";
+          dpmLegend.innerHTML = "";
+          return;
+        }
+
+        const allPoints = series.flatMap((s) => s.points);
+        const maxX = Math.max(1, ...allPoints.map((p) => p.x));
+        const maxAbsY = Math.max(0.5, ...allPoints.map((p) => Math.abs(p.y)));
+        const ySpan = Math.max(2, maxAbsY * 1.2);
+
+        const width = 1200;
+        const height = 430;
+        const margin = { top: 24, right: 24, bottom: 42, left: 56 };
+        const plotW = width - margin.left - margin.right;
+        const plotH = height - margin.top - margin.bottom;
+        const xScale = (x) => margin.left + (x / maxX) * plotW;
+        const yScale = (y) => margin.top + ((ySpan - y) / (2 * ySpan)) * plotH;
+
+        const zeroY = yScale(0);
+        const xTicks = [0, Math.round(maxX * 0.25), Math.round(maxX * 0.5), Math.round(maxX * 0.75), maxX]
+          .filter((v, i, a) => i === 0 || v > a[i - 1]);
+        const yTicks = [-ySpan, -ySpan / 2, 0, ySpan / 2, ySpan].map((v) => Math.round(v * 10) / 10);
+
+        const gridX = xTicks
+          .map((t) => `<line x1="${xScale(t)}" y1="${margin.top}" x2="${xScale(t)}" y2="${margin.top + plotH}" stroke="#f0ece4" />`)
+          .join("");
+        const gridY = yTicks
+          .map((t) => `<line x1="${margin.left}" y1="${yScale(t)}" x2="${margin.left + plotW}" y2="${yScale(t)}" stroke="${t === 0 ? "#d5cabc" : "#f0ece4"}" stroke-width="${t === 0 ? 2 : 1}" />`)
+          .join("");
+        const xLabels = xTicks
+          .map((t) => `<text x="${xScale(t)}" y="${height - 16}" text-anchor="middle" font-size="12" fill="#6a6a6a">${t}</text>`)
+          .join("");
+        const yLabels = yTicks
+          .map((t) => `<text x="${margin.left - 10}" y="${yScale(t) + 4}" text-anchor="end" font-size="12" fill="#6a6a6a">${t}</text>`)
+          .join("");
+
+        const linePaths = series
+          .map((s) => {
+            if (!s.points.length) return "";
+            const d = s.points.map((p, i) => `${i === 0 ? "M" : "L"} ${xScale(p.x).toFixed(2)} ${yScale(p.y).toFixed(2)}`).join(" ");
+            const end = s.points[s.points.length - 1];
+            const endX = xScale(end.x);
+            const endY = yScale(end.y);
+            return `
+              <path d="${d}" fill="none" stroke="${s.color}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"></path>
+              <circle cx="${endX}" cy="${endY}" r="4" fill="${s.color}"></circle>
+            `;
+          })
+          .join("");
+
+        dpmChart.innerHTML = `
+          <rect x="0" y="0" width="${width}" height="${height}" fill="#fff"></rect>
+          ${gridX}
+          ${gridY}
+          ${linePaths}
+          <line x1="${margin.left}" y1="${margin.top + plotH}" x2="${margin.left + plotW}" y2="${margin.top + plotH}" stroke="#d5cabc"></line>
+          <line x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${margin.top + plotH}" stroke="#d5cabc"></line>
+          ${xLabels}
+          ${yLabels}
+          <text x="${margin.left + plotW / 2}" y="${height - 2}" text-anchor="middle" font-size="12" fill="#555f67">Career Games</text>
+          <text x="14" y="${margin.top + plotH / 2}" text-anchor="middle" font-size="12" fill="#555f67" transform="rotate(-90 14 ${margin.top + plotH / 2})">${metricLabel(metric)}</text>
+          <text x="${margin.left + 8}" y="${zeroY - 8}" font-size="11" fill="#555f67">0</text>
+        `;
+
+        dpmLegend.innerHTML = series
+          .filter((s) => s.points.length)
+          .map((s) => `<span class="dpm-legend-item"><span class="dpm-swatch" style="background:${s.color}"></span>${htmlEscape(s.name)}</span>`)
+          .join("");
+
+        dpmMeta.textContent = `Showing ${metricLabel(metric)} trajectory · 0-line fixed · ${selectedPlayers.length} player${selectedPlayers.length > 1 ? "s" : ""}.`;
+      }
+
+      async function initDpm() {
+        try {
+          dpmData = await fetchJsonStrict(DPM_URL);
+          const players = (dpmData.players || []).slice().sort((a, b) => a.name.localeCompare(b.name));
+          const options = buildDpmOptions(players);
+          setSelectOptions(dpmPlayer1, options, players[0]?.id || "");
+          setSelectOptions(dpmPlayer2, options, "");
+          setSelectOptions(dpmPlayer3, options, "");
+          dpmData.playerById = Object.fromEntries(players.map((p) => [p.id, p]));
+          renderDpmChart();
+        } catch (error) {
+          dpmMeta.textContent = `Failed to load DPM data: ${error.message}`;
+          dpmChart.innerHTML = "";
+          dpmLegend.innerHTML = "";
+        }
+      }
+
       async function initWOWY() {
         try {
           wowyData = await fetchJsonStrict(WOWY_URL);
@@ -697,6 +839,10 @@
         renderWOWYTable();
       });
       wowyLuckToggle.addEventListener("change", () => renderWOWYTable());
+      dpmPlayer1.addEventListener("change", () => renderDpmChart());
+      dpmPlayer2.addEventListener("change", () => renderDpmChart());
+      dpmPlayer3.addEventListener("change", () => renderDpmChart());
+      dpmMetric.addEventListener("change", () => renderDpmChart());
 
       async function initRAPM() {
         try {
@@ -720,3 +866,4 @@
 
       initRAPM();
       initWOWY();
+      initDpm();
