@@ -3,17 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Francis Weber | Built Stuff</title>
+    <title>Francis Weber | Projects</title>
     <style>
       :root {
-        --bg: #f5f1ea;
-        --panel: #fffdf9;
-        --ink: #1b1c1d;
-        --muted: #555f67;
-        --line: #d5cabc;
-        --accent: #e95e2a;
-        --accent-2: #0f6a80;
-        --shadow: 0 14px 30px rgba(27, 28, 29, 0.12);
+        --bg: #f6f4ef;
+        --surface: #ffffff;
+        --ink: #111111;
+        --muted: #5a5a5a;
+        --line: #d9d4ca;
+        --accent: #1f5f78;
       }
 
       * {
@@ -24,61 +22,36 @@
         margin: 0;
         font-family: "Avenir Next", "Segoe UI", sans-serif;
         color: var(--ink);
-        background:
-          radial-gradient(circle at 12% 8%, rgba(233, 94, 42, 0.2), transparent 40%),
-          radial-gradient(circle at 84% 20%, rgba(15, 106, 128, 0.2), transparent 38%),
-          linear-gradient(160deg, #f8f5ee 0%, #efe7db 100%);
-        min-height: 100vh;
+        background: linear-gradient(180deg, #f8f6f2 0%, var(--bg) 100%);
       }
 
       .wrap {
-        width: min(1000px, 92vw);
+        width: min(1400px, 96vw);
         margin: 0 auto;
-        padding: 56px 0 72px;
-      }
-
-      .hero {
-        margin-bottom: 28px;
-      }
-
-      .kicker {
-        display: inline-block;
-        padding: 6px 12px;
-        border: 1px solid var(--line);
-        border-radius: 999px;
-        letter-spacing: 0.08em;
-        font-size: 12px;
-        text-transform: uppercase;
-        background: rgba(255, 253, 249, 0.82);
+        padding: 56px 0 80px;
       }
 
       h1 {
-        margin: 14px 0 10px;
-        font-size: clamp(34px, 6vw, 62px);
-        line-height: 1.05;
-        letter-spacing: -0.02em;
+        margin: 0 0 12px;
+        font-size: clamp(34px, 4.5vw, 60px);
+        letter-spacing: -0.03em;
       }
 
       .lead {
-        margin: 0;
-        max-width: 70ch;
+        margin: 0 0 28px;
         color: var(--muted);
-        font-size: clamp(16px, 2.4vw, 20px);
+        font-size: clamp(16px, 1.7vw, 20px);
       }
 
       .panel {
-        background: var(--panel);
         border: 1px solid var(--line);
-        border-radius: 20px;
-        box-shadow: var(--shadow);
-        overflow: hidden;
+        background: var(--surface);
       }
 
       .tabs {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         border-bottom: 1px solid var(--line);
-        background: #f9f4ed;
       }
 
       .tab {
@@ -86,13 +59,13 @@
         border: 0;
         border-right: 1px solid var(--line);
         background: transparent;
-        padding: 18px 10px;
-        font-size: 14px;
-        font-weight: 700;
-        letter-spacing: 0.02em;
         color: var(--muted);
+        padding: 18px 14px;
+        text-align: center;
+        font-size: clamp(13px, 1.1vw, 16px);
+        font-weight: 600;
+        letter-spacing: 0.01em;
         cursor: pointer;
-        transition: background 160ms ease, color 160ms ease;
       }
 
       .tab:last-child {
@@ -100,91 +73,53 @@
       }
 
       .tab[aria-selected="true"] {
-        background: #fff;
         color: var(--ink);
+        background: #faf9f6;
       }
 
       .panes {
-        padding: 24px;
+        padding: 28px;
+        min-height: 300px;
       }
 
       .pane {
         display: none;
-        animation: rise 280ms ease;
       }
 
       .pane.active {
         display: block;
       }
 
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-        gap: 14px;
+      .section-title {
+        margin: 0 0 10px;
+        font-size: clamp(24px, 2.3vw, 34px);
+        letter-spacing: -0.02em;
       }
 
-      .card {
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        padding: 16px;
-        background: #fff;
-      }
-
-      .card h3 {
-        margin: 0 0 6px;
-        font-size: 18px;
-      }
-
-      .card p {
-        margin: 0 0 12px;
+      .section-copy {
+        margin: 0 0 20px;
+        max-width: 70ch;
         color: var(--muted);
-        line-height: 1.45;
+        line-height: 1.55;
       }
 
-      .pill {
-        display: inline-block;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.02em;
-        padding: 6px 10px;
-        border-radius: 999px;
-        color: #fff;
+      .content-box {
+        border: 1px solid var(--line);
+        background: #fcfbf8;
+        padding: 20px;
       }
 
-      .pill.web {
-        background: var(--accent-2);
+      .content-box p {
+        margin: 0;
+        line-height: 1.6;
       }
 
-      .pill.data {
-        background: var(--accent);
-      }
-
-      .pill.misc {
-        background: #5f4b8b;
-      }
-
-      a.link {
-        color: var(--ink);
-        font-weight: 700;
+      .content-box a {
+        color: var(--accent);
         text-underline-offset: 3px;
       }
 
-      @keyframes rise {
-        from {
-          opacity: 0;
-          transform: translateY(8px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      @media (max-width: 700px) {
-        .wrap {
-          padding-top: 40px;
-        }
-
+      @media (max-width: 900px) {
         .tabs {
           grid-template-columns: 1fr;
         }
@@ -197,75 +132,59 @@
         .tab:last-child {
           border-bottom: 0;
         }
+
+        .panes {
+          padding: 20px;
+        }
       }
     </style>
   </head>
   <body>
     <main class="wrap">
-      <header class="hero">
-        <span class="kicker">Francis Weber</span>
-        <h1>Stuff I Have Built</h1>
-        <p class="lead">
-          A fast look at projects, experiments, and work in progress. Swap tabs to browse different categories.
-        </p>
-      </header>
+      <h1>Stuff I Have Built</h1>
+      <p class="lead">Three focus areas. Clean layout. Quick navigation.</p>
 
-      <section class="panel" aria-label="Project categories">
+      <section class="panel" aria-label="Project sections">
         <div class="tabs" role="tablist" aria-label="Project tabs">
-          <button class="tab" role="tab" id="tab-web" aria-selected="true" aria-controls="pane-web" data-pane="web">Web Apps</button>
-          <button class="tab" role="tab" id="tab-data" aria-selected="false" aria-controls="pane-data" data-pane="data">Data & Scripts</button>
-          <button class="tab" role="tab" id="tab-lab" aria-selected="false" aria-controls="pane-lab" data-pane="lab">Lab Notes</button>
+          <button class="tab" role="tab" id="tab-nbl" aria-selected="true" aria-controls="pane-nbl" data-pane="nbl">
+            Analytical Modelling (NBL)
+          </button>
+          <button class="tab" role="tab" id="tab-nba" aria-selected="false" aria-controls="pane-nba" data-pane="nba">
+            Visualisation (NBA)
+          </button>
+          <button class="tab" role="tab" id="tab-nbl1" aria-selected="false" aria-controls="pane-nbl1" data-pane="nbl1">
+            Computer Vision Statistic Automation (NBL1)
+          </button>
         </div>
 
         <div class="panes">
-          <section class="pane active" role="tabpanel" id="pane-web" aria-labelledby="tab-web">
-            <div class="grid">
-              <article class="card">
-                <span class="pill web">Web</span>
-                <h3>Portfolio v2</h3>
-                <p>Responsive personal site with cleaner navigation and dynamic project sections.</p>
-                <a class="link" href="#">Live demo</a>
-              </article>
-              <article class="card">
-                <span class="pill web">Web</span>
-                <h3>Team Dashboard</h3>
-                <p>Internal tracker for project status, blockers, and weekly updates.</p>
-                <a class="link" href="#">Preview</a>
-              </article>
+          <section class="pane active" role="tabpanel" id="pane-nbl" aria-labelledby="tab-nbl">
+            <h2 class="section-title">Analytical Modelling (NBL)</h2>
+            <p class="section-copy">
+              Predictive and explanatory models built around NBL data, with a focus on performance signals and decision support.
+            </p>
+            <div class="content-box">
+              <p>Add your model links, writeups, and repository URLs here.</p>
             </div>
           </section>
 
-          <section class="pane" role="tabpanel" id="pane-data" aria-labelledby="tab-data">
-            <div class="grid">
-              <article class="card">
-                <span class="pill data">Data</span>
-                <h3>Game Scraper</h3>
-                <p>Automated script pipeline to collect and store match stats for analysis.</p>
-                <a class="link" href="#">Read more</a>
-              </article>
-              <article class="card">
-                <span class="pill data">Data</span>
-                <h3>Report Builder</h3>
-                <p>Command-line utility that transforms raw data into clean summary tables.</p>
-                <a class="link" href="#">GitHub repo</a>
-              </article>
+          <section class="pane" role="tabpanel" id="pane-nba" aria-labelledby="tab-nba">
+            <h2 class="section-title">Visualisation (NBA)</h2>
+            <p class="section-copy">
+              Interactive and static visual stories for NBA trends, player profiles, and team-level insights.
+            </p>
+            <div class="content-box">
+              <p>Drop chart examples, dashboard links, and screenshots here.</p>
             </div>
           </section>
 
-          <section class="pane" role="tabpanel" id="pane-lab" aria-labelledby="tab-lab">
-            <div class="grid">
-              <article class="card">
-                <span class="pill misc">Lab</span>
-                <h3>UI Motion Tests</h3>
-                <p>Small animation and interaction studies for future front-end work.</p>
-                <a class="link" href="#">Notes</a>
-              </article>
-              <article class="card">
-                <span class="pill misc">Lab</span>
-                <h3>Automation Ideas</h3>
-                <p>Draft scripts and process experiments to speed up repetitive tasks.</p>
-                <a class="link" href="#">Details</a>
-              </article>
+          <section class="pane" role="tabpanel" id="pane-nbl1" aria-labelledby="tab-nbl1">
+            <h2 class="section-title">Computer Vision Statistic Automation (NBL1)</h2>
+            <p class="section-copy">
+              Vision-assisted workflows to automate stat extraction and reduce manual tagging from NBL1 footage.
+            </p>
+            <div class="content-box">
+              <p>Include pipeline summaries, demo clips, and technical notes here.</p>
             </div>
           </section>
         </div>
