@@ -372,6 +372,19 @@
         flex-wrap: wrap;
       }
 
+      .wowy-state-col {
+        min-width: 300px;
+      }
+
+      .wowy-state-footer {
+        margin-top: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: #6a6a6a;
+        text-transform: uppercase;
+      }
+
       .wowy-player {
         display: inline-flex;
         align-items: center;
@@ -417,6 +430,32 @@
       .wowy-value {
         text-align: right;
         font-variant-numeric: tabular-nums;
+        vertical-align: middle;
+      }
+
+      .wowy-metric-main {
+        display: block;
+        font-size: 18px;
+        line-height: 1.05;
+      }
+
+      .wowy-metric-sub {
+        display: block;
+        margin-top: 4px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .wowy-metric-sub.pos {
+        color: #1f8b50;
+      }
+
+      .wowy-metric-sub.neg {
+        color: #b45454;
+      }
+
+      .wowy-metric-sub.neutral {
+        color: #6f6f6f;
       }
 
       #wowy-table {

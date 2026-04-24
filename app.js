@@ -136,6 +136,12 @@
         return `${value.toFixed(digits)}%`;
       }
 
+      function formatSigned(value, digits = 1) {
+        if (!Number.isFinite(value)) return "-";
+        const sign = value > 0 ? "+" : "";
+        return `${sign}${value.toFixed(digits)}`;
+      }
+
       function htmlEscape(value) {
         return String(value ?? "")
           .replaceAll("&", "&amp;")
@@ -283,6 +289,12 @@
             `;
           })
           .join("");
+      }
+
+      function singlePlayerStateFooter(players, bits) {
+        if (players.length !== 1) return "";
+        const isOn = bits[0] === "1";
+        return `<div class="wowy-state-footer">${isOn ? "ON" : "OFF"}</div>`;
       }
 
       function formatValue(value, decimals = 2) {
@@ -535,13 +547,11 @@
         const leagueOff = safeRate(leagueTotals.pointsFor, leagueTotals.possFor);
         const leagueDef = safeRate(leagueTotals.pointsAgainst, leagueTotals.possAgainst);
 
-        function metricBg(delta, maxAbs) {
-          if (!Number.isFinite(delta) || !Number.isFinite(maxAbs) || maxAbs <= 0) return "";
-          const strength = Math.min(Math.abs(delta) / maxAbs, 1);
-          if (delta >= 0) {
-            return `background: hsl(135 38% ${95 - strength * 16}%);`;
-          }
-          return `background: hsl(9 72% ${95 - strength * 14}%);`;
+        function deltaClass(value) {
+          if (!Number.isFinite(value)) return "neutral";
+          if (value > 0) return "pos";
+          if (value < 0) return "neg";
+          return "neutral";
         }
 
         const rowMetrics = rows.map((row) => {
@@ -558,10 +568,6 @@
           return { row, off, def, net, team3, opp3, offDelta, defDelta, netDelta };
         });
 
-        const maxAbsOff = Math.max(1, ...rowMetrics.map((m) => Math.abs(m.offDelta || 0)));
-        const maxAbsDef = Math.max(1, ...rowMetrics.map((m) => Math.abs(m.defDelta || 0)));
-        const maxAbsNet = Math.max(1, ...rowMetrics.map((m) => Math.abs(m.netDelta || 0)));
-
         wowyMeta.textContent =
           `Year ${wowyData.year} · ${team} · ${useLuck ? "Luck-adjusted" : "Raw"} · ${rowsByTeam.length} lineup rows` +
           ` · League Off ${Number.isFinite(leagueOff) ? formatValue(leagueOff, 1) : "-"} / Def ${Number.isFinite(leagueDef) ? formatValue(leagueDef, 1) : "-"}`;
@@ -570,11 +576,23 @@
           .map((m) => {
             return `
               <tr>
-                <td><div class="wowy-state">${renderWOWYState(players, m.row.key, playerNames)}</div></td>
-                <td class="wowy-value">${formatValue(m.row.seconds / 60, 1)}</td>
-                <td class="wowy-value" style="${metricBg(m.offDelta, maxAbsOff)}">${Number.isFinite(m.off) ? formatValue(m.off, 1) : "-"}</td>
-                <td class="wowy-value" style="${metricBg(m.defDelta, maxAbsDef)}">${Number.isFinite(m.def) ? formatValue(m.def, 1) : "-"}</td>
-                <td class="wowy-value" style="${metricBg(m.netDelta, maxAbsNet)}">${Number.isFinite(m.net) ? formatValue(m.net, 1) : "-"}</td>
+                <td class="wowy-state-col">
+                  <div class="wowy-state">${renderWOWYState(players, m.row.key, playerNames)}</div>
+                  ${singlePlayerStateFooter(players, m.row.key)}
+                </td>
+                <td class="wowy-value"><span class="wowy-metric-main">${formatValue(m.row.seconds / 60, 1)}</span></td>
+                <td class="wowy-value">
+                  <span class="wowy-metric-main">${Number.isFinite(m.off) ? formatValue(m.off, 1) : "-"}</span>
+                  <span class="wowy-metric-sub ${deltaClass(m.offDelta)}">${formatSigned(m.offDelta, 1)}</span>
+                </td>
+                <td class="wowy-value">
+                  <span class="wowy-metric-main">${Number.isFinite(m.def) ? formatValue(m.def, 1) : "-"}</span>
+                  <span class="wowy-metric-sub ${deltaClass(m.defDelta)}">${formatSigned(m.defDelta, 1)}</span>
+                </td>
+                <td class="wowy-value">
+                  <span class="wowy-metric-main">${Number.isFinite(m.net) ? formatValue(m.net, 1) : "-"}</span>
+                  <span class="wowy-metric-sub ${deltaClass(m.netDelta)}">${formatSigned(m.netDelta, 1)}</span>
+                </td>
                 <td class="wowy-value">${fmtPct(m.team3, 1)}</td>
                 <td class="wowy-value">${fmtPct(m.opp3, 1)}</td>
                 <td class="wowy-value">${m.row.lineups}</td>
