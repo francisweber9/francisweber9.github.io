@@ -502,19 +502,90 @@
       }
 
       .dpm-search-row {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 8px;
+        display: block;
       }
 
-      #dpm-add-player {
-        border: 1px solid var(--line);
+      .dpm-search-wrap {
+        position: relative;
+      }
+
+      .dpm-search-results {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        right: 0;
+        z-index: 30;
+        border: 1px solid #c7d3e3;
         background: #fff;
-        color: var(--ink);
+        box-shadow: 0 8px 24px rgba(20, 34, 63, 0.12);
+        max-height: 320px;
+        overflow: auto;
+        display: none;
+      }
+
+      .dpm-search-results.open {
+        display: block;
+      }
+
+      .dpm-search-option {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: 0;
+        border-bottom: 1px solid #edf2f9;
+        background: #fff;
+        padding: 8px 10px;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .dpm-search-option:hover {
+        background: #f6f9ff;
+      }
+
+      .dpm-search-option:last-child {
+        border-bottom: 0;
+      }
+
+      .dpm-search-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid #ced9ea;
+        overflow: hidden;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #f3f6fb;
+        font-size: 11px;
+        font-weight: 700;
+        color: #5b6578;
+        flex: 0 0 36px;
+      }
+
+      .dpm-search-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .dpm-search-text {
+        min-width: 0;
+      }
+
+      .dpm-search-name {
         font-size: 13px;
         font-weight: 700;
-        padding: 8px 12px;
-        cursor: pointer;
+        color: #1f2836;
+        line-height: 1.15;
+      }
+
+      .dpm-search-years {
+        margin-top: 2px;
+        font-size: 11px;
+        color: #66758d;
       }
 
       .dpm-selected-chips {
@@ -690,7 +761,7 @@
         }
 
         .dpm-search-row {
-          grid-template-columns: 1fr;
+          display: block;
         }
 
         .wowy-toggle {

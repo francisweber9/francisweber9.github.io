@@ -109,11 +109,12 @@
               <div class="dpm-controls">
                 <div>
                   <label for="dpm-search">Select Players to Compare (max 3)</label>
-                  <div class="dpm-search-row">
-                    <input id="dpm-search" type="search" list="dpm-player-list" placeholder="Search any player..." />
-                    <button id="dpm-add-player" type="button">Add</button>
+                  <div class="dpm-search-wrap">
+                    <div class="dpm-search-row">
+                      <input id="dpm-search" type="search" autocomplete="off" placeholder="Search player name..." />
+                    </div>
+                    <div id="dpm-search-results" class="dpm-search-results" role="listbox" aria-label="Player search results"></div>
                   </div>
-                  <datalist id="dpm-player-list"></datalist>
                   <div id="dpm-selected-chips" class="dpm-selected-chips"></div>
                 </div>
                 <div>

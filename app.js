@@ -72,8 +72,7 @@
       const wowyPool = document.getElementById("wowy-pool");
       const wowySelected = document.getElementById("wowy-selected");
       const dpmSearch = document.getElementById("dpm-search");
-      const dpmPlayerList = document.getElementById("dpm-player-list");
-      const dpmAddPlayer = document.getElementById("dpm-add-player");
+      const dpmSearchResults = document.getElementById("dpm-search-results");
       const dpmSelectedChips = document.getElementById("dpm-selected-chips");
       const dpmMetric = document.getElementById("dpm-metric");
       const dpmMeta = document.getElementById("dpm-meta");
@@ -641,6 +640,22 @@
         return dpmSelectedIds.slice(0, 3);
       }
 
+      function dpmYearsLabel(player) {
+        const start = String(player?.startSeason || "").trim();
+        const end = String(player?.endSeason || "").trim();
+        if (start && end) {
+          return start === end ? start : `${start} to ${end}`;
+        }
+        return "Years unavailable";
+      }
+
+      function dpmAvatar(player) {
+        if (player?.headshot) {
+          return `<span class="dpm-search-avatar"><img src="${htmlEscape(player.headshot)}" alt="${htmlEscape(player.name)}" loading="lazy" /></span>`;
+        }
+        return `<span class="dpm-search-avatar">${htmlEscape(initials(player?.name || ""))}</span>`;
+      }
+
       function metricLabel(key) {
         if (key === "o") return "Off DPM";
         if (key === "d") return "Def DPM";
@@ -690,13 +705,47 @@
         return ticks;
       }
 
-      function updateDpmDatalist() {
+      function closeDpmSearchResults() {
+        dpmSearchResults.classList.remove("open");
+      }
+
+      function renderDpmSearchResults() {
         if (!dpmData) return;
         const selected = new Set(dpmSelectedIds);
-        dpmPlayerList.innerHTML = (dpmData.players || [])
+        const q = normalizeForSearch(dpmSearch.value);
+        const players = (dpmData.players || [])
           .filter((p) => !selected.has(p.id))
-          .map((p) => `<option value="${htmlEscape(p.name)}"></option>`)
+          .filter((p) => !q || normalizeForSearch(p.name).includes(q))
+          .sort((a, b) => {
+            const an = normalizeForSearch(a.name);
+            const bn = normalizeForSearch(b.name);
+            const aStarts = q && an.startsWith(q) ? 0 : 1;
+            const bStarts = q && bn.startsWith(q) ? 0 : 1;
+            if (aStarts !== bStarts) return aStarts - bStarts;
+            return a.name.localeCompare(b.name);
+          })
+          .slice(0, 10);
+
+        if (!players.length) {
+          dpmSearchResults.innerHTML = "";
+          closeDpmSearchResults();
+          return;
+        }
+
+        dpmSearchResults.innerHTML = players
+          .map(
+            (p) => `
+              <button type="button" class="dpm-search-option" data-dpm-pick="${htmlEscape(p.id)}" role="option">
+                ${dpmAvatar(p)}
+                <span class="dpm-search-text">
+                  <span class="dpm-search-name">${htmlEscape(p.name)}</span>
+                  <span class="dpm-search-years">${htmlEscape(dpmYearsLabel(p))}</span>
+                </span>
+              </button>
+            `
+          )
           .join("");
+        dpmSearchResults.classList.add("open");
       }
 
       function renderDpmSelectedChips() {
@@ -714,20 +763,21 @@
             `;
           })
           .join("");
-        updateDpmDatalist();
+        renderDpmSearchResults();
       }
 
-      function addDpmPlayerFromInput() {
+      function addDpmPlayerById(playerId) {
         if (!dpmData) return;
-        const typed = String(dpmSearch.value || "").trim().toLowerCase();
-        if (!typed) return;
-        const player = (dpmData.players || []).find((p) => p.name.toLowerCase() === typed);
+        const id = String(playerId || "").trim();
+        if (!id) return;
+        const player = dpmData.playerById[id];
         if (!player) {
           dpmMeta.textContent = "Player not found in trajectory dataset.";
           return;
         }
         if (dpmSelectedIds.includes(player.id)) {
           dpmSearch.value = "";
+          closeDpmSearchResults();
           return;
         }
         if (dpmSelectedIds.length >= 3) {
@@ -736,6 +786,7 @@
         }
         dpmSelectedIds.push(player.id);
         dpmSearch.value = "";
+        closeDpmSearchResults();
         renderDpmSelectedChips();
         renderDpmChart();
       }
@@ -953,12 +1004,21 @@
       });
       wowyLuckToggle.addEventListener("change", () => renderWOWYTable());
       dpmMetric.addEventListener("change", () => renderDpmChart());
-      dpmAddPlayer.addEventListener("click", () => addDpmPlayerFromInput());
+      dpmSearch.addEventListener("focus", () => renderDpmSearchResults());
+      dpmSearch.addEventListener("input", () => renderDpmSearchResults());
       dpmSearch.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
           event.preventDefault();
-          addDpmPlayerFromInput();
+          const first = dpmSearchResults.querySelector("[data-dpm-pick]");
+          if (first) {
+            addDpmPlayerById(first.getAttribute("data-dpm-pick"));
+          }
         }
+      });
+      dpmSearchResults.addEventListener("click", (event) => {
+        const pick = event.target.closest("[data-dpm-pick]");
+        if (!pick) return;
+        addDpmPlayerById(String(pick.getAttribute("data-dpm-pick") || ""));
       });
       dpmSelectedChips.addEventListener("click", (event) => {
         const remove = event.target.closest("[data-dpm-remove]");
@@ -968,6 +1028,9 @@
         dpmSelectedIds = dpmSelectedIds.filter((pid) => pid !== id);
         renderDpmSelectedChips();
         renderDpmChart();
+      });
+      document.addEventListener("click", (event) => {
+        if (!event.target.closest(".dpm-search-wrap")) closeDpmSearchResults();
       });
 
       async function initRAPM() {
