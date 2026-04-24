@@ -657,9 +657,9 @@
       }
 
       function metricLabel(key) {
-        if (key === "o") return "Off DPM";
-        if (key === "d") return "Def DPM";
-        return "Net DPM";
+        if (key === "o") return "Off LeBron";
+        if (key === "d") return "Def LeBron";
+        return "Net LeBron";
       }
 
       function movingAverage(points, windowSize = 9) {
@@ -834,13 +834,15 @@
         const maxX = Math.max(1, ...series.map((s) => s.careerMaxX || 0));
         const minYPoint = Math.min(...allPoints.map((p) => p.y));
         const maxYPoint = Math.max(...allPoints.map((p) => p.y));
-        const yPad = Math.max(0.2, (maxYPoint - minYPoint) * 0.12);
-        let yMin = Math.min(minYPoint - yPad, 0);
-        let yMax = Math.max(maxYPoint + yPad, 0);
-        if (Math.abs(yMax - yMin) < 0.8) {
-          const mid = (yMax + yMin) / 2;
-          yMin = mid - 0.4;
-          yMax = mid + 0.4;
+        let yMin = -3;
+        let yMax = 3;
+        if (minYPoint < -3) {
+          const lowPad = Math.max(0.2, Math.abs(minYPoint) * 0.06);
+          yMin = minYPoint - lowPad;
+        }
+        if (maxYPoint > 3) {
+          const highPad = Math.max(0.2, Math.abs(maxYPoint) * 0.06);
+          yMax = maxYPoint + highPad;
         }
 
         const width = 1200;
@@ -928,7 +930,8 @@
           dpmData = await fetchJsonStrict(DPM_URL);
           dpmData.players = (dpmData.players || []).slice().sort((a, b) => a.name.localeCompare(b.name));
           dpmData.playerById = Object.fromEntries(dpmData.players.map((p) => [p.id, p]));
-          dpmSelectedIds = dpmData.players[0]?.id ? [dpmData.players[0].id] : [];
+          const bryce = dpmData.players.find((p) => normalizeForSearch(p.name) === "bryce cotton");
+          dpmSelectedIds = bryce?.id ? [bryce.id] : dpmData.players[0]?.id ? [dpmData.players[0].id] : [];
           renderDpmSelectedChips();
           renderDpmChart();
         } catch (error) {
