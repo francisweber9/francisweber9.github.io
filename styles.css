@@ -258,15 +258,15 @@
 
       .nba-shot {
         position: absolute;
-        width: 3.6%;
+        width: 2.2%;
         aspect-ratio: 1;
         transform: translate(-50%, -50%);
         z-index: 5;
       }
 
       .nba-shot.made {
-        border: 1px solid #19964f;
-        background: #38d35c44;
+        border: 1px solid #1a9a52;
+        background: #43d86a2b;
         border-radius: 50%;
       }
 
@@ -278,7 +278,7 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 13px;
+        font-size: 9px;
       }
 
       .nba-shot.miss::before {

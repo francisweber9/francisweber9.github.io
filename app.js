@@ -65,6 +65,7 @@
       const NBA_TATUM_SHOTS_URL = "analytics/data/nba/jayson_tatum_shots_2025.csv";
       const NBA_TATUM_ZONE_URL = "analytics/data/nba/tatum_zone_colours_2025.csv";
       const NBA_ZONE_SVG_URL = "analytics/images/nba/total.svg";
+      const NBA_LEAGUE_BINS_URL = "analytics/data/nba/league_shot_bins_2025.csv";
       let wowyData = null;
       let dpmData = null;
 
@@ -92,6 +93,7 @@
       const nbaShot3d = document.getElementById("nba-shot-3d");
       const nbaViewToggle = document.getElementById("nba-view-toggle");
       let nbaShotsCache = [];
+      let nbaLeagueBinsCache = [];
       const nbaZoneMap = {
         LeftThree: "LeftThree",
         LeftClose: "LeftClose",
@@ -346,29 +348,39 @@
         nbaZoneStatsLayer.appendChild(frag);
       }
 
-      function renderNbaShot3d(shots) {
+      function renderNbaShot3d(binRows) {
         if (!nbaShot3d || typeof Plotly === "undefined") return;
-        const made = shots.filter((s) => s.made);
-        const miss = shots.filter((s) => !s.made);
-        const shotTrace = (items, color, symbol, name) => ({
-          type: "scatter3d",
-          mode: "markers",
-          name,
-          x: items.map((s) => s.rx),
-          y: items.map((s) => s.ry),
-          z: items.map((s) => {
-            const distFt = Math.sqrt(s.rx * s.rx + s.ry * s.ry) / 10;
-            return Math.max(1, Math.min(16, 3.5 + distFt * 0.26));
-          }),
-          marker: {
-            size: 2.8,
-            color,
-            symbol,
-            opacity: 0.9,
-            line: { width: 0.5, color },
-          },
-          hovertemplate: "X %{x:.0f}<br>Y %{y:.0f}<extra></extra>",
+        const rows = binRows
+          .map((r) => ({
+            x: Number(r.x_center),
+            y: Number(r.y_center),
+            attempts: Number(r.attempts),
+            pps: Number(r.pps),
+          }))
+          .filter((r) => Number.isFinite(r.x) && Number.isFinite(r.y) && Number.isFinite(r.attempts));
+        if (!rows.length) return;
+
+        const xVals = Array.from(new Set(rows.map((r) => r.x))).sort((a, b) => a - b);
+        const yVals = Array.from(new Set(rows.map((r) => r.y))).sort((a, b) => a - b);
+        const xi = new Map(xVals.map((v, i) => [v, i]));
+        const yi = new Map(yVals.map((v, i) => [v, i]));
+
+        const z = Array.from({ length: yVals.length }, () => Array(xVals.length).fill(0));
+        const c = Array.from({ length: yVals.length }, () => Array(xVals.length).fill(0.95));
+        let maxAttempts = 1;
+        const ppsValues = [];
+        rows.forEach((r) => {
+          const xIdx = xi.get(r.x);
+          const yIdx = yi.get(r.y);
+          z[yIdx][xIdx] = r.attempts;
+          if (Number.isFinite(r.pps) && r.attempts > 0) {
+            c[yIdx][xIdx] = r.pps;
+            ppsValues.push(r.pps);
+          }
+          if (r.attempts > maxAttempts) maxAttempts = r.attempts;
         });
+        const cMin = ppsValues.length ? Math.min(...ppsValues) : 0.8;
+        const cMax = ppsValues.length ? Math.max(...ppsValues) : 1.2;
 
         const layout = {
           margin: { l: 0, r: 0, b: 0, t: 0 },
@@ -377,12 +389,12 @@
           showlegend: false,
           scene: {
             aspectmode: "manual",
-            aspectratio: { x: 1.1, y: 1, z: 0.5 },
+            aspectratio: { x: 1.12, y: 1, z: 0.62 },
             xaxis: { range: [-260, 260], showgrid: false, showticklabels: false, zeroline: false, title: "" },
             yaxis: { range: [-60, 430], showgrid: false, showticklabels: false, zeroline: false, title: "" },
-            zaxis: { range: [0, 18], showgrid: false, showticklabels: false, zeroline: false, title: "" },
+            zaxis: { range: [0, maxAttempts * 1.08], showgrid: false, showticklabels: false, zeroline: false, title: "" },
             camera: {
-              eye: { x: 1.32, y: 1.18, z: 0.82 },
+              eye: { x: 1.28, y: 1.18, z: 0.9 },
               up: { x: 0, y: 0, z: 1 },
             },
             dragmode: "turntable",
@@ -390,13 +402,38 @@
         };
         Plotly.react(
           nbaShot3d,
-          [shotTrace(made, "#1b9b56", "circle", "Made"), shotTrace(miss, "#d75454", "x", "Missed")],
+          [
+            {
+              type: "surface",
+              x: xVals,
+              y: yVals,
+              z,
+              surfacecolor: c,
+              colorscale: [
+                [0.0, "#d73027"],
+                [0.5, "#f7f7f7"],
+                [1.0, "#1a9850"],
+              ],
+              cmin: cMin,
+              cmax: cMax,
+              opacity: 0.96,
+              hovertemplate:
+                "X %{x:.0f}<br>Y %{y:.0f}<br>Attempts %{z:.0f}<br>PPS %{surfacecolor:.3f}<extra></extra>",
+              colorbar: {
+                title: "PPS",
+                titleside: "right",
+                thickness: 10,
+                len: 0.7,
+                x: 0.98,
+              },
+            },
+          ],
           layout,
           { displayModeBar: false, responsive: true }
         );
       }
 
-      function setNbaView(view) {
+      async function setNbaView(view) {
         if (!nbaCourtContainer || !nbaShot3d || !nbaViewToggle) return;
         const show3d = view === "3d";
         nbaCourtContainer.style.display = show3d ? "none" : "";
@@ -404,8 +441,11 @@
         nbaViewToggle.querySelectorAll("button[data-view]").forEach((btn) => {
           btn.dataset.active = btn.dataset.view === view ? "true" : "false";
         });
-        if (show3d && typeof Plotly !== "undefined" && nbaShotsCache.length) {
-          renderNbaShot3d(nbaShotsCache);
+        if (show3d && typeof Plotly !== "undefined") {
+          if (!nbaLeagueBinsCache.length) {
+            nbaLeagueBinsCache = await fetchCsvStrict(NBA_LEAGUE_BINS_URL);
+          }
+          renderNbaShot3d(nbaLeagueBinsCache);
           Plotly.Plots.resize(nbaShot3d);
         }
       }
@@ -446,7 +486,6 @@
           nbaShotsCache = shots;
           renderNbaShotChart(shots);
           renderNbaZoneStats(shots, zoneRows);
-          renderNbaShot3d(shots);
           setNbaView("2d");
         } catch (error) {
           nbaShotSummary.textContent = `Failed to load shot chart: ${error.message}`;
@@ -1279,7 +1318,9 @@
         const button = event.target.closest("button[data-view]");
         if (!button) return;
         const view = String(button.dataset.view || "2d");
-        setNbaView(view === "3d" ? "3d" : "2d");
+        setNbaView(view === "3d" ? "3d" : "2d").catch((error) => {
+          if (nbaShotSummary) nbaShotSummary.textContent = `3D load failed: ${error.message}`;
+        });
       });
       dpmSearch.addEventListener("focus", () => renderDpmSearchResults());
       dpmSearch.addEventListener("input", () => renderDpmSearchResults());
