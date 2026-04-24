@@ -479,7 +479,7 @@
 
       .dpm-controls {
         display: grid;
-        grid-template-columns: repeat(4, minmax(160px, 1fr));
+        grid-template-columns: 2fr 1fr;
         gap: 10px;
         margin-bottom: 10px;
       }
@@ -491,13 +491,88 @@
         margin-bottom: 4px;
       }
 
-      .dpm-controls select {
+      .dpm-controls select,
+      .dpm-search-row input {
         width: 100%;
         border: 1px solid var(--line);
         background: #fff;
         color: var(--ink);
         padding: 8px 10px;
         font-size: 13px;
+      }
+
+      .dpm-search-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+      }
+
+      #dpm-add-player {
+        border: 1px solid var(--line);
+        background: #fff;
+        color: var(--ink);
+        font-size: 13px;
+        font-weight: 700;
+        padding: 8px 12px;
+        cursor: pointer;
+      }
+
+      .dpm-selected-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .dpm-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 10px;
+        border: 1px solid transparent;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .dpm-chip button {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: 0;
+        cursor: pointer;
+        font-size: 14px;
+        line-height: 1;
+      }
+
+      .dpm-chip.blue {
+        background: #dbe8ff;
+        border-color: #88a8e8;
+      }
+
+      .dpm-chip.blue button {
+        background: #b4cbf3;
+        color: #243e71;
+      }
+
+      .dpm-chip.red {
+        background: #ffdede;
+        border-color: #ef9a9a;
+      }
+
+      .dpm-chip.red button {
+        background: #f3b6b6;
+        color: #7e2d2d;
+      }
+
+      .dpm-chip.green {
+        background: #dff6e8;
+        border-color: #9ad0af;
+      }
+
+      .dpm-chip.green button {
+        background: #b8e1c8;
+        color: #255f39;
       }
 
       .dpm-meta {
@@ -530,6 +605,7 @@
         align-items: center;
         gap: 6px;
         font-size: 12px;
+        font-weight: 600;
       }
 
       .dpm-swatch {
@@ -605,7 +681,11 @@
         }
 
         .dpm-controls {
-          grid-template-columns: 1fr 1fr;
+          grid-template-columns: 1fr;
+        }
+
+        .dpm-search-row {
+          grid-template-columns: 1fr;
         }
 
         .wowy-toggle {

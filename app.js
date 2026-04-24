@@ -71,13 +71,17 @@
       const wowyBody = document.getElementById("wowy-body");
       const wowyPool = document.getElementById("wowy-pool");
       const wowySelected = document.getElementById("wowy-selected");
-      const dpmPlayer1 = document.getElementById("dpm-player-1");
-      const dpmPlayer2 = document.getElementById("dpm-player-2");
-      const dpmPlayer3 = document.getElementById("dpm-player-3");
+      const dpmSearch = document.getElementById("dpm-search");
+      const dpmPlayerList = document.getElementById("dpm-player-list");
+      const dpmAddPlayer = document.getElementById("dpm-add-player");
+      const dpmSelectedChips = document.getElementById("dpm-selected-chips");
       const dpmMetric = document.getElementById("dpm-metric");
       const dpmMeta = document.getElementById("dpm-meta");
       const dpmChart = document.getElementById("dpm-chart");
       const dpmLegend = document.getElementById("dpm-legend");
+      const dpmPalette = ["#4f86e5", "#e76f6f", "#45a36c"];
+      const dpmChipClass = ["blue", "red", "green"];
+      let dpmSelectedIds = [];
 
       function titleFromUnderscore(value) {
         if (typeof value !== "string") return "-";
@@ -634,20 +638,79 @@
       }
 
       function selectedDpmPlayerIds() {
-        const ids = [dpmPlayer1.value, dpmPlayer2.value, dpmPlayer3.value].filter(Boolean);
-        return [...new Set(ids)].slice(0, 3);
-      }
-
-      function buildDpmOptions(players) {
-        const opts = [{ value: "", label: "None" }];
-        players.forEach((p) => opts.push({ value: p.id, label: p.name }));
-        return opts;
+        return dpmSelectedIds.slice(0, 3);
       }
 
       function metricLabel(key) {
         if (key === "o") return "Off DPM";
         if (key === "d") return "Def DPM";
         return "Net DPM";
+      }
+
+      function movingAverage(points, windowSize = 9) {
+        if (points.length <= 2) return points;
+        const out = [];
+        const half = Math.floor(windowSize / 2);
+        for (let i = 0; i < points.length; i++) {
+          let sum = 0;
+          let count = 0;
+          for (let j = Math.max(0, i - half); j <= Math.min(points.length - 1, i + half); j++) {
+            sum += points[j].y;
+            count += 1;
+          }
+          out.push({ x: points[i].x, y: sum / count });
+        }
+        return out;
+      }
+
+      function updateDpmDatalist() {
+        if (!dpmData) return;
+        const selected = new Set(dpmSelectedIds);
+        dpmPlayerList.innerHTML = (dpmData.players || [])
+          .filter((p) => !selected.has(p.id))
+          .map((p) => `<option value="${htmlEscape(p.name)}"></option>`)
+          .join("");
+      }
+
+      function renderDpmSelectedChips() {
+        if (!dpmData) return;
+        dpmSelectedChips.innerHTML = dpmSelectedIds
+          .map((id, idx) => {
+            const p = dpmData.playerById[id];
+            if (!p) return "";
+            const chipClass = dpmChipClass[idx % dpmChipClass.length];
+            return `
+              <span class="dpm-chip ${chipClass}">
+                <span>${htmlEscape(p.name)}</span>
+                <button type="button" data-dpm-remove="${htmlEscape(id)}">×</button>
+              </span>
+            `;
+          })
+          .join("");
+        updateDpmDatalist();
+      }
+
+      function addDpmPlayerFromInput() {
+        if (!dpmData) return;
+        const typed = String(dpmSearch.value || "").trim().toLowerCase();
+        if (!typed) return;
+        const player = (dpmData.players || []).find((p) => p.name.toLowerCase() === typed);
+        if (!player) {
+          dpmMeta.textContent = "Player not found in trajectory dataset.";
+          return;
+        }
+        if (dpmSelectedIds.includes(player.id)) {
+          dpmSearch.value = "";
+          return;
+        }
+        if (dpmSelectedIds.length >= 3) {
+          dpmMeta.textContent = "Maximum 3 players can be compared.";
+          return;
+        }
+        dpmSelectedIds.push(player.id);
+        dpmSearch.value = "";
+        renderDpmSelectedChips();
+        renderDpmChart();
       }
 
       function renderDpmChart() {
@@ -665,13 +728,12 @@
           return;
         }
 
-        const palette = ["#1f5f78", "#e95e2a", "#2a9d5b"];
         const series = selectedPlayers.map((player, idx) => {
           const points = (player.points || [])
             .map((p) => ({ x: Number(p.g), y: p[metric] }))
             .filter((p) => Number.isFinite(p.x) && Number.isFinite(p.y))
             .sort((a, b) => a.x - b.x);
-          return { id: player.id, name: player.name, color: palette[idx % palette.length], points };
+          return { id: player.id, name: player.name, color: dpmPalette[idx % dpmPalette.length], points };
         });
 
         const hasPoints = series.some((s) => s.points.length > 0);
@@ -688,8 +750,8 @@
         const ySpan = Math.max(2, maxAbsY * 1.2);
 
         const width = 1200;
-        const height = 430;
-        const margin = { top: 24, right: 24, bottom: 42, left: 56 };
+        const height = 480;
+        const margin = { top: 72, right: 30, bottom: 52, left: 70 };
         const plotW = width - margin.left - margin.right;
         const plotH = height - margin.top - margin.bottom;
         const xScale = (x) => margin.left + (x / maxX) * plotW;
@@ -699,46 +761,66 @@
         const xTicks = [0, Math.round(maxX * 0.25), Math.round(maxX * 0.5), Math.round(maxX * 0.75), maxX]
           .filter((v, i, a) => i === 0 || v > a[i - 1]);
         const yTicks = [-ySpan, -ySpan / 2, 0, ySpan / 2, ySpan].map((v) => Math.round(v * 10) / 10);
-
-        const gridX = xTicks
-          .map((t) => `<line x1="${xScale(t)}" y1="${margin.top}" x2="${xScale(t)}" y2="${margin.top + plotH}" stroke="#f0ece4" />`)
-          .join("");
         const gridY = yTicks
-          .map((t) => `<line x1="${margin.left}" y1="${yScale(t)}" x2="${margin.left + plotW}" y2="${yScale(t)}" stroke="${t === 0 ? "#d5cabc" : "#f0ece4"}" stroke-width="${t === 0 ? 2 : 1}" />`)
+          .map((t) => `<line x1="${margin.left}" y1="${yScale(t)}" x2="${margin.left + plotW}" y2="${yScale(t)}" stroke="${t === 0 ? "#b9c3d3" : "#dce2ec"}" stroke-width="${t === 0 ? 1.5 : 1}" stroke-dasharray="${t === 0 ? "6 4" : "3 6"}" />`)
           .join("");
         const xLabels = xTicks
-          .map((t) => `<text x="${xScale(t)}" y="${height - 16}" text-anchor="middle" font-size="12" fill="#6a6a6a">${t}</text>`)
+          .map((t) => `<text x="${xScale(t)}" y="${height - 16}" text-anchor="middle" font-size="12" fill="#6a7588">${t}</text>`)
           .join("");
         const yLabels = yTicks
-          .map((t) => `<text x="${margin.left - 10}" y="${yScale(t) + 4}" text-anchor="end" font-size="12" fill="#6a6a6a">${t}</text>`)
+          .map((t) => `<text x="${margin.left - 10}" y="${yScale(t) + 4}" text-anchor="end" font-size="12" fill="#6a7588">${t}</text>`)
+          .join("");
+
+        const pointCloud = series
+          .map((s) =>
+            s.points
+              .map((p) => `<circle cx="${xScale(p.x)}" cy="${yScale(p.y)}" r="3.3" fill="${s.color}" fill-opacity="0.28"></circle>`)
+              .join("")
+          )
           .join("");
 
         const linePaths = series
           .map((s) => {
             if (!s.points.length) return "";
-            const d = s.points.map((p, i) => `${i === 0 ? "M" : "L"} ${xScale(p.x).toFixed(2)} ${yScale(p.y).toFixed(2)}`).join(" ");
-            const end = s.points[s.points.length - 1];
+            const smooth = movingAverage(s.points, 11);
+            const d = smooth.map((p, i) => `${i === 0 ? "M" : "L"} ${xScale(p.x).toFixed(2)} ${yScale(p.y).toFixed(2)}`).join(" ");
+            const end = smooth[smooth.length - 1];
             const endX = xScale(end.x);
             const endY = yScale(end.y);
             return `
-              <path d="${d}" fill="none" stroke="${s.color}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"></path>
+              <path d="${d}" fill="none" stroke="${s.color}" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"></path>
               <circle cx="${endX}" cy="${endY}" r="4" fill="${s.color}"></circle>
             `;
           })
           .join("");
 
+        const legendTop = series
+          .filter((s) => s.points.length)
+          .map((s, idx) => {
+            const x = margin.left + 120 + idx * 220;
+            const y = 42;
+            return `
+              <line x1="${x}" y1="${y}" x2="${x + 36}" y2="${y}" stroke="${s.color}" stroke-width="4" stroke-linecap="round"></line>
+              <circle cx="${x + 18}" cy="${y}" r="4" fill="${s.color}"></circle>
+              <text x="${x + 46}" y="${y + 5}" font-size="16" fill="#445065">${htmlEscape(s.name)}</text>
+            `;
+          })
+          .join("");
+
         dpmChart.innerHTML = `
-          <rect x="0" y="0" width="${width}" height="${height}" fill="#fff"></rect>
-          ${gridX}
+          <rect x="0" y="0" width="${width}" height="${height}" fill="#f8fafc"></rect>
+          <text x="${width / 2}" y="34" text-anchor="middle" font-size="44" fill="#111827" font-weight="800">${metricLabel(metric)} Career Progression</text>
+          ${legendTop}
           ${gridY}
+          ${pointCloud}
           ${linePaths}
-          <line x1="${margin.left}" y1="${margin.top + plotH}" x2="${margin.left + plotW}" y2="${margin.top + plotH}" stroke="#d5cabc"></line>
-          <line x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${margin.top + plotH}" stroke="#d5cabc"></line>
+          <line x1="${margin.left}" y1="${margin.top + plotH}" x2="${margin.left + plotW}" y2="${margin.top + plotH}" stroke="#c7d0de"></line>
+          <line x1="${margin.left}" y1="${margin.top}" x2="${margin.left}" y2="${margin.top + plotH}" stroke="#c7d0de"></line>
           ${xLabels}
           ${yLabels}
-          <text x="${margin.left + plotW / 2}" y="${height - 2}" text-anchor="middle" font-size="12" fill="#555f67">Career Games</text>
-          <text x="14" y="${margin.top + plotH / 2}" text-anchor="middle" font-size="12" fill="#555f67" transform="rotate(-90 14 ${margin.top + plotH / 2})">${metricLabel(metric)}</text>
-          <text x="${margin.left + 8}" y="${zeroY - 8}" font-size="11" fill="#555f67">0</text>
+          <text x="${margin.left + plotW / 2}" y="${height - 2}" text-anchor="middle" font-size="14" fill="#4a5568" font-weight="700">Career Game Number</text>
+          <text x="22" y="${margin.top + plotH / 2}" text-anchor="middle" font-size="14" fill="#4a5568" font-weight="700" transform="rotate(-90 22 ${margin.top + plotH / 2})">${metricLabel(metric)}</text>
+          <text x="${margin.left + 8}" y="${zeroY - 8}" font-size="12" fill="#55627a">0</text>
         `;
 
         dpmLegend.innerHTML = series
@@ -752,12 +834,10 @@
       async function initDpm() {
         try {
           dpmData = await fetchJsonStrict(DPM_URL);
-          const players = (dpmData.players || []).slice().sort((a, b) => a.name.localeCompare(b.name));
-          const options = buildDpmOptions(players);
-          setSelectOptions(dpmPlayer1, options, players[0]?.id || "");
-          setSelectOptions(dpmPlayer2, options, "");
-          setSelectOptions(dpmPlayer3, options, "");
-          dpmData.playerById = Object.fromEntries(players.map((p) => [p.id, p]));
+          dpmData.players = (dpmData.players || []).slice().sort((a, b) => a.name.localeCompare(b.name));
+          dpmData.playerById = Object.fromEntries(dpmData.players.map((p) => [p.id, p]));
+          dpmSelectedIds = dpmData.players[0]?.id ? [dpmData.players[0].id] : [];
+          renderDpmSelectedChips();
           renderDpmChart();
         } catch (error) {
           dpmMeta.textContent = `Failed to load DPM data: ${error.message}`;
@@ -839,10 +919,23 @@
         renderWOWYTable();
       });
       wowyLuckToggle.addEventListener("change", () => renderWOWYTable());
-      dpmPlayer1.addEventListener("change", () => renderDpmChart());
-      dpmPlayer2.addEventListener("change", () => renderDpmChart());
-      dpmPlayer3.addEventListener("change", () => renderDpmChart());
       dpmMetric.addEventListener("change", () => renderDpmChart());
+      dpmAddPlayer.addEventListener("click", () => addDpmPlayerFromInput());
+      dpmSearch.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          addDpmPlayerFromInput();
+        }
+      });
+      dpmSelectedChips.addEventListener("click", (event) => {
+        const remove = event.target.closest("[data-dpm-remove]");
+        if (!remove) return;
+        const id = String(remove.getAttribute("data-dpm-remove") || "");
+        if (!id) return;
+        dpmSelectedIds = dpmSelectedIds.filter((pid) => pid !== id);
+        renderDpmSelectedChips();
+        renderDpmChart();
+      });
 
       async function initRAPM() {
         try {
