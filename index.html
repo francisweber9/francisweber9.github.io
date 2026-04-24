@@ -26,7 +26,7 @@
       }
 
       .wrap {
-        width: min(1400px, 96vw);
+        width: min(1480px, 96vw);
         margin: 0 auto;
         padding: 56px 0 80px;
       }
@@ -79,7 +79,7 @@
 
       .panes {
         padding: 28px;
-        min-height: 300px;
+        min-height: 420px;
       }
 
       .pane {
@@ -97,26 +97,125 @@
       }
 
       .section-copy {
-        margin: 0 0 20px;
-        max-width: 70ch;
+        margin: 0 0 18px;
+        max-width: 90ch;
         color: var(--muted);
         line-height: 1.55;
+      }
+
+      .subtabs {
+        display: inline-flex;
+        gap: 8px;
+        border-bottom: 1px solid var(--line);
+        margin: 0 0 16px;
+        padding-bottom: 8px;
+        width: 100%;
+      }
+
+      .subtab {
+        appearance: none;
+        border: 1px solid transparent;
+        background: transparent;
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 600;
+        padding: 8px 12px;
+        cursor: pointer;
+      }
+
+      .subtab[aria-selected="true"] {
+        color: var(--ink);
+        border-color: var(--line);
+        background: #faf9f6;
       }
 
       .content-box {
         border: 1px solid var(--line);
         background: #fcfbf8;
-        padding: 20px;
+        padding: 16px;
       }
 
-      .content-box p {
-        margin: 0;
-        line-height: 1.6;
+      .rapm-controls {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 10px;
       }
 
-      .content-box a {
-        color: var(--accent);
-        text-underline-offset: 3px;
+      .toggle {
+        display: inline-flex;
+        border: 1px solid var(--line);
+      }
+
+      .toggle button {
+        appearance: none;
+        border: 0;
+        background: #fff;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 600;
+        padding: 8px 12px;
+        cursor: pointer;
+      }
+
+      .toggle button[data-active="true"] {
+        background: #f2f0eb;
+        color: var(--ink);
+      }
+
+      .table-wrap {
+        border: 1px solid var(--line);
+        max-height: 640px;
+        overflow-y: auto;
+        background: #fff;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #ece7de;
+        font-size: 14px;
+        white-space: nowrap;
+      }
+
+      th {
+        position: sticky;
+        top: 0;
+        background: #fbf9f5;
+        z-index: 1;
+        text-align: left;
+      }
+
+      th button {
+        appearance: none;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 0;
+      }
+
+      td.metric {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+
+      td.count {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .status {
+        color: var(--muted);
+        font-size: 13px;
       }
 
       @media (max-width: 900px) {
@@ -135,6 +234,16 @@
 
         .panes {
           padding: 20px;
+        }
+
+        .subtabs {
+          flex-wrap: wrap;
+        }
+
+        th,
+        td {
+          font-size: 13px;
+          padding: 9px 10px;
         }
       }
     </style>
@@ -160,19 +269,63 @@
         <div class="panes">
           <section class="pane active" role="tabpanel" id="pane-nbl" aria-labelledby="tab-nbl">
             <h2 class="section-title">Analytical Modelling (NBL)</h2>
-            <p class="section-copy">
-              Predictive and explanatory models built around NBL data, with a focus on performance signals and decision support.
-            </p>
-            <div class="content-box">
-              <p>Add your model links, writeups, and repository URLs here.</p>
+            <p class="section-copy">Sub-sections for RAPM, WOWY analysis, and lineup evaluation.</p>
+
+            <div class="subtabs" role="tablist" aria-label="Analytics subtabs">
+              <button class="subtab" role="tab" id="subtab-rapm" aria-selected="true" aria-controls="subpane-rapm" data-pane="rapm">
+                RAPM
+              </button>
+              <button class="subtab" role="tab" id="subtab-wowy" aria-selected="false" aria-controls="subpane-wowy" data-pane="wowy">
+                WOWY Analysis
+              </button>
+              <button class="subtab" role="tab" id="subtab-lineup" aria-selected="false" aria-controls="subpane-lineup" data-pane="lineup">
+                Lineup Evaluation
+              </button>
             </div>
+
+            <section class="pane active" role="tabpanel" id="subpane-rapm" aria-labelledby="subtab-rapm">
+              <div class="rapm-controls">
+                <div class="status" id="rapm-status">Loading RAPM data...</div>
+                <div class="toggle" role="group" aria-label="RAPM mode">
+                  <button id="toggle-luck" data-mode="luck" data-active="true">Luck Adjusted</button>
+                  <button id="toggle-raw" data-mode="raw" data-active="false">Raw</button>
+                </div>
+              </div>
+
+              <div class="table-wrap">
+                <table id="rapm-table">
+                  <thead>
+                    <tr>
+                      <th><button data-sort="playerName">Player Name</button></th>
+                      <th><button data-sort="teamName">Team Name</button></th>
+                      <th><button data-sort="games">Games</button></th>
+                      <th><button data-sort="oRAPM">oRAPM</button></th>
+                      <th><button data-sort="dRAPM">dRAPM</button></th>
+                      <th><button data-sort="netRAPM">netRAPM</button></th>
+                      <th><button data-sort="rawNetRating">Raw Net Rating</button></th>
+                    </tr>
+                  </thead>
+                  <tbody id="rapm-body"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="pane" role="tabpanel" id="subpane-wowy" aria-labelledby="subtab-wowy">
+              <div class="content-box">
+                <p>WOWY Analysis section placeholder. Add your lineup on/off pair data and filters here next.</p>
+              </div>
+            </section>
+
+            <section class="pane" role="tabpanel" id="subpane-lineup" aria-labelledby="subtab-lineup">
+              <div class="content-box">
+                <p>Lineup Evaluation section placeholder. Add lineup net ratings, possessions, and sample thresholds here next.</p>
+              </div>
+            </section>
           </section>
 
           <section class="pane" role="tabpanel" id="pane-nba" aria-labelledby="tab-nba">
             <h2 class="section-title">Visualisation (NBA)</h2>
-            <p class="section-copy">
-              Interactive and static visual stories for NBA trends, player profiles, and team-level insights.
-            </p>
+            <p class="section-copy">Interactive and static visual stories for NBA trends, player profiles, and team-level insights.</p>
             <div class="content-box">
               <p>Drop chart examples, dashboard links, and screenshots here.</p>
             </div>
@@ -180,9 +333,7 @@
 
           <section class="pane" role="tabpanel" id="pane-nbl1" aria-labelledby="tab-nbl1">
             <h2 class="section-title">Computer Vision Statistic Automation (NBL1)</h2>
-            <p class="section-copy">
-              Vision-assisted workflows to automate stat extraction and reduce manual tagging from NBL1 footage.
-            </p>
+            <p class="section-copy">Vision-assisted workflows to automate stat extraction and reduce manual tagging from NBL1 footage.</p>
             <div class="content-box">
               <p>Include pipeline summaries, demo clips, and technical notes here.</p>
             </div>
@@ -192,23 +343,211 @@
     </main>
 
     <script>
-      const tabs = document.querySelectorAll(".tab");
-      const panes = document.querySelectorAll(".pane");
+      const topTabs = document.querySelectorAll(".tab");
+      const topPanes = [
+        document.getElementById("pane-nbl"),
+        document.getElementById("pane-nba"),
+        document.getElementById("pane-nbl1")
+      ];
 
-      function activateTab(targetPane) {
-        tabs.forEach((tab) => {
+      function activateTopTab(targetPane) {
+        topTabs.forEach((tab) => {
           const active = tab.dataset.pane === targetPane;
           tab.setAttribute("aria-selected", active ? "true" : "false");
         });
 
-        panes.forEach((pane) => {
+        topPanes.forEach((pane) => {
           pane.classList.toggle("active", pane.id === `pane-${targetPane}`);
         });
       }
 
-      tabs.forEach((tab) => {
-        tab.addEventListener("click", () => activateTab(tab.dataset.pane));
+      topTabs.forEach((tab) => {
+        tab.addEventListener("click", () => activateTopTab(tab.dataset.pane));
       });
+
+      const subTabs = document.querySelectorAll(".subtab");
+      const subPanes = [
+        document.getElementById("subpane-rapm"),
+        document.getElementById("subpane-wowy"),
+        document.getElementById("subpane-lineup")
+      ];
+
+      function activateSubTab(targetPane) {
+        subTabs.forEach((tab) => {
+          const active = tab.dataset.pane === targetPane;
+          tab.setAttribute("aria-selected", active ? "true" : "false");
+        });
+
+        subPanes.forEach((pane) => {
+          pane.classList.toggle("active", pane.id === `subpane-${targetPane}`);
+        });
+      }
+
+      subTabs.forEach((tab) => {
+        tab.addEventListener("click", () => activateSubTab(tab.dataset.pane));
+      });
+
+      const RAPM_SOURCES = {
+        raw: "analytics/data/rapm_raw.json",
+        luck: "analytics/data/rapm_luck_adjusted.json"
+      };
+
+      const rapmData = { raw: [], luck: [] };
+      let rapmMode = "luck";
+      let rapmSort = { key: "netRAPM", direction: "desc" };
+
+      const rapmBody = document.getElementById("rapm-body");
+      const rapmStatus = document.getElementById("rapm-status");
+      const toggleRaw = document.getElementById("toggle-raw");
+      const toggleLuck = document.getElementById("toggle-luck");
+
+      function formatValue(value, decimals = 2) {
+        if (typeof value !== "number") return "-";
+        return value.toFixed(decimals);
+      }
+
+      function colorForValue(value, min, max) {
+        if (typeof value !== "number" || min === max) {
+          return "transparent";
+        }
+
+        const midpoint = 0;
+        const lo = Math.min(min, midpoint);
+        const hi = Math.max(max, midpoint);
+        let t;
+
+        if (value <= midpoint) {
+          t = (value - lo) / (midpoint - lo || 1);
+          const lightness = 88 - (1 - t) * 18;
+          return `hsl(9 72% ${lightness}%)`;
+        }
+
+        t = (value - midpoint) / (hi - midpoint || 1);
+        const lightness = 88 - t * 20;
+        return `hsl(135 38% ${lightness}%)`;
+      }
+
+      function getColumnRange(rows, key) {
+        let min = Number.POSITIVE_INFINITY;
+        let max = Number.NEGATIVE_INFINITY;
+
+        rows.forEach((row) => {
+          const value = row[key];
+          if (typeof value === "number") {
+            min = Math.min(min, value);
+            max = Math.max(max, value);
+          }
+        });
+
+        if (!Number.isFinite(min) || !Number.isFinite(max)) {
+          return { min: 0, max: 0 };
+        }
+
+        return { min, max };
+      }
+
+      function sortedRows(rows) {
+        const directionFactor = rapmSort.direction === "asc" ? 1 : -1;
+        return [...rows].sort((a, b) => {
+          const va = a[rapmSort.key];
+          const vb = b[rapmSort.key];
+
+          if (typeof va === "number" && typeof vb === "number") {
+            return (va - vb) * directionFactor;
+          }
+
+          return String(va).localeCompare(String(vb)) * directionFactor;
+        });
+      }
+
+      function renderSortIndicators() {
+        document.querySelectorAll("#rapm-table th button").forEach((btn) => {
+          const key = btn.dataset.sort;
+          const arrow = key === rapmSort.key ? (rapmSort.direction === "asc" ? " ↑" : " ↓") : "";
+          btn.textContent = btn.textContent.replace(/ [↑↓]$/, "") + arrow;
+        });
+      }
+
+      function renderRAPMTable() {
+        const rows = rapmData[rapmMode];
+
+        if (!rows.length) {
+          rapmBody.innerHTML = '<tr><td colspan="7">No data available.</td></tr>';
+          return;
+        }
+
+        const ordered = sortedRows(rows);
+        const rangeORapm = getColumnRange(rows, "oRAPM");
+        const rangeDRapm = getColumnRange(rows, "dRAPM");
+        const rangeNetRapm = getColumnRange(rows, "netRAPM");
+        const rangeRawNet = getColumnRange(rows, "rawNetRating");
+
+        rapmBody.innerHTML = ordered
+          .map((row) => {
+            const bgORapm = colorForValue(row.oRAPM, rangeORapm.min, rangeORapm.max);
+            const bgDRapm = colorForValue(row.dRAPM, rangeDRapm.min, rangeDRapm.max);
+            const bgNetRapm = colorForValue(row.netRAPM, rangeNetRapm.min, rangeNetRapm.max);
+            const bgRawNet = colorForValue(row.rawNetRating, rangeRawNet.min, rangeRawNet.max);
+
+            return `
+              <tr>
+                <td>${row.playerName ?? "-"}</td>
+                <td>${row.teamName ?? "-"}</td>
+                <td class="count">${row.games ?? "-"}</td>
+                <td class="metric" style="background:${bgORapm}">${formatValue(row.oRAPM, 3)}</td>
+                <td class="metric" style="background:${bgDRapm}">${formatValue(row.dRAPM, 3)}</td>
+                <td class="metric" style="background:${bgNetRapm}">${formatValue(row.netRAPM, 3)}</td>
+                <td class="metric" style="background:${bgRawNet}">${formatValue(row.rawNetRating, 1)}</td>
+              </tr>
+            `;
+          })
+          .join("");
+      }
+
+      function setRapmMode(mode) {
+        rapmMode = mode;
+        toggleLuck.dataset.active = mode === "luck" ? "true" : "false";
+        toggleRaw.dataset.active = mode === "raw" ? "true" : "false";
+        rapmStatus.textContent = mode === "luck" ? "Showing luck-adjusted RAPM" : "Showing raw RAPM";
+        renderRAPMTable();
+      }
+
+      document.querySelectorAll("#rapm-table th button").forEach((button) => {
+        button.addEventListener("click", () => {
+          const key = button.dataset.sort;
+          if (rapmSort.key === key) {
+            rapmSort.direction = rapmSort.direction === "asc" ? "desc" : "asc";
+          } else {
+            rapmSort.key = key;
+            rapmSort.direction = key === "playerName" || key === "teamName" ? "asc" : "desc";
+          }
+          renderSortIndicators();
+          renderRAPMTable();
+        });
+      });
+
+      toggleLuck.addEventListener("click", () => setRapmMode("luck"));
+      toggleRaw.addEventListener("click", () => setRapmMode("raw"));
+
+      async function initRAPM() {
+        try {
+          const [raw, luck] = await Promise.all([
+            fetch(RAPM_SOURCES.raw).then((res) => res.json()),
+            fetch(RAPM_SOURCES.luck).then((res) => res.json())
+          ]);
+
+          rapmData.raw = raw;
+          rapmData.luck = luck;
+
+          renderSortIndicators();
+          setRapmMode("luck");
+        } catch (error) {
+          rapmStatus.textContent = "Failed to load RAPM data files.";
+          rapmBody.innerHTML = '<tr><td colspan="7">Could not load data from analytics/data.</td></tr>';
+        }
+      }
+
+      initRAPM();
     </script>
   </body>
 </html>

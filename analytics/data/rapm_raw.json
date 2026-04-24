@@ -1,0 +1,2981 @@
+[
+  {
+    "playerName": "Xavier Cooks",
+    "teamName": "Sydney Kings",
+    "games": 113,
+    "oRAPM": 5.592,
+    "dRAPM": 5.877,
+    "netRAPM": 11.469,
+    "rawNetRating": 11.5
+  },
+  {
+    "playerName": "John Brown",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 33,
+    "oRAPM": 3.518,
+    "dRAPM": 6.818,
+    "netRAPM": 10.336,
+    "rawNetRating": 10.4
+  },
+  {
+    "playerName": "Flynn Cameron",
+    "teamName": "Adelaide 36ers / Melbourne United",
+    "games": 92,
+    "oRAPM": 4.469,
+    "dRAPM": 5.802,
+    "netRAPM": 10.271,
+    "rawNetRating": 13.6
+  },
+  {
+    "playerName": "cameron_gliddon",
+    "teamName": "New Zealand Breakers / South East Melbourne Phoenix",
+    "games": 71,
+    "oRAPM": 6.629,
+    "dRAPM": 2.757,
+    "netRAPM": 9.386,
+    "rawNetRating": 14.6
+  },
+  {
+    "playerName": "jarrell_brantley",
+    "teamName": "New Zealand Breakers",
+    "games": 27,
+    "oRAPM": 1.786,
+    "dRAPM": 6.443,
+    "netRAPM": 8.229,
+    "rawNetRating": 11.6
+  },
+  {
+    "playerName": "Will Magnay",
+    "teamName": "Tasmania JackJumpers",
+    "games": 92,
+    "oRAPM": 0.121,
+    "dRAPM": 7.617,
+    "netRAPM": 7.738,
+    "rawNetRating": 8.2
+  },
+  {
+    "playerName": "Parker Jackson-Cartwright",
+    "teamName": "New Zealand Breakers",
+    "games": 84,
+    "oRAPM": 5.944,
+    "dRAPM": 1.476,
+    "netRAPM": 7.42,
+    "rawNetRating": 1.1
+  },
+  {
+    "playerName": "JaVale McGee",
+    "teamName": "Illawarra Hawks",
+    "games": 31,
+    "oRAPM": 4.773,
+    "dRAPM": 2.646,
+    "netRAPM": 7.419,
+    "rawNetRating": -2.9
+  },
+  {
+    "playerName": "Tim Soares",
+    "teamName": "Sydney Kings",
+    "games": 60,
+    "oRAPM": 3.024,
+    "dRAPM": 4.329,
+    "netRAPM": 7.353,
+    "rawNetRating": 13.1
+  },
+  {
+    "playerName": "antonius_cleveland",
+    "teamName": "Illawarra Hawks / Adelaide 36ers",
+    "games": 58,
+    "oRAPM": 2.97,
+    "dRAPM": 4.381,
+    "netRAPM": 7.351,
+    "rawNetRating": 4.9
+  },
+  {
+    "playerName": "Tyson Walker",
+    "teamName": "Melbourne United",
+    "games": 32,
+    "oRAPM": 4.152,
+    "dRAPM": 3.095,
+    "netRAPM": 7.247,
+    "rawNetRating": 6.5
+  },
+  {
+    "playerName": "Kendric Davis",
+    "teamName": "Sydney Kings / Adelaide 36ers",
+    "games": 60,
+    "oRAPM": 5.767,
+    "dRAPM": 1.122,
+    "netRAPM": 6.889,
+    "rawNetRating": 7.4
+  },
+  {
+    "playerName": "Jesse Wagstaff",
+    "teamName": "Perth Wildcats",
+    "games": 142,
+    "oRAPM": 6.436,
+    "dRAPM": 0.278,
+    "netRAPM": 6.714,
+    "rawNetRating": 10.1
+  },
+  {
+    "playerName": "hyunjung_lee",
+    "teamName": "Illawarra Hawks",
+    "games": 61,
+    "oRAPM": 5.865,
+    "dRAPM": 0.719,
+    "netRAPM": 6.584,
+    "rawNetRating": 10.8
+  },
+  {
+    "playerName": "Torrey Craig",
+    "teamName": "Sydney Kings",
+    "games": 8,
+    "oRAPM": 1.594,
+    "dRAPM": 4.983,
+    "netRAPM": 6.577,
+    "rawNetRating": 24.8
+  },
+  {
+    "playerName": "trey_kell iii",
+    "teamName": "Adelaide 36ers / Illawarra Hawks / South East Melbourne Phoenix",
+    "games": 73,
+    "oRAPM": 6.173,
+    "dRAPM": 0.289,
+    "netRAPM": 6.462,
+    "rawNetRating": 5.6
+  },
+  {
+    "playerName": "caleb_agada",
+    "teamName": "Melbourne United",
+    "games": 29,
+    "oRAPM": 1.292,
+    "dRAPM": 4.523,
+    "netRAPM": 5.815,
+    "rawNetRating": 14.3
+  },
+  {
+    "playerName": "craig_sword",
+    "teamName": "Tasmania JackJumpers",
+    "games": 15,
+    "oRAPM": 0.184,
+    "dRAPM": 5.446,
+    "netRAPM": 5.63,
+    "rawNetRating": 13.4
+  },
+  {
+    "playerName": "Kristian Doolittle",
+    "teamName": "Perth Wildcats",
+    "games": 86,
+    "oRAPM": 3.275,
+    "dRAPM": 2.28,
+    "netRAPM": 5.555,
+    "rawNetRating": 4.9
+  },
+  {
+    "playerName": "William Hickey",
+    "teamName": "Illawarra Hawks / Melbourne United",
+    "games": 112,
+    "oRAPM": 4.683,
+    "dRAPM": 0.797,
+    "netRAPM": 5.48,
+    "rawNetRating": 4.5
+  },
+  {
+    "playerName": "Dylan Windler",
+    "teamName": "Perth Wildcats",
+    "games": 53,
+    "oRAPM": 3.828,
+    "dRAPM": 1.548,
+    "netRAPM": 5.376,
+    "rawNetRating": 7.7
+  },
+  {
+    "playerName": "ariel_hukporti",
+    "teamName": "Melbourne United",
+    "games": 66,
+    "oRAPM": 0.414,
+    "dRAPM": 4.774,
+    "netRAPM": 5.188,
+    "rawNetRating": 12
+  },
+  {
+    "playerName": "joe_wieskamp",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 28,
+    "oRAPM": 2.831,
+    "dRAPM": 2.225,
+    "netRAPM": 5.056,
+    "rawNetRating": 8.8
+  },
+  {
+    "playerName": "Jesse Edwards",
+    "teamName": "Melbourne United",
+    "games": 32,
+    "oRAPM": 4.075,
+    "dRAPM": 0.95,
+    "netRAPM": 5.025,
+    "rawNetRating": 5.3
+  },
+  {
+    "playerName": "David Johnson",
+    "teamName": "Tasmania JackJumpers",
+    "games": 22,
+    "oRAPM": -0.268,
+    "dRAPM": 5.218,
+    "netRAPM": 4.95,
+    "rawNetRating": 5.4
+  },
+  {
+    "playerName": "ryan_broekhoff",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 37,
+    "oRAPM": 1.571,
+    "dRAPM": 3.377,
+    "netRAPM": 4.948,
+    "rawNetRating": 6.7
+  },
+  {
+    "playerName": "Izaiah Brockington",
+    "teamName": "New Zealand Breakers",
+    "games": 32,
+    "oRAPM": 0.261,
+    "dRAPM": 4.666,
+    "netRAPM": 4.927,
+    "rawNetRating": 0
+  },
+  {
+    "playerName": "Bryce Cotton",
+    "teamName": "Perth Wildcats / Adelaide 36ers",
+    "games": 142,
+    "oRAPM": 4.542,
+    "dRAPM": 0.21,
+    "netRAPM": 4.752,
+    "rawNetRating": 5
+  },
+  {
+    "playerName": "Rob Baker",
+    "teamName": "New Zealand Breakers",
+    "games": 25,
+    "oRAPM": 1.622,
+    "dRAPM": 3.049,
+    "netRAPM": 4.671,
+    "rawNetRating": 4.6
+  },
+  {
+    "playerName": "montrezl_harrell",
+    "teamName": "Adelaide 36ers",
+    "games": 26,
+    "oRAPM": 3.475,
+    "dRAPM": 1.178,
+    "netRAPM": 4.653,
+    "rawNetRating": 4.6
+  },
+  {
+    "playerName": "Chris Goulding",
+    "teamName": "Melbourne United",
+    "games": 143,
+    "oRAPM": 2.964,
+    "dRAPM": 1.678,
+    "netRAPM": 4.642,
+    "rawNetRating": 6.1
+  },
+  {
+    "playerName": "alan_williams",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 42,
+    "oRAPM": 1.628,
+    "dRAPM": 2.744,
+    "netRAPM": 4.372,
+    "rawNetRating": 4.9
+  },
+  {
+    "playerName": "Shea Ili",
+    "teamName": "Melbourne United",
+    "games": 114,
+    "oRAPM": 0.018,
+    "dRAPM": 4.256,
+    "netRAPM": 4.274,
+    "rawNetRating": 7.6
+  },
+  {
+    "playerName": "Bryce Hamilton",
+    "teamName": "Tasmania JackJumpers",
+    "games": 27,
+    "oRAPM": 0.208,
+    "dRAPM": 3.895,
+    "netRAPM": 4.103,
+    "rawNetRating": 2.4
+  },
+  {
+    "playerName": "Bul Kuol",
+    "teamName": "Cairns Taipans / Sydney Kings",
+    "games": 127,
+    "oRAPM": 0.943,
+    "dRAPM": 3.149,
+    "netRAPM": 4.092,
+    "rawNetRating": 3.6
+  },
+  {
+    "playerName": "jarred_bairstow",
+    "teamName": "Tasmania JackJumpers / Brisbane Bullets",
+    "games": 72,
+    "oRAPM": 0.039,
+    "dRAPM": 4.024,
+    "netRAPM": 4.063,
+    "rawNetRating": 5.1
+  },
+  {
+    "playerName": "Milton Doyle",
+    "teamName": "Tasmania JackJumpers / Melbourne United",
+    "games": 124,
+    "oRAPM": 1.982,
+    "dRAPM": 2.065,
+    "netRAPM": 4.047,
+    "rawNetRating": 3.9
+  },
+  {
+    "playerName": "Nathan Sobey",
+    "teamName": "Brisbane Bullets / South East Melbourne Phoenix",
+    "games": 128,
+    "oRAPM": 0.306,
+    "dRAPM": 3.603,
+    "netRAPM": 3.909,
+    "rawNetRating": 1
+  },
+  {
+    "playerName": "Kouat Noi",
+    "teamName": "Sydney Kings / Cairns Taipans",
+    "games": 126,
+    "oRAPM": 3.296,
+    "dRAPM": 0.612,
+    "netRAPM": 3.908,
+    "rawNetRating": 7
+  },
+  {
+    "playerName": "luke_travers",
+    "teamName": "Perth Wildcats / Melbourne United",
+    "games": 87,
+    "oRAPM": 1.291,
+    "dRAPM": 2.606,
+    "netRAPM": 3.897,
+    "rawNetRating": 5.9
+  },
+  {
+    "playerName": "rayjon_tucker",
+    "teamName": "Melbourne United",
+    "games": 28,
+    "oRAPM": 2.38,
+    "dRAPM": 1.49,
+    "netRAPM": 3.87,
+    "rawNetRating": 3.8
+  },
+  {
+    "playerName": "Zylan Cheatham",
+    "teamName": "Adelaide 36ers / New Zealand Breakers",
+    "games": 52,
+    "oRAPM": 0.721,
+    "dRAPM": 3.113,
+    "netRAPM": 3.834,
+    "rawNetRating": 5
+  },
+  {
+    "playerName": "mikyle_mcintosh",
+    "teamName": "Tasmania JackJumpers",
+    "games": 34,
+    "oRAPM": -0.427,
+    "dRAPM": 4.164,
+    "netRAPM": 3.737,
+    "rawNetRating": 1.1
+  },
+  {
+    "playerName": "Jack McVeigh",
+    "teamName": "Tasmania JackJumpers / Cairns Taipans",
+    "games": 127,
+    "oRAPM": 2.878,
+    "dRAPM": 0.753,
+    "netRAPM": 3.631,
+    "rawNetRating": -0.2
+  },
+  {
+    "playerName": "Tyger Campbell",
+    "teamName": "Tasmania JackJumpers",
+    "games": 33,
+    "oRAPM": 1.413,
+    "dRAPM": 2.17,
+    "netRAPM": 3.583,
+    "rawNetRating": 3.7
+  },
+  {
+    "playerName": "Sean Macdonald",
+    "teamName": "Tasmania JackJumpers",
+    "games": 82,
+    "oRAPM": 3.234,
+    "dRAPM": 0.219,
+    "netRAPM": 3.453,
+    "rawNetRating": 6.2
+  },
+  {
+    "playerName": "matt_hurt",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 29,
+    "oRAPM": 1.251,
+    "dRAPM": 2.191,
+    "netRAPM": 3.442,
+    "rawNetRating": 6.2
+  },
+  {
+    "playerName": "Jaron Rillie",
+    "teamName": "Perth Wildcats",
+    "games": 14,
+    "oRAPM": 2.383,
+    "dRAPM": 1.019,
+    "netRAPM": 3.402,
+    "rawNetRating": 17.1
+  },
+  {
+    "playerName": "rayan_rupert",
+    "teamName": "New Zealand Breakers",
+    "games": 20,
+    "oRAPM": 1.755,
+    "dRAPM": 1.629,
+    "netRAPM": 3.384,
+    "rawNetRating": 10.1
+  },
+  {
+    "playerName": "Tyrell Harrison",
+    "teamName": "Brisbane Bullets",
+    "games": 105,
+    "oRAPM": 0.144,
+    "dRAPM": 3.171,
+    "netRAPM": 3.315,
+    "rawNetRating": -3.6
+  },
+  {
+    "playerName": "Nick Rakocevic",
+    "teamName": "Adelaide 36ers",
+    "games": 30,
+    "oRAPM": 1.614,
+    "dRAPM": 1.648,
+    "netRAPM": 3.262,
+    "rawNetRating": 6
+  },
+  {
+    "playerName": "Kyle Bowen",
+    "teamName": "Melbourne United",
+    "games": 97,
+    "oRAPM": 2.714,
+    "dRAPM": 0.479,
+    "netRAPM": 3.193,
+    "rawNetRating": 7.9
+  },
+  {
+    "playerName": "gary_browne",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 39,
+    "oRAPM": 1.256,
+    "dRAPM": 1.913,
+    "netRAPM": 3.169,
+    "rawNetRating": 4.2
+  },
+  {
+    "playerName": "hyrum_harris",
+    "teamName": "Perth Wildcats / Adelaide 36ers",
+    "games": 105,
+    "oRAPM": 2.436,
+    "dRAPM": 0.723,
+    "netRAPM": 3.159,
+    "rawNetRating": 3.5
+  },
+  {
+    "playerName": "Marcus Lee",
+    "teamName": "Melbourne United / Cairns Taipans / Tasmania JackJumpers",
+    "games": 109,
+    "oRAPM": 0.852,
+    "dRAPM": 2.278,
+    "netRAPM": 3.13,
+    "rawNetRating": 0.4
+  },
+  {
+    "playerName": "darius_days",
+    "teamName": "Illawarra Hawks",
+    "games": 25,
+    "oRAPM": 2.212,
+    "dRAPM": 0.819,
+    "netRAPM": 3.031,
+    "rawNetRating": 10.6
+  },
+  {
+    "playerName": "jo_lual-acuil",
+    "teamName": "Melbourne United",
+    "games": 15,
+    "oRAPM": -0.818,
+    "dRAPM": 3.848,
+    "netRAPM": 3.03,
+    "rawNetRating": 11.6
+  },
+  {
+    "playerName": "dj_hogg",
+    "teamName": "Cairns Taipans / Sydney Kings",
+    "games": 44,
+    "oRAPM": 1.763,
+    "dRAPM": 1.148,
+    "netRAPM": 2.911,
+    "rawNetRating": 4.8
+  },
+  {
+    "playerName": "zhou_qi",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 33,
+    "oRAPM": 1.93,
+    "dRAPM": 0.972,
+    "netRAPM": 2.902,
+    "rawNetRating": 3.3
+  },
+  {
+    "playerName": "tashawn_thomas",
+    "teamName": "Perth Wildcats",
+    "games": 26,
+    "oRAPM": 2.588,
+    "dRAPM": 0.29,
+    "netRAPM": 2.878,
+    "rawNetRating": 4.8
+  },
+  {
+    "playerName": "patrick_miller",
+    "teamName": "Cairns Taipans",
+    "games": 25,
+    "oRAPM": 2.17,
+    "dRAPM": 0.664,
+    "netRAPM": 2.834,
+    "rawNetRating": -1.5
+  },
+  {
+    "playerName": "pedro_bradshaw",
+    "teamName": "Cairns Taipans",
+    "games": 24,
+    "oRAPM": 3.134,
+    "dRAPM": -0.324,
+    "netRAPM": 2.81,
+    "rawNetRating": -5.3
+  },
+  {
+    "playerName": "Angus Glover",
+    "teamName": "Sydney Kings / South East Melbourne Phoenix",
+    "games": 140,
+    "oRAPM": 2.975,
+    "dRAPM": -0.17,
+    "netRAPM": 2.805,
+    "rawNetRating": 6.1
+  },
+  {
+    "playerName": "Hunter Maldonado",
+    "teamName": "Brisbane Bullets / South East Melbourne Phoenix",
+    "games": 26,
+    "oRAPM": 3.237,
+    "dRAPM": -0.516,
+    "netRAPM": 2.721,
+    "rawNetRating": -5.8
+  },
+  {
+    "playerName": "isaac_gattorna",
+    "teamName": "Adelaide 36ers / Sydney Kings",
+    "games": 18,
+    "oRAPM": 1.378,
+    "dRAPM": 1.339,
+    "netRAPM": 2.717,
+    "rawNetRating": 17.3
+  },
+  {
+    "playerName": "craig_moller",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 12,
+    "oRAPM": 2.442,
+    "dRAPM": 0.234,
+    "netRAPM": 2.676,
+    "rawNetRating": 6.2
+  },
+  {
+    "playerName": "dusty_hannahs",
+    "teamName": "Adelaide 36ers",
+    "games": 23,
+    "oRAPM": 0.975,
+    "dRAPM": 1.677,
+    "netRAPM": 2.652,
+    "rawNetRating": -0.8
+  },
+  {
+    "playerName": "Ian Clark",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 14,
+    "oRAPM": 3.848,
+    "dRAPM": -1.227,
+    "netRAPM": 2.621,
+    "rawNetRating": 6.7
+  },
+  {
+    "playerName": "Isaac White",
+    "teamName": "Brisbane Bullets / Adelaide 36ers / Tasmania JackJumpers / Illawarra Hawks",
+    "games": 137,
+    "oRAPM": 2.018,
+    "dRAPM": 0.569,
+    "netRAPM": 2.587,
+    "rawNetRating": 2.2
+  },
+  {
+    "playerName": "tyler_johnson",
+    "teamName": "Brisbane Bullets",
+    "games": 25,
+    "oRAPM": 1.045,
+    "dRAPM": 1.486,
+    "netRAPM": 2.531,
+    "rawNetRating": -6
+  },
+  {
+    "playerName": "denzel_valentine",
+    "teamName": "Sydney Kings",
+    "games": 29,
+    "oRAPM": 5,
+    "dRAPM": -2.478,
+    "netRAPM": 2.522,
+    "rawNetRating": 6
+  },
+  {
+    "playerName": "josh_magette",
+    "teamName": "Tasmania JackJumpers",
+    "games": 62,
+    "oRAPM": 1.424,
+    "dRAPM": 1.049,
+    "netRAPM": 2.473,
+    "rawNetRating": 3.1
+  },
+  {
+    "playerName": "anzac_rissetto",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 23,
+    "oRAPM": 1.592,
+    "dRAPM": 0.834,
+    "netRAPM": 2.426,
+    "rawNetRating": -2.4
+  },
+  {
+    "playerName": "shannon_scott",
+    "teamName": "Cairns Taipans / Brisbane Bullets",
+    "games": 50,
+    "oRAPM": 1.143,
+    "dRAPM": 1.27,
+    "netRAPM": 2.413,
+    "rawNetRating": 2.7
+  },
+  {
+    "playerName": "Karim Lopez",
+    "teamName": "New Zealand Breakers",
+    "games": 55,
+    "oRAPM": 2.964,
+    "dRAPM": -0.599,
+    "netRAPM": 2.365,
+    "rawNetRating": -1.4
+  },
+  {
+    "playerName": "barry_brown jr",
+    "teamName": "New Zealand Breakers",
+    "games": 19,
+    "oRAPM": 2.276,
+    "dRAPM": 0.059,
+    "netRAPM": 2.335,
+    "rawNetRating": 7.8
+  },
+  {
+    "playerName": "tacko_fall",
+    "teamName": "New Zealand Breakers",
+    "games": 18,
+    "oRAPM": 1.055,
+    "dRAPM": 1.241,
+    "netRAPM": 2.296,
+    "rawNetRating": -0.4
+  },
+  {
+    "playerName": "freddie_gillespie",
+    "teamName": "New Zealand Breakers",
+    "games": 9,
+    "oRAPM": 0.46,
+    "dRAPM": 1.829,
+    "netRAPM": 2.289,
+    "rawNetRating": 5.7
+  },
+  {
+    "playerName": "Casey Prather",
+    "teamName": "Brisbane Bullets",
+    "games": 46,
+    "oRAPM": 4.512,
+    "dRAPM": -2.238,
+    "netRAPM": 2.274,
+    "rawNetRating": -4.6
+  },
+  {
+    "playerName": "Malique Lewis",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 54,
+    "oRAPM": 2.212,
+    "dRAPM": 0.045,
+    "netRAPM": 2.257,
+    "rawNetRating": 5.4
+  },
+  {
+    "playerName": "Sam Froling",
+    "teamName": "Illawarra Hawks",
+    "games": 135,
+    "oRAPM": 0.794,
+    "dRAPM": 1.443,
+    "netRAPM": 2.237,
+    "rawNetRating": 0.9
+  },
+  {
+    "playerName": "trentyn_flowers",
+    "teamName": "Adelaide 36ers",
+    "games": 18,
+    "oRAPM": 2.073,
+    "dRAPM": 0.159,
+    "netRAPM": 2.232,
+    "rawNetRating": 0.6
+  },
+  {
+    "playerName": "jack_white",
+    "teamName": "Melbourne United",
+    "games": 52,
+    "oRAPM": 1.232,
+    "dRAPM": 0.975,
+    "netRAPM": 2.207,
+    "rawNetRating": 6.9
+  },
+  {
+    "playerName": "Wes Iwundu",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 28,
+    "oRAPM": 3.373,
+    "dRAPM": -1.254,
+    "netRAPM": 2.119,
+    "rawNetRating": 10.1
+  },
+  {
+    "playerName": "kevin_white",
+    "teamName": "Perth Wildcats / Illawarra Hawks",
+    "games": 26,
+    "oRAPM": 1.202,
+    "dRAPM": 0.893,
+    "netRAPM": 2.095,
+    "rawNetRating": 8.4
+  },
+  {
+    "playerName": "kye_savage",
+    "teamName": "Brisbane Bullets",
+    "games": 8,
+    "oRAPM": 2.04,
+    "dRAPM": 0.034,
+    "netRAPM": 2.074,
+    "rawNetRating": 30.2
+  },
+  {
+    "playerName": "cameron_bairstow",
+    "teamName": "Adelaide 36ers",
+    "games": 18,
+    "oRAPM": -1.069,
+    "dRAPM": 3.112,
+    "netRAPM": 2.043,
+    "rawNetRating": -1.7
+  },
+  {
+    "playerName": "justinian_jessup",
+    "teamName": "Illawarra Hawks / New Zealand Breakers",
+    "games": 32,
+    "oRAPM": 1.201,
+    "dRAPM": 0.746,
+    "netRAPM": 1.947,
+    "rawNetRating": 6.4
+  },
+  {
+    "playerName": "alex_toohey",
+    "teamName": "Sydney Kings",
+    "games": 58,
+    "oRAPM": 0.788,
+    "dRAPM": 1.127,
+    "netRAPM": 1.915,
+    "rawNetRating": 4.6
+  },
+  {
+    "playerName": "dane_pineau",
+    "teamName": "South East Melbourne Phoenix / New Zealand Breakers",
+    "games": 84,
+    "oRAPM": -1.711,
+    "dRAPM": 3.556,
+    "netRAPM": 1.845,
+    "rawNetRating": 2.3
+  },
+  {
+    "playerName": "Todd Blanchfield",
+    "teamName": "Illawarra Hawks / Perth Wildcats",
+    "games": 138,
+    "oRAPM": 0.318,
+    "dRAPM": 1.439,
+    "netRAPM": 1.757,
+    "rawNetRating": 3.7
+  },
+  {
+    "playerName": "David Duke Jnr",
+    "teamName": "Perth Wildcats",
+    "games": 15,
+    "oRAPM": 1.105,
+    "dRAPM": 0.647,
+    "netRAPM": 1.752,
+    "rawNetRating": -1.1
+  },
+  {
+    "playerName": "david_barlow",
+    "teamName": "Melbourne United",
+    "games": 45,
+    "oRAPM": -0.285,
+    "dRAPM": 1.983,
+    "netRAPM": 1.698,
+    "rawNetRating": 4.6
+  },
+  {
+    "playerName": "tyler_cook",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 3,
+    "oRAPM": -0.848,
+    "dRAPM": 2.544,
+    "netRAPM": 1.696,
+    "rawNetRating": 5.1
+  },
+  {
+    "playerName": "jarell_martin",
+    "teamName": "Sydney Kings / Adelaide 36ers",
+    "games": 51,
+    "oRAPM": -0.022,
+    "dRAPM": 1.657,
+    "netRAPM": 1.635,
+    "rawNetRating": 2.9
+  },
+  {
+    "playerName": "Alex Ducas",
+    "teamName": "Brisbane Bullets",
+    "games": 30,
+    "oRAPM": 2.096,
+    "dRAPM": -0.474,
+    "netRAPM": 1.622,
+    "rawNetRating": -12.5
+  },
+  {
+    "playerName": "sam_timmins",
+    "teamName": "New Zealand Breakers / Sydney Kings",
+    "games": 26,
+    "oRAPM": 0.94,
+    "dRAPM": 0.584,
+    "netRAPM": 1.524,
+    "rawNetRating": 3
+  },
+  {
+    "playerName": "Ben Henshall",
+    "teamName": "Perth Wildcats",
+    "games": 74,
+    "oRAPM": -0.113,
+    "dRAPM": 1.591,
+    "netRAPM": 1.478,
+    "rawNetRating": 5
+  },
+  {
+    "playerName": "yannick_wetzell",
+    "teamName": "New Zealand Breakers",
+    "games": 12,
+    "oRAPM": 0.331,
+    "dRAPM": 1.134,
+    "netRAPM": 1.465,
+    "rawNetRating": -7
+  },
+  {
+    "playerName": "Sam Waardenburg",
+    "teamName": "Cairns Taipans",
+    "games": 84,
+    "oRAPM": 0.055,
+    "dRAPM": 1.402,
+    "netRAPM": 1.457,
+    "rawNetRating": -3.1
+  },
+  {
+    "playerName": "dion_prewster",
+    "teamName": "Melbourne United",
+    "games": 13,
+    "oRAPM": -0.12,
+    "dRAPM": 1.445,
+    "netRAPM": 1.325,
+    "rawNetRating": 20.2
+  },
+  {
+    "playerName": "mantas_rub\u0161tavi\u010dius",
+    "teamName": "New Zealand Breakers",
+    "games": 25,
+    "oRAPM": 2.063,
+    "dRAPM": -0.79,
+    "netRAPM": 1.273,
+    "rawNetRating": 3.2
+  },
+  {
+    "playerName": "keli_leaupepe",
+    "teamName": "Sydney Kings",
+    "games": 19,
+    "oRAPM": -0.536,
+    "dRAPM": 1.798,
+    "netRAPM": 1.262,
+    "rawNetRating": 8.8
+  },
+  {
+    "playerName": "tom_digbeu",
+    "teamName": "Brisbane Bullets",
+    "games": 19,
+    "oRAPM": 2.411,
+    "dRAPM": -1.151,
+    "netRAPM": 1.26,
+    "rawNetRating": -0.4
+  },
+  {
+    "playerName": "rob_edwards",
+    "teamName": "Cairns Taipans",
+    "games": 26,
+    "oRAPM": 2.134,
+    "dRAPM": -0.929,
+    "netRAPM": 1.205,
+    "rawNetRating": -9.2
+  },
+  {
+    "playerName": "Malual Goc",
+    "teamName": "Sydney Kings",
+    "games": 7,
+    "oRAPM": 0.672,
+    "dRAPM": 0.529,
+    "netRAPM": 1.201,
+    "rawNetRating": 42.9
+  },
+  {
+    "playerName": "michael_frazier",
+    "teamName": "Perth Wildcats",
+    "games": 4,
+    "oRAPM": -1.062,
+    "dRAPM": 2.252,
+    "netRAPM": 1.19,
+    "rawNetRating": 12.1
+  },
+  {
+    "playerName": "deshon_taylor",
+    "teamName": "Cairns Taipans",
+    "games": 3,
+    "oRAPM": -0.148,
+    "dRAPM": 1.203,
+    "netRAPM": 1.055,
+    "rawNetRating": 2
+  },
+  {
+    "playerName": "Patrick Ryan",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 13,
+    "oRAPM": 1.285,
+    "dRAPM": -0.264,
+    "netRAPM": 1.021,
+    "rawNetRating": 19
+  },
+  {
+    "playerName": "tahjere_mccall",
+    "teamName": "Cairns Taipans",
+    "games": 67,
+    "oRAPM": -0.424,
+    "dRAPM": 1.445,
+    "netRAPM": 1.021,
+    "rawNetRating": -0.8
+  },
+  {
+    "playerName": "matthew_mooney",
+    "teamName": "New Zealand Breakers",
+    "games": 29,
+    "oRAPM": 0.656,
+    "dRAPM": 0.335,
+    "netRAPM": 0.991,
+    "rawNetRating": -4.4
+  },
+  {
+    "playerName": "deng_acuoth",
+    "teamName": "Adelaide 36ers",
+    "games": 13,
+    "oRAPM": 0.227,
+    "dRAPM": 0.723,
+    "netRAPM": 0.95,
+    "rawNetRating": 16.6
+  },
+  {
+    "playerName": "mitchell_creek",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 79,
+    "oRAPM": 2.009,
+    "dRAPM": -1.072,
+    "netRAPM": 0.937,
+    "rawNetRating": -0.3
+  },
+  {
+    "playerName": "Campbell Blogg",
+    "teamName": "Melbourne United",
+    "games": 25,
+    "oRAPM": -1.032,
+    "dRAPM": 1.928,
+    "netRAPM": 0.896,
+    "rawNetRating": 14.4
+  },
+  {
+    "playerName": "Noa Kouakou-Heugue",
+    "teamName": "Perth Wildcats",
+    "games": 15,
+    "oRAPM": -0.527,
+    "dRAPM": 1.376,
+    "netRAPM": 0.849,
+    "rawNetRating": 17.7
+  },
+  {
+    "playerName": "yanni_wetzell",
+    "teamName": "New Zealand Breakers",
+    "games": 10,
+    "oRAPM": 1.339,
+    "dRAPM": -0.498,
+    "netRAPM": 0.841,
+    "rawNetRating": -6.5
+  },
+  {
+    "playerName": "gary_clark",
+    "teamName": "Illawarra Hawks",
+    "games": 33,
+    "oRAPM": 1.517,
+    "dRAPM": -0.702,
+    "netRAPM": 0.815,
+    "rawNetRating": 0
+  },
+  {
+    "playerName": "Tad Dufelmeier",
+    "teamName": "Adelaide 36ers / Cairns Taipans / Brisbane Bullets",
+    "games": 32,
+    "oRAPM": -2.556,
+    "dRAPM": 3.36,
+    "netRAPM": 0.804,
+    "rawNetRating": 0.9
+  },
+  {
+    "playerName": "justin_robinson",
+    "teamName": "Illawarra Hawks",
+    "games": 34,
+    "oRAPM": 0.075,
+    "dRAPM": 0.715,
+    "netRAPM": 0.79,
+    "rawNetRating": 0.1
+  },
+  {
+    "playerName": "Jaylen Adams",
+    "teamName": "Sydney Kings / Brisbane Bullets",
+    "games": 92,
+    "oRAPM": 0.398,
+    "dRAPM": 0.382,
+    "netRAPM": 0.78,
+    "rawNetRating": 3.1
+  },
+  {
+    "playerName": "dererk_pardon",
+    "teamName": "New Zealand Breakers",
+    "games": 27,
+    "oRAPM": -0.264,
+    "dRAPM": 1.038,
+    "netRAPM": 0.774,
+    "rawNetRating": 4.2
+  },
+  {
+    "playerName": "Tukaha Cooper",
+    "teamName": "New Zealand Breakers",
+    "games": 2,
+    "oRAPM": 1.166,
+    "dRAPM": -0.4,
+    "netRAPM": 0.766,
+    "rawNetRating": 27.9
+  },
+  {
+    "playerName": "Makuach Maluach",
+    "teamName": "Sydney Kings / Melbourne United",
+    "games": 90,
+    "oRAPM": 0.011,
+    "dRAPM": 0.699,
+    "netRAPM": 0.71,
+    "rawNetRating": 7.4
+  },
+  {
+    "playerName": "junior_madut",
+    "teamName": "South East Melbourne Phoenix / Tasmania JackJumpers",
+    "games": 39,
+    "oRAPM": 1.643,
+    "dRAPM": -0.955,
+    "netRAPM": 0.688,
+    "rawNetRating": 1.1
+  },
+  {
+    "playerName": "Josh Bannan",
+    "teamName": "Brisbane Bullets / Tasmania JackJumpers",
+    "games": 71,
+    "oRAPM": 2.028,
+    "dRAPM": -1.346,
+    "netRAPM": 0.682,
+    "rawNetRating": -0.9
+  },
+  {
+    "playerName": "aj_johnson",
+    "teamName": "Illawarra Hawks",
+    "games": 26,
+    "oRAPM": -1.413,
+    "dRAPM": 2.059,
+    "netRAPM": 0.646,
+    "rawNetRating": 4.3
+  },
+  {
+    "playerName": "deng_deng",
+    "teamName": "Illawarra Hawks / Brisbane Bullets",
+    "games": 56,
+    "oRAPM": -0.369,
+    "dRAPM": 1.013,
+    "netRAPM": 0.644,
+    "rawNetRating": -6
+  },
+  {
+    "playerName": "peyton_siva",
+    "teamName": "New Zealand Breakers / Illawarra Hawks",
+    "games": 34,
+    "oRAPM": 0.201,
+    "dRAPM": 0.417,
+    "netRAPM": 0.618,
+    "rawNetRating": -7.6
+  },
+  {
+    "playerName": "jason_cadee",
+    "teamName": "Brisbane Bullets / Adelaide 36ers",
+    "games": 108,
+    "oRAPM": 0.714,
+    "dRAPM": -0.121,
+    "netRAPM": 0.593,
+    "rawNetRating": -4.8
+  },
+  {
+    "playerName": "jock_perry",
+    "teamName": "Tasmania JackJumpers",
+    "games": 17,
+    "oRAPM": 1.5,
+    "dRAPM": -0.907,
+    "netRAPM": 0.593,
+    "rawNetRating": 3.3
+  },
+  {
+    "playerName": "lachlan_olbrich",
+    "teamName": "Illawarra Hawks / Adelaide 36ers",
+    "games": 63,
+    "oRAPM": 1.061,
+    "dRAPM": -0.515,
+    "netRAPM": 0.546,
+    "rawNetRating": 6.9
+  },
+  {
+    "playerName": "Jordan Hunter",
+    "teamName": "South East Melbourne Phoenix / Sydney Kings",
+    "games": 117,
+    "oRAPM": -0.563,
+    "dRAPM": 1.091,
+    "netRAPM": 0.528,
+    "rawNetRating": 4.8
+  },
+  {
+    "playerName": "keanu_pinder",
+    "teamName": "Perth Wildcats / Cairns Taipans",
+    "games": 103,
+    "oRAPM": -3.42,
+    "dRAPM": 3.936,
+    "netRAPM": 0.516,
+    "rawNetRating": 2
+  },
+  {
+    "playerName": "Robert Loe",
+    "teamName": "New Zealand Breakers / Melbourne United",
+    "games": 108,
+    "oRAPM": -0.637,
+    "dRAPM": 1.139,
+    "netRAPM": 0.502,
+    "rawNetRating": 1.5
+  },
+  {
+    "playerName": "Alex Higgins-Titsha",
+    "teamName": "Cairns Taipans",
+    "games": 27,
+    "oRAPM": 0.052,
+    "dRAPM": 0.424,
+    "netRAPM": 0.476,
+    "rawNetRating": -9
+  },
+  {
+    "playerName": "joel_foxwell",
+    "teamName": "Melbourne United",
+    "games": 8,
+    "oRAPM": -0.396,
+    "dRAPM": 0.817,
+    "netRAPM": 0.421,
+    "rawNetRating": 15.2
+  },
+  {
+    "playerName": "jeremiah_martin",
+    "teamName": "New Zealand Breakers",
+    "games": 10,
+    "oRAPM": -0.988,
+    "dRAPM": 1.358,
+    "netRAPM": 0.37,
+    "rawNetRating": -8.9
+  },
+  {
+    "playerName": "Lueth Awan",
+    "teamName": "Sydney Kings",
+    "games": 12,
+    "oRAPM": 0.242,
+    "dRAPM": 0.034,
+    "netRAPM": 0.276,
+    "rawNetRating": 14.5
+  },
+  {
+    "playerName": "Elijah Pepper",
+    "teamName": "Perth Wildcats",
+    "games": 62,
+    "oRAPM": -0.17,
+    "dRAPM": 0.434,
+    "netRAPM": 0.264,
+    "rawNetRating": 2.8
+  },
+  {
+    "playerName": "Tanner Krebs",
+    "teamName": "Melbourne United / Brisbane Bullets",
+    "games": 141,
+    "oRAPM": -0.345,
+    "dRAPM": 0.598,
+    "netRAPM": 0.253,
+    "rawNetRating": 1
+  },
+  {
+    "playerName": "Shaun Bruce",
+    "teamName": "Sydney Kings",
+    "games": 137,
+    "oRAPM": -1.723,
+    "dRAPM": 1.952,
+    "netRAPM": 0.229,
+    "rawNetRating": 5.9
+  },
+  {
+    "playerName": "corey_shervill",
+    "teamName": "Perth Wildcats",
+    "games": 8,
+    "oRAPM": 0.893,
+    "dRAPM": -0.68,
+    "netRAPM": 0.213,
+    "rawNetRating": 5.5
+  },
+  {
+    "playerName": "jackson_makoi",
+    "teamName": "Cairns Taipans / Sydney Kings",
+    "games": 27,
+    "oRAPM": 0.472,
+    "dRAPM": -0.276,
+    "netRAPM": 0.196,
+    "rawNetRating": -1
+  },
+  {
+    "playerName": "Mitch Norton",
+    "teamName": "Brisbane Bullets / Perth Wildcats",
+    "games": 124,
+    "oRAPM": -1.078,
+    "dRAPM": 1.235,
+    "netRAPM": 0.157,
+    "rawNetRating": -4.5
+  },
+  {
+    "playerName": "will_cummings",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 12,
+    "oRAPM": -0.182,
+    "dRAPM": 0.325,
+    "netRAPM": 0.143,
+    "rawNetRating": -1.5
+  },
+  {
+    "playerName": "Johny Narkle",
+    "teamName": "Illawarra Hawks",
+    "games": 18,
+    "oRAPM": -0.252,
+    "dRAPM": 0.375,
+    "netRAPM": 0.123,
+    "rawNetRating": 7.9
+  },
+  {
+    "playerName": "Tyler Robertson",
+    "teamName": "Sydney Kings",
+    "games": 48,
+    "oRAPM": -3.549,
+    "dRAPM": 3.666,
+    "netRAPM": 0.117,
+    "rawNetRating": 11.8
+  },
+  {
+    "playerName": "daniel_johnson",
+    "teamName": "Adelaide 36ers / South East Melbourne Phoenix",
+    "games": 58,
+    "oRAPM": 1.859,
+    "dRAPM": -1.754,
+    "netRAPM": 0.105,
+    "rawNetRating": -4.9
+  },
+  {
+    "playerName": "xavier_munford",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 26,
+    "oRAPM": 1.696,
+    "dRAPM": -1.597,
+    "netRAPM": 0.099,
+    "rawNetRating": 1.7
+  },
+  {
+    "playerName": "jacob_rigoni",
+    "teamName": "Adelaide 36ers",
+    "games": 12,
+    "oRAPM": 0.797,
+    "dRAPM": -0.75,
+    "netRAPM": 0.047,
+    "rawNetRating": 2.1
+  },
+  {
+    "playerName": "Jonah Bolden",
+    "teamName": "New Zealand Breakers / Sydney Kings / Illawarra Hawks",
+    "games": 60,
+    "oRAPM": -1.804,
+    "dRAPM": 1.754,
+    "netRAPM": -0.05,
+    "rawNetRating": -0.3
+  },
+  {
+    "playerName": "Dejan Vasiljevic",
+    "teamName": "Adelaide 36ers / Sydney Kings",
+    "games": 138,
+    "oRAPM": 0.679,
+    "dRAPM": -0.76,
+    "netRAPM": -0.081,
+    "rawNetRating": 2.7
+  },
+  {
+    "playerName": "Dakota Mathias",
+    "teamName": "Brisbane Bullets",
+    "games": 8,
+    "oRAPM": 0.541,
+    "dRAPM": -0.633,
+    "netRAPM": -0.092,
+    "rawNetRating": -11.2
+  },
+  {
+    "playerName": "Tyler Harvey",
+    "teamName": "Illawarra Hawks",
+    "games": 148,
+    "oRAPM": 2.01,
+    "dRAPM": -2.133,
+    "netRAPM": -0.123,
+    "rawNetRating": -0.5
+  },
+  {
+    "playerName": "Lamar Patterson",
+    "teamName": "Brisbane Bullets",
+    "games": 36,
+    "oRAPM": -0.589,
+    "dRAPM": 0.415,
+    "netRAPM": -0.174,
+    "rawNetRating": -3.8
+  },
+  {
+    "playerName": "Brody Nunn",
+    "teamName": "Tasmania JackJumpers",
+    "games": 12,
+    "oRAPM": -0.679,
+    "dRAPM": 0.503,
+    "netRAPM": -0.176,
+    "rawNetRating": -5.5
+  },
+  {
+    "playerName": "Dontae Russo-Nance",
+    "teamName": "Perth Wildcats",
+    "games": 35,
+    "oRAPM": -4.745,
+    "dRAPM": 4.559,
+    "netRAPM": -0.186,
+    "rawNetRating": 9.1
+  },
+  {
+    "playerName": "Luca Yates",
+    "teamName": "Illawarra Hawks",
+    "games": 21,
+    "oRAPM": 0.553,
+    "dRAPM": -0.752,
+    "netRAPM": -0.199,
+    "rawNetRating": -5.6
+  },
+  {
+    "playerName": "anthony_lamb",
+    "teamName": "New Zealand Breakers",
+    "games": 22,
+    "oRAPM": 3.091,
+    "dRAPM": -3.295,
+    "netRAPM": -0.204,
+    "rawNetRating": -0.3
+  },
+  {
+    "playerName": "rasmus_bach",
+    "teamName": "New Zealand Breakers / Brisbane Bullets",
+    "games": 37,
+    "oRAPM": -1.36,
+    "dRAPM": 1.131,
+    "netRAPM": -0.229,
+    "rawNetRating": -7.5
+  },
+  {
+    "playerName": "Jaquori McLaughlin",
+    "teamName": "Illawarra Hawks",
+    "games": 3,
+    "oRAPM": 0.125,
+    "dRAPM": -0.395,
+    "netRAPM": -0.27,
+    "rawNetRating": -7.8
+  },
+  {
+    "playerName": "duop_reath",
+    "teamName": "Illawarra Hawks",
+    "games": 30,
+    "oRAPM": 0.613,
+    "dRAPM": -0.891,
+    "netRAPM": -0.278,
+    "rawNetRating": 5.5
+  },
+  {
+    "playerName": "oliver_hayes-brown",
+    "teamName": "Perth Wildcats",
+    "games": 13,
+    "oRAPM": -0.049,
+    "dRAPM": -0.233,
+    "netRAPM": -0.282,
+    "rawNetRating": 0
+  },
+  {
+    "playerName": "brandon_ashley",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 23,
+    "oRAPM": 2.035,
+    "dRAPM": -2.335,
+    "netRAPM": -0.3,
+    "rawNetRating": -2
+  },
+  {
+    "playerName": "devondrick_walker",
+    "teamName": "Brisbane Bullets",
+    "games": 5,
+    "oRAPM": 0.081,
+    "dRAPM": -0.387,
+    "netRAPM": -0.306,
+    "rawNetRating": -15.1
+  },
+  {
+    "playerName": "Carlin Davison",
+    "teamName": "New Zealand Breakers",
+    "games": 43,
+    "oRAPM": -1.339,
+    "dRAPM": 1.013,
+    "netRAPM": -0.326,
+    "rawNetRating": -4.9
+  },
+  {
+    "playerName": "bobi_klintman",
+    "teamName": "Cairns Taipans",
+    "games": 23,
+    "oRAPM": -0.301,
+    "dRAPM": -0.034,
+    "netRAPM": -0.335,
+    "rawNetRating": -4
+  },
+  {
+    "playerName": "Owen Foxwell",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 100,
+    "oRAPM": 2.437,
+    "dRAPM": -2.789,
+    "netRAPM": -0.352,
+    "rawNetRating": -0.2
+  },
+  {
+    "playerName": "Majok Deng",
+    "teamName": "Tasmania JackJumpers / Cairns Taipans",
+    "games": 135,
+    "oRAPM": -0.481,
+    "dRAPM": 0.127,
+    "netRAPM": -0.354,
+    "rawNetRating": -1.5
+  },
+  {
+    "playerName": "iggy_mitchell",
+    "teamName": "Sydney Kings",
+    "games": 6,
+    "oRAPM": -0.526,
+    "dRAPM": 0.144,
+    "netRAPM": -0.382,
+    "rawNetRating": -1.6
+  },
+  {
+    "playerName": "will_mcdowell-white",
+    "teamName": "New Zealand Breakers",
+    "games": 66,
+    "oRAPM": 0.044,
+    "dRAPM": -0.433,
+    "netRAPM": -0.389,
+    "rawNetRating": -0.2
+  },
+  {
+    "playerName": "Nick Marshall",
+    "teamName": "Adelaide 36ers / Tasmania JackJumpers",
+    "games": 111,
+    "oRAPM": 0.267,
+    "dRAPM": -0.696,
+    "netRAPM": -0.429,
+    "rawNetRating": -1.9
+  },
+  {
+    "playerName": "victor_law",
+    "teamName": "Perth Wildcats",
+    "games": 26,
+    "oRAPM": -1.781,
+    "dRAPM": 1.344,
+    "netRAPM": -0.437,
+    "rawNetRating": 3.7
+  },
+  {
+    "playerName": "james_batemon",
+    "teamName": "Brisbane Bullets",
+    "games": 16,
+    "oRAPM": 0.407,
+    "dRAPM": -0.885,
+    "netRAPM": -0.478,
+    "rawNetRating": -5.7
+  },
+  {
+    "playerName": "dillon_stith",
+    "teamName": "Cairns Taipans",
+    "games": 14,
+    "oRAPM": -0.672,
+    "dRAPM": 0.182,
+    "netRAPM": -0.49,
+    "rawNetRating": -12.5
+  },
+  {
+    "playerName": "justin_simon",
+    "teamName": "Sydney Kings",
+    "games": 27,
+    "oRAPM": -1.37,
+    "dRAPM": 0.857,
+    "netRAPM": -0.513,
+    "rawNetRating": 6.3
+  },
+  {
+    "playerName": "mirko_djeric",
+    "teamName": "Cairns Taipans",
+    "games": 23,
+    "oRAPM": 1.386,
+    "dRAPM": -1.91,
+    "netRAPM": -0.524,
+    "rawNetRating": -4
+  },
+  {
+    "playerName": "Malith Machar",
+    "teamName": "Melbourne United",
+    "games": 31,
+    "oRAPM": -2.091,
+    "dRAPM": 1.536,
+    "netRAPM": -0.555,
+    "rawNetRating": 12.9
+  },
+  {
+    "playerName": "Kyrin Galloway",
+    "teamName": "Cairns Taipans / Adelaide 36ers / New Zealand Breakers",
+    "games": 131,
+    "oRAPM": -0.891,
+    "dRAPM": 0.329,
+    "netRAPM": -0.562,
+    "rawNetRating": -9.4
+  },
+  {
+    "playerName": "isaiah_moss",
+    "teamName": "Brisbane Bullets",
+    "games": 18,
+    "oRAPM": -1.903,
+    "dRAPM": 1.298,
+    "netRAPM": -0.605,
+    "rawNetRating": -4.3
+  },
+  {
+    "playerName": "hugo_besson",
+    "teamName": "New Zealand Breakers",
+    "games": 25,
+    "oRAPM": 2.169,
+    "dRAPM": -2.782,
+    "netRAPM": -0.613,
+    "rawNetRating": -8.6
+  },
+  {
+    "playerName": "jordon_crawford",
+    "teamName": "Tasmania JackJumpers",
+    "games": 64,
+    "oRAPM": 3.05,
+    "dRAPM": -3.669,
+    "netRAPM": -0.619,
+    "rawNetRating": -0.1
+  },
+  {
+    "playerName": "Daniel Grida",
+    "teamName": "Illawarra Hawks",
+    "games": 70,
+    "oRAPM": 0.048,
+    "dRAPM": -0.672,
+    "netRAPM": -0.624,
+    "rawNetRating": -1.8
+  },
+  {
+    "playerName": "kaia_isaac",
+    "teamName": "New Zealand Breakers",
+    "games": 8,
+    "oRAPM": -0.111,
+    "dRAPM": -0.528,
+    "netRAPM": -0.639,
+    "rawNetRating": -12.8
+  },
+  {
+    "playerName": "Fabijan Krslovic",
+    "teamName": "Tasmania JackJumpers / Melbourne United",
+    "games": 157,
+    "oRAPM": -1.025,
+    "dRAPM": 0.377,
+    "netRAPM": -0.648,
+    "rawNetRating": -1.5
+  },
+  {
+    "playerName": "emmett_naar",
+    "teamName": "Brisbane Bullets / Illawarra Hawks",
+    "games": 24,
+    "oRAPM": 0.487,
+    "dRAPM": -1.157,
+    "netRAPM": -0.67,
+    "rawNetRating": -5.7
+  },
+  {
+    "playerName": "Jack Andrew",
+    "teamName": "New Zealand Breakers / Perth Wildcats",
+    "games": 11,
+    "oRAPM": -1.335,
+    "dRAPM": 0.645,
+    "netRAPM": -0.69,
+    "rawNetRating": -11
+  },
+  {
+    "playerName": "Lloyd McVeigh",
+    "teamName": "Cairns Taipans",
+    "games": 10,
+    "oRAPM": -2.54,
+    "dRAPM": 1.842,
+    "netRAPM": -0.698,
+    "rawNetRating": -27.4
+  },
+  {
+    "playerName": "keandre_cook",
+    "teamName": "Brisbane Bullets",
+    "games": 28,
+    "oRAPM": 1.678,
+    "dRAPM": -2.401,
+    "netRAPM": -0.723,
+    "rawNetRating": -6
+  },
+  {
+    "playerName": "Jo Lual-Acuil Jr",
+    "teamName": "Melbourne United / Perth Wildcats",
+    "games": 77,
+    "oRAPM": -1.476,
+    "dRAPM": 0.714,
+    "netRAPM": -0.762,
+    "rawNetRating": 2.2
+  },
+  {
+    "playerName": "marshall_nelson",
+    "teamName": "Cairns Taipans",
+    "games": 10,
+    "oRAPM": -0.55,
+    "dRAPM": -0.261,
+    "netRAPM": -0.811,
+    "rawNetRating": -12
+  },
+  {
+    "playerName": "Andrew Andrews",
+    "teamName": "Cairns Taipans",
+    "games": 31,
+    "oRAPM": -1.679,
+    "dRAPM": 0.858,
+    "netRAPM": -0.821,
+    "rawNetRating": -12.2
+  },
+  {
+    "playerName": "kai_sotto",
+    "teamName": "Adelaide 36ers",
+    "games": 50,
+    "oRAPM": 1.31,
+    "dRAPM": -2.151,
+    "netRAPM": -0.841,
+    "rawNetRating": -4.1
+  },
+  {
+    "playerName": "josh_roberts",
+    "teamName": "Cairns Taipans",
+    "games": 22,
+    "oRAPM": 1.86,
+    "dRAPM": -2.717,
+    "netRAPM": -0.857,
+    "rawNetRating": -7.3
+  },
+  {
+    "playerName": "mitch_mccarron",
+    "teamName": "Adelaide 36ers / New Zealand Breakers",
+    "games": 106,
+    "oRAPM": -0.832,
+    "dRAPM": -0.081,
+    "netRAPM": -0.913,
+    "rawNetRating": -6
+  },
+  {
+    "playerName": "Jaylin Galloway",
+    "teamName": "Sydney Kings",
+    "games": 101,
+    "oRAPM": -1.249,
+    "dRAPM": 0.335,
+    "netRAPM": -0.914,
+    "rawNetRating": 5.2
+  },
+  {
+    "playerName": "craig_randall ii",
+    "teamName": "Adelaide 36ers",
+    "games": 6,
+    "oRAPM": -1.52,
+    "dRAPM": 0.59,
+    "netRAPM": -0.93,
+    "rawNetRating": -8.5
+  },
+  {
+    "playerName": "xavier_rathan-mayes",
+    "teamName": "Melbourne United / Illawarra Hawks",
+    "games": 58,
+    "oRAPM": -0.247,
+    "dRAPM": -0.691,
+    "netRAPM": -0.938,
+    "rawNetRating": -0.1
+  },
+  {
+    "playerName": "ben_griscti",
+    "teamName": "Adelaide 36ers",
+    "games": 7,
+    "oRAPM": -0.299,
+    "dRAPM": -0.641,
+    "netRAPM": -0.94,
+    "rawNetRating": -24
+  },
+  {
+    "playerName": "alex_starling",
+    "teamName": "Adelaide 36ers",
+    "games": 29,
+    "oRAPM": -3.735,
+    "dRAPM": 2.795,
+    "netRAPM": -0.94,
+    "rawNetRating": -6.7
+  },
+  {
+    "playerName": "Mason Peatling",
+    "teamName": "Illawarra Hawks / Melbourne United",
+    "games": 136,
+    "oRAPM": -1.02,
+    "dRAPM": 0.046,
+    "netRAPM": -0.974,
+    "rawNetRating": 1.5
+  },
+  {
+    "playerName": "Jason Spurgin",
+    "teamName": "Sydney Kings",
+    "games": 7,
+    "oRAPM": 0.155,
+    "dRAPM": -1.16,
+    "netRAPM": -1.005,
+    "rawNetRating": -13.7
+  },
+  {
+    "playerName": "Anthony Drmic",
+    "teamName": "Tasmania JackJumpers / Adelaide 36ers / Brisbane Bullets",
+    "games": 129,
+    "oRAPM": -2.956,
+    "dRAPM": 1.916,
+    "netRAPM": -1.04,
+    "rawNetRating": -0.2
+  },
+  {
+    "playerName": "austin_rapp",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 7,
+    "oRAPM": -0.561,
+    "dRAPM": -0.508,
+    "netRAPM": -1.069,
+    "rawNetRating": -21.5
+  },
+  {
+    "playerName": "Matt Kenyon",
+    "teamName": "Tasmania JackJumpers / South East Melbourne Phoenix / Adelaide 36ers",
+    "games": 127,
+    "oRAPM": -2.202,
+    "dRAPM": 1.128,
+    "netRAPM": -1.074,
+    "rawNetRating": -1
+  },
+  {
+    "playerName": "brayden_inger",
+    "teamName": "Cairns Taipans",
+    "games": 15,
+    "oRAPM": 0.508,
+    "dRAPM": -1.586,
+    "netRAPM": -1.078,
+    "rawNetRating": -10.6
+  },
+  {
+    "playerName": "jordan_caroline",
+    "teamName": "Melbourne United",
+    "games": 6,
+    "oRAPM": -2.421,
+    "dRAPM": 1.332,
+    "netRAPM": -1.089,
+    "rawNetRating": -10
+  },
+  {
+    "playerName": "izan_almansa",
+    "teamName": "Perth Wildcats",
+    "games": 29,
+    "oRAPM": 3.388,
+    "dRAPM": -4.497,
+    "netRAPM": -1.109,
+    "rawNetRating": 3.8
+  },
+  {
+    "playerName": "Taylor Britt",
+    "teamName": "New Zealand Breakers",
+    "games": 19,
+    "oRAPM": -3.161,
+    "dRAPM": 2.021,
+    "netRAPM": -1.14,
+    "rawNetRating": 3.3
+  },
+  {
+    "playerName": "Nicholas Stoddart",
+    "teamName": "Tasmania JackJumpers",
+    "games": 31,
+    "oRAPM": -1.954,
+    "dRAPM": 0.8,
+    "netRAPM": -1.154,
+    "rawNetRating": -3.4
+  },
+  {
+    "playerName": "Tom Wilson",
+    "teamName": "Melbourne United",
+    "games": 25,
+    "oRAPM": -2.313,
+    "dRAPM": 1.132,
+    "netRAPM": -1.181,
+    "rawNetRating": 8.4
+  },
+  {
+    "playerName": "malcolm_bernard",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 3,
+    "oRAPM": -1.75,
+    "dRAPM": 0.552,
+    "netRAPM": -1.198,
+    "rawNetRating": -16.5
+  },
+  {
+    "playerName": "walter_brown",
+    "teamName": "Tasmania JackJumpers",
+    "games": 19,
+    "oRAPM": -1.805,
+    "dRAPM": 0.594,
+    "netRAPM": -1.211,
+    "rawNetRating": -17.9
+  },
+  {
+    "playerName": "Quentin Peterson",
+    "teamName": "Illawarra Hawks",
+    "games": 26,
+    "oRAPM": 1.522,
+    "dRAPM": -2.748,
+    "netRAPM": -1.226,
+    "rawNetRating": -7
+  },
+  {
+    "playerName": "Sunday Dech",
+    "teamName": "Adelaide 36ers / Perth Wildcats",
+    "games": 126,
+    "oRAPM": -3.341,
+    "dRAPM": 2.096,
+    "netRAPM": -1.245,
+    "rawNetRating": -3.4
+  },
+  {
+    "playerName": "Cameron Huefner",
+    "teamName": "Perth Wildcats",
+    "games": 9,
+    "oRAPM": -1.346,
+    "dRAPM": 0.096,
+    "netRAPM": -1.25,
+    "rawNetRating": -20
+  },
+  {
+    "playerName": "andrew_ogilvy",
+    "teamName": "Illawarra Hawks",
+    "games": 11,
+    "oRAPM": -0.692,
+    "dRAPM": -0.57,
+    "netRAPM": -1.262,
+    "rawNetRating": -9.7
+  },
+  {
+    "playerName": "Daniel Foster",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 31,
+    "oRAPM": -2.943,
+    "dRAPM": 1.626,
+    "netRAPM": -1.317,
+    "rawNetRating": 6.7
+  },
+  {
+    "playerName": "rashard_kelly",
+    "teamName": "Tasmania JackJumpers",
+    "games": 27,
+    "oRAPM": 0.474,
+    "dRAPM": -1.821,
+    "netRAPM": -1.347,
+    "rawNetRating": 0.5
+  },
+  {
+    "playerName": "taran_armstrong",
+    "teamName": "Cairns Taipans",
+    "games": 42,
+    "oRAPM": -1.284,
+    "dRAPM": -0.099,
+    "netRAPM": -1.383,
+    "rawNetRating": -7.2
+  },
+  {
+    "playerName": "thomas_vodanovich",
+    "teamName": "New Zealand Breakers / Sydney Kings / South East Melbourne Phoenix / Tasmania JackJumpers",
+    "games": 94,
+    "oRAPM": 0.347,
+    "dRAPM": -1.814,
+    "netRAPM": -1.467,
+    "rawNetRating": 0.8
+  },
+  {
+    "playerName": "william_mcdowell-white",
+    "teamName": "New Zealand Breakers",
+    "games": 7,
+    "oRAPM": -0.16,
+    "dRAPM": -1.319,
+    "netRAPM": -1.479,
+    "rawNetRating": -12.1
+  },
+  {
+    "playerName": "grant_anticevich",
+    "teamName": "New Zealand Breakers / South East Melbourne Phoenix",
+    "games": 44,
+    "oRAPM": -0.359,
+    "dRAPM": -1.185,
+    "netRAPM": -1.544,
+    "rawNetRating": -7.7
+  },
+  {
+    "playerName": "daniel_fotu",
+    "teamName": "New Zealand Breakers",
+    "games": 18,
+    "oRAPM": 1.729,
+    "dRAPM": -3.339,
+    "netRAPM": -1.61,
+    "rawNetRating": -6
+  },
+  {
+    "playerName": "Kobe McDowell-White",
+    "teamName": "Illawarra Hawks",
+    "games": 11,
+    "oRAPM": -0.697,
+    "dRAPM": -0.927,
+    "netRAPM": -1.624,
+    "rawNetRating": -28.2
+  },
+  {
+    "playerName": "brad_newley",
+    "teamName": "Melbourne United",
+    "games": 77,
+    "oRAPM": -2.227,
+    "dRAPM": 0.556,
+    "netRAPM": -1.671,
+    "rawNetRating": 1.2
+  },
+  {
+    "playerName": "Kobe Williamson",
+    "teamName": "Tasmania JackJumpers",
+    "games": 7,
+    "oRAPM": -1.036,
+    "dRAPM": -0.659,
+    "netRAPM": -1.695,
+    "rawNetRating": -47.6
+  },
+  {
+    "playerName": "Hunter Goodrick",
+    "teamName": "Sydney Kings",
+    "games": 29,
+    "oRAPM": 0.746,
+    "dRAPM": -2.459,
+    "netRAPM": -1.713,
+    "rawNetRating": 8.9
+  },
+  {
+    "playerName": "tim_coenraad",
+    "teamName": "Illawarra Hawks",
+    "games": 53,
+    "oRAPM": -0.558,
+    "dRAPM": -1.224,
+    "netRAPM": -1.782,
+    "rawNetRating": -4.5
+  },
+  {
+    "playerName": "brady_manek",
+    "teamName": "Perth Wildcats",
+    "games": 28,
+    "oRAPM": 1.579,
+    "dRAPM": -3.371,
+    "netRAPM": -1.792,
+    "rawNetRating": -1
+  },
+  {
+    "playerName": "Dash Daniels",
+    "teamName": "Melbourne United",
+    "games": 33,
+    "oRAPM": -2.008,
+    "dRAPM": 0.177,
+    "netRAPM": -1.831,
+    "rawNetRating": -1.1
+  },
+  {
+    "playerName": "matthew_johns",
+    "teamName": "Brisbane Bullets",
+    "games": 21,
+    "oRAPM": -1.802,
+    "dRAPM": -0.031,
+    "netRAPM": -1.833,
+    "rawNetRating": -14.2
+  },
+  {
+    "playerName": "taane_samuel",
+    "teamName": "Brisbane Bullets",
+    "games": 9,
+    "oRAPM": -0.847,
+    "dRAPM": -1.007,
+    "netRAPM": -1.854,
+    "rawNetRating": -13.3
+  },
+  {
+    "playerName": "David Okwera",
+    "teamName": "Perth Wildcats / Melbourne United",
+    "games": 105,
+    "oRAPM": -0.443,
+    "dRAPM": -1.432,
+    "netRAPM": -1.875,
+    "rawNetRating": -1.4
+  },
+  {
+    "playerName": "jack_salt",
+    "teamName": "Brisbane Bullets",
+    "games": 21,
+    "oRAPM": -3.127,
+    "dRAPM": 1.23,
+    "netRAPM": -1.897,
+    "rawNetRating": -10.2
+  },
+  {
+    "playerName": "matthew_hodgson",
+    "teamName": "Perth Wildcats",
+    "games": 18,
+    "oRAPM": -2.886,
+    "dRAPM": 0.978,
+    "netRAPM": -1.908,
+    "rawNetRating": -1.5
+  },
+  {
+    "playerName": "Sam McDaniel",
+    "teamName": "Brisbane Bullets / Tasmania JackJumpers",
+    "games": 83,
+    "oRAPM": -4.442,
+    "dRAPM": 2.533,
+    "netRAPM": -1.909,
+    "rawNetRating": -3.8
+  },
+  {
+    "playerName": "chasson_randle",
+    "teamName": "New Zealand Breakers",
+    "games": 17,
+    "oRAPM": -0.327,
+    "dRAPM": -1.613,
+    "netRAPM": -1.94,
+    "rawNetRating": -9
+  },
+  {
+    "playerName": "Tristan Devers",
+    "teamName": "Brisbane Bullets",
+    "games": 43,
+    "oRAPM": -0.23,
+    "dRAPM": -1.736,
+    "netRAPM": -1.966,
+    "rawNetRating": -14.8
+  },
+  {
+    "playerName": "tanner_groves",
+    "teamName": "Cairns Taipans",
+    "games": 22,
+    "oRAPM": 0.736,
+    "dRAPM": -2.724,
+    "netRAPM": -1.988,
+    "rawNetRating": -9.9
+  },
+  {
+    "playerName": "mangok_mathiang",
+    "teamName": "New Zealand Breakers / Illawarra Hawks",
+    "games": 55,
+    "oRAPM": -3.751,
+    "dRAPM": 1.748,
+    "netRAPM": -2.003,
+    "rawNetRating": -5.4
+  },
+  {
+    "playerName": "makur_maker",
+    "teamName": "Sydney Kings",
+    "games": 21,
+    "oRAPM": -1.159,
+    "dRAPM": -0.89,
+    "netRAPM": -2.049,
+    "rawNetRating": -5.1
+  },
+  {
+    "playerName": "Ben Ayre",
+    "teamName": "South East Melbourne Phoenix / Tasmania JackJumpers / Cairns Taipans",
+    "games": 110,
+    "oRAPM": 0.092,
+    "dRAPM": -2.146,
+    "netRAPM": -2.054,
+    "rawNetRating": -5.4
+  },
+  {
+    "playerName": "Archie Woodhill",
+    "teamName": "Tasmania JackJumpers / Sydney Kings",
+    "games": 20,
+    "oRAPM": -2.209,
+    "dRAPM": 0.154,
+    "netRAPM": -2.055,
+    "rawNetRating": -1.3
+  },
+  {
+    "playerName": "Admiral Schofield",
+    "teamName": "Cairns Taipans",
+    "games": 30,
+    "oRAPM": -2.346,
+    "dRAPM": 0.265,
+    "netRAPM": -2.081,
+    "rawNetRating": -13.2
+  },
+  {
+    "playerName": "Isaac Humphries",
+    "teamName": "Adelaide 36ers / Melbourne United",
+    "games": 118,
+    "oRAPM": -1.407,
+    "dRAPM": -0.685,
+    "netRAPM": -2.092,
+    "rawNetRating": -2.2
+  },
+  {
+    "playerName": "tom_abercrombie",
+    "teamName": "New Zealand Breakers",
+    "games": 62,
+    "oRAPM": -1.6,
+    "dRAPM": -0.531,
+    "netRAPM": -2.131,
+    "rawNetRating": -2.1
+  },
+  {
+    "playerName": "george_king",
+    "teamName": "Illawarra Hawks",
+    "games": 9,
+    "oRAPM": -2.168,
+    "dRAPM": 0.03,
+    "netRAPM": -2.138,
+    "rawNetRating": -14.8
+  },
+  {
+    "playerName": "Max Darling",
+    "teamName": "New Zealand Breakers",
+    "games": 43,
+    "oRAPM": -1.108,
+    "dRAPM": -1.115,
+    "netRAPM": -2.223,
+    "rawNetRating": -5.4
+  },
+  {
+    "playerName": "zac_triplett",
+    "teamName": "Melbourne United / Illawarra Hawks",
+    "games": 39,
+    "oRAPM": 0.026,
+    "dRAPM": -2.304,
+    "netRAPM": -2.278,
+    "rawNetRating": -4.3
+  },
+  {
+    "playerName": "Finn Delany",
+    "teamName": "New Zealand Breakers / Melbourne United",
+    "games": 76,
+    "oRAPM": -3.217,
+    "dRAPM": 0.938,
+    "netRAPM": -2.279,
+    "rawNetRating": -3.4
+  },
+  {
+    "playerName": "rj_hunter",
+    "teamName": "Sydney Kings",
+    "games": 3,
+    "oRAPM": -2.735,
+    "dRAPM": 0.41,
+    "netRAPM": -2.325,
+    "rawNetRating": -29.3
+  },
+  {
+    "playerName": "ian_hummer",
+    "teamName": "Tasmania JackJumpers",
+    "games": 12,
+    "oRAPM": -2.577,
+    "dRAPM": 0.225,
+    "netRAPM": -2.352,
+    "rawNetRating": -19.9
+  },
+  {
+    "playerName": "akoldah_gak",
+    "teamName": "Cairns Taipans / Illawarra Hawks",
+    "games": 64,
+    "oRAPM": -4.423,
+    "dRAPM": 2.025,
+    "netRAPM": -2.398,
+    "rawNetRating": -11.2
+  },
+  {
+    "playerName": "Izayah Le'Afa",
+    "teamName": "New Zealand Breakers / South East Melbourne Phoenix / Sydney Kings",
+    "games": 126,
+    "oRAPM": -2.955,
+    "dRAPM": 0.551,
+    "netRAPM": -2.404,
+    "rawNetRating": 0.2
+  },
+  {
+    "playerName": "rocco_zikarsky",
+    "teamName": "Brisbane Bullets",
+    "games": 45,
+    "oRAPM": 0.43,
+    "dRAPM": -2.847,
+    "netRAPM": -2.417,
+    "rawNetRating": -10
+  },
+  {
+    "playerName": "chris_smith",
+    "teamName": "Brisbane Bullets",
+    "games": 27,
+    "oRAPM": 0.761,
+    "dRAPM": -3.204,
+    "netRAPM": -2.443,
+    "rawNetRating": -5.9
+  },
+  {
+    "playerName": "tai_webster",
+    "teamName": "Perth Wildcats",
+    "games": 51,
+    "oRAPM": -1.071,
+    "dRAPM": -1.411,
+    "netRAPM": -2.482,
+    "rawNetRating": -0.2
+  },
+  {
+    "playerName": "Jackson Ball",
+    "teamName": "Illawarra Hawks",
+    "games": 11,
+    "oRAPM": -2.229,
+    "dRAPM": -0.263,
+    "netRAPM": -2.492,
+    "rawNetRating": -9.2
+  },
+  {
+    "playerName": "emmanuel_malou",
+    "teamName": "Adelaide 36ers",
+    "games": 16,
+    "oRAPM": -1.252,
+    "dRAPM": -1.297,
+    "netRAPM": -2.549,
+    "rawNetRating": -14.6
+  },
+  {
+    "playerName": "Alex McNaught",
+    "teamName": "New Zealand Breakers",
+    "games": 21,
+    "oRAPM": -1.684,
+    "dRAPM": -0.941,
+    "netRAPM": -2.625,
+    "rawNetRating": -13
+  },
+  {
+    "playerName": "josh_adams",
+    "teamName": "Tasmania JackJumpers / Brisbane Bullets",
+    "games": 43,
+    "oRAPM": -1.586,
+    "dRAPM": -1.039,
+    "netRAPM": -2.625,
+    "rawNetRating": -3.7
+  },
+  {
+    "playerName": "stephen_zimmerman",
+    "teamName": "Cairns Taipans",
+    "games": 16,
+    "oRAPM": -3.158,
+    "dRAPM": 0.531,
+    "netRAPM": -2.627,
+    "rawNetRating": -8.6
+  },
+  {
+    "playerName": "ian_clark",
+    "teamName": "Melbourne United / Sydney Kings / Adelaide 36ers",
+    "games": 83,
+    "oRAPM": 3.4,
+    "dRAPM": -6.046,
+    "netRAPM": -2.646,
+    "rawNetRating": 0.9
+  },
+  {
+    "playerName": "Jensen Bradtke",
+    "teamName": "Brisbane Bullets",
+    "games": 13,
+    "oRAPM": -1.218,
+    "dRAPM": -1.435,
+    "netRAPM": -2.653,
+    "rawNetRating": -42.1
+  },
+  {
+    "playerName": "aron_baynes",
+    "teamName": "Brisbane Bullets",
+    "games": 47,
+    "oRAPM": -1.9,
+    "dRAPM": -0.794,
+    "netRAPM": -2.694,
+    "rawNetRating": -9.5
+  },
+  {
+    "playerName": "Luke Rosendale",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 26,
+    "oRAPM": -2.662,
+    "dRAPM": -0.034,
+    "netRAPM": -2.696,
+    "rawNetRating": -14.2
+  },
+  {
+    "playerName": "chuanxing_liu",
+    "teamName": "Brisbane Bullets",
+    "games": 23,
+    "oRAPM": -1.736,
+    "dRAPM": -1.006,
+    "netRAPM": -2.742,
+    "rawNetRating": -14.8
+  },
+  {
+    "playerName": "Wani Swaka Lo Buluk",
+    "teamName": "Illawarra Hawks / Sydney Kings",
+    "games": 155,
+    "oRAPM": -3.289,
+    "dRAPM": 0.487,
+    "netRAPM": -2.802,
+    "rawNetRating": -2.8
+  },
+  {
+    "playerName": "Javon Freeman-Liberty",
+    "teamName": "Brisbane Bullets",
+    "games": 9,
+    "oRAPM": -2.187,
+    "dRAPM": -0.645,
+    "netRAPM": -2.832,
+    "rawNetRating": -16.1
+  },
+  {
+    "playerName": "tamuri_wigness",
+    "teamName": "Brisbane Bullets",
+    "games": 17,
+    "oRAPM": -2.182,
+    "dRAPM": -0.697,
+    "netRAPM": -2.879,
+    "rawNetRating": -18.6
+  },
+  {
+    "playerName": "robert_franks",
+    "teamName": "Brisbane Bullets / Adelaide 36ers",
+    "games": 55,
+    "oRAPM": 1.211,
+    "dRAPM": -4.103,
+    "netRAPM": -2.892,
+    "rawNetRating": -5.1
+  },
+  {
+    "playerName": "jacob_wiley",
+    "teamName": "Adelaide 36ers",
+    "games": 26,
+    "oRAPM": -1.688,
+    "dRAPM": -1.295,
+    "netRAPM": -2.983,
+    "rawNetRating": -8
+  },
+  {
+    "playerName": "corey_webster",
+    "teamName": "Perth Wildcats",
+    "games": 47,
+    "oRAPM": -0.1,
+    "dRAPM": -2.897,
+    "netRAPM": -2.997,
+    "rawNetRating": -2.5
+  },
+  {
+    "playerName": "alex_mudronja",
+    "teamName": "Illawarra Hawks / Cairns Taipans",
+    "games": 32,
+    "oRAPM": -2.752,
+    "dRAPM": -0.248,
+    "netRAPM": -3,
+    "rawNetRating": -16.5
+  },
+  {
+    "playerName": "Akech Aliir",
+    "teamName": "South East Melbourne Phoenix / Melbourne United",
+    "games": 42,
+    "oRAPM": -0.263,
+    "dRAPM": -2.825,
+    "netRAPM": -3.088,
+    "rawNetRating": 3.6
+  },
+  {
+    "playerName": "jarrad_weeks",
+    "teamName": "Tasmania JackJumpers",
+    "games": 60,
+    "oRAPM": -3.34,
+    "dRAPM": 0.241,
+    "netRAPM": -3.099,
+    "rawNetRating": -5.5
+  },
+  {
+    "playerName": "todd_withers",
+    "teamName": "Adelaide 36ers / Perth Wildcats",
+    "games": 40,
+    "oRAPM": -2.541,
+    "dRAPM": -0.618,
+    "netRAPM": -3.159,
+    "rawNetRating": -5.7
+  },
+  {
+    "playerName": "yudai_baba",
+    "teamName": "Melbourne United",
+    "games": 10,
+    "oRAPM": -3.283,
+    "dRAPM": 0.103,
+    "netRAPM": -3.18,
+    "rawNetRating": -5.7
+  },
+  {
+    "playerName": "matur_maker",
+    "teamName": "Sydney Kings",
+    "games": 14,
+    "oRAPM": -2.492,
+    "dRAPM": -0.701,
+    "netRAPM": -3.193,
+    "rawNetRating": -20.9
+  },
+  {
+    "playerName": "Matthew Dellavedova",
+    "teamName": "Melbourne United / Sydney Kings",
+    "games": 113,
+    "oRAPM": -1.124,
+    "dRAPM": -2.159,
+    "netRAPM": -3.283,
+    "rawNetRating": 4.7
+  },
+  {
+    "playerName": "deng_adel",
+    "teamName": "Brisbane Bullets",
+    "games": 10,
+    "oRAPM": -1.479,
+    "dRAPM": -1.834,
+    "netRAPM": -3.313,
+    "rawNetRating": -17.3
+  },
+  {
+    "playerName": "John Jenkins",
+    "teamName": "Adelaide 36ers",
+    "games": 9,
+    "oRAPM": -4.654,
+    "dRAPM": 1.283,
+    "netRAPM": -3.371,
+    "rawNetRating": -11.4
+  },
+  {
+    "playerName": "Tai Webster",
+    "teamName": "New Zealand Breakers",
+    "games": 16,
+    "oRAPM": -2.278,
+    "dRAPM": -1.142,
+    "netRAPM": -3.42,
+    "rawNetRating": -15.4
+  },
+  {
+    "playerName": "Lat Mayen",
+    "teamName": "Adelaide 36ers / Cairns Taipans / Perth Wildcats",
+    "games": 94,
+    "oRAPM": 0.402,
+    "dRAPM": -3.881,
+    "netRAPM": -3.479,
+    "rawNetRating": -3.5
+  },
+  {
+    "playerName": "josh_davey",
+    "teamName": "Cairns Taipans",
+    "games": 16,
+    "oRAPM": -1.504,
+    "dRAPM": -2.047,
+    "netRAPM": -3.551,
+    "rawNetRating": -24.4
+  },
+  {
+    "playerName": "Reyne Smith",
+    "teamName": "Cairns Taipans",
+    "games": 14,
+    "oRAPM": -1.702,
+    "dRAPM": -1.866,
+    "netRAPM": -3.568,
+    "rawNetRating": -19.6
+  },
+  {
+    "playerName": "Harry Froling",
+    "teamName": "Illawarra Hawks / Brisbane Bullets",
+    "games": 68,
+    "oRAPM": -2.799,
+    "dRAPM": -0.772,
+    "netRAPM": -3.571,
+    "rawNetRating": -4.9
+  },
+  {
+    "playerName": "Mawot Mag",
+    "teamName": "Cairns Taipans",
+    "games": 16,
+    "oRAPM": -3.339,
+    "dRAPM": -0.291,
+    "netRAPM": -3.63,
+    "rawNetRating": -16.4
+  },
+  {
+    "playerName": "nathan_jawai",
+    "teamName": "Cairns Taipans",
+    "games": 19,
+    "oRAPM": -3.291,
+    "dRAPM": -0.407,
+    "netRAPM": -3.698,
+    "rawNetRating": -15.8
+  },
+  {
+    "playerName": "scott_machado",
+    "teamName": "Cairns Taipans",
+    "games": 18,
+    "oRAPM": -2.631,
+    "dRAPM": -1.077,
+    "netRAPM": -3.708,
+    "rawNetRating": -7.5
+  },
+  {
+    "playerName": "Troy Brown Jnr",
+    "teamName": "Adelaide 36ers",
+    "games": 13,
+    "oRAPM": -3.142,
+    "dRAPM": -0.592,
+    "netRAPM": -3.734,
+    "rawNetRating": -4.8
+  },
+  {
+    "playerName": "jordan_usher",
+    "teamName": "Perth Wildcats",
+    "games": 31,
+    "oRAPM": -0.385,
+    "dRAPM": -3.376,
+    "netRAPM": -3.761,
+    "rawNetRating": -3.3
+  },
+  {
+    "playerName": "kyle_zunic",
+    "teamName": "Perth Wildcats",
+    "games": 39,
+    "oRAPM": -4.832,
+    "dRAPM": 1.022,
+    "netRAPM": -3.81,
+    "rawNetRating": -7
+  },
+  {
+    "playerName": "Sean Bairstow",
+    "teamName": "New Zealand Breakers",
+    "games": 49,
+    "oRAPM": -2.612,
+    "dRAPM": -1.301,
+    "netRAPM": -3.913,
+    "rawNetRating": -9.6
+  },
+  {
+    "playerName": "derrick_walton jr",
+    "teamName": "Sydney Kings / South East Melbourne Phoenix",
+    "games": 40,
+    "oRAPM": -1.622,
+    "dRAPM": -2.4,
+    "netRAPM": -4.022,
+    "rawNetRating": 2.5
+  },
+  {
+    "playerName": "Reuben Te Rangi",
+    "teamName": "South East Melbourne Phoenix / New Zealand Breakers / Tasmania JackJumpers",
+    "games": 141,
+    "oRAPM": -1.974,
+    "dRAPM": -2.064,
+    "netRAPM": -4.038,
+    "rawNetRating": -6.5
+  },
+  {
+    "playerName": "Terry Taylor",
+    "teamName": "Brisbane Bullets",
+    "games": 17,
+    "oRAPM": -4.676,
+    "dRAPM": 0.542,
+    "netRAPM": -4.134,
+    "rawNetRating": -24.9
+  },
+  {
+    "playerName": "Michael Harris",
+    "teamName": "Perth Wildcats / Adelaide 36ers",
+    "games": 75,
+    "oRAPM": -3.834,
+    "dRAPM": -0.661,
+    "netRAPM": -4.495,
+    "rawNetRating": -3.5
+  },
+  {
+    "playerName": "clint_steindl",
+    "teamName": "Tasmania JackJumpers",
+    "games": 116,
+    "oRAPM": -2.193,
+    "dRAPM": -2.308,
+    "netRAPM": -4.501,
+    "rawNetRating": -4.7
+  },
+  {
+    "playerName": "DJ Mitchell",
+    "teamName": "Brisbane Bullets / South East Melbourne Phoenix",
+    "games": 71,
+    "oRAPM": -0.275,
+    "dRAPM": -4.232,
+    "netRAPM": -4.507,
+    "rawNetRating": -7.6
+  },
+  {
+    "playerName": "cameron_oliver",
+    "teamName": "Sydney Kings",
+    "games": 29,
+    "oRAPM": -0.818,
+    "dRAPM": -3.741,
+    "netRAPM": -4.559,
+    "rawNetRating": -3.3
+  },
+  {
+    "playerName": "Mojave King",
+    "teamName": "Cairns Taipans / New Zealand Breakers / Adelaide 36ers",
+    "games": 65,
+    "oRAPM": -0.043,
+    "dRAPM": -4.55,
+    "netRAPM": -4.593,
+    "rawNetRating": -13
+  },
+  {
+    "playerName": "Callum Dalton",
+    "teamName": "Brisbane Bullets / Melbourne United",
+    "games": 32,
+    "oRAPM": -1.592,
+    "dRAPM": -3.081,
+    "netRAPM": -4.673,
+    "rawNetRating": -16.8
+  },
+  {
+    "playerName": "Mason Jones",
+    "teamName": "Perth Wildcats",
+    "games": 5,
+    "oRAPM": -3.709,
+    "dRAPM": -1.084,
+    "netRAPM": -4.793,
+    "rawNetRating": -11.3
+  },
+  {
+    "playerName": "Sam Mennenga",
+    "teamName": "New Zealand Breakers / Cairns Taipans",
+    "games": 83,
+    "oRAPM": -3.821,
+    "dRAPM": -1.021,
+    "netRAPM": -4.842,
+    "rawNetRating": -5.1
+  },
+  {
+    "playerName": "jordan_ngatai",
+    "teamName": "Cairns Taipans",
+    "games": 23,
+    "oRAPM": -2.396,
+    "dRAPM": -2.458,
+    "netRAPM": -4.854,
+    "rawNetRating": -13.6
+  },
+  {
+    "playerName": "TJ Starks",
+    "teamName": "Tasmania JackJumpers",
+    "games": 7,
+    "oRAPM": -2.889,
+    "dRAPM": -2.03,
+    "netRAPM": -4.919,
+    "rawNetRating": -34.4
+  },
+  {
+    "playerName": "Kyle Adnam",
+    "teamName": "South East Melbourne Phoenix / Cairns Taipans / Illawarra Hawks",
+    "games": 96,
+    "oRAPM": -2.025,
+    "dRAPM": -3.027,
+    "netRAPM": -5.052,
+    "rawNetRating": -7.2
+  },
+  {
+    "playerName": "andrew_white iii",
+    "teamName": "Brisbane Bullets",
+    "games": 15,
+    "oRAPM": -3.837,
+    "dRAPM": -1.215,
+    "netRAPM": -5.052,
+    "rawNetRating": -18.5
+  },
+  {
+    "playerName": "josh_kunen",
+    "teamName": "Brisbane Bullets",
+    "games": 7,
+    "oRAPM": -1.532,
+    "dRAPM": -3.534,
+    "netRAPM": -5.066,
+    "rawNetRating": -53.5
+  },
+  {
+    "playerName": "rhys_vague",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 27,
+    "oRAPM": -2.361,
+    "dRAPM": -2.731,
+    "netRAPM": -5.092,
+    "rawNetRating": -23
+  },
+  {
+    "playerName": "Jacob Richards",
+    "teamName": "Tasmania JackJumpers",
+    "games": 13,
+    "oRAPM": -3.546,
+    "dRAPM": -1.797,
+    "netRAPM": -5.343,
+    "rawNetRating": -45.4
+  },
+  {
+    "playerName": "Gorjok Gak",
+    "teamName": "Brisbane Bullets / South East Melbourne Phoenix / Tasmania JackJumpers",
+    "games": 75,
+    "oRAPM": -2.505,
+    "dRAPM": -2.844,
+    "netRAPM": -5.349,
+    "rawNetRating": -13.4
+  },
+  {
+    "playerName": "Tom Koppens",
+    "teamName": "Melbourne United",
+    "games": 33,
+    "oRAPM": -5.039,
+    "dRAPM": -0.388,
+    "netRAPM": -5.427,
+    "rawNetRating": -8
+  },
+  {
+    "playerName": "Tohi Smith-Milner",
+    "teamName": "Brisbane Bullets / South East Melbourne Phoenix / Adelaide 36ers",
+    "games": 108,
+    "oRAPM": -2.48,
+    "dRAPM": -2.975,
+    "netRAPM": -5.455,
+    "rawNetRating": -13.4
+  },
+  {
+    "playerName": "jarrod_kenny",
+    "teamName": "Cairns Taipans",
+    "games": 21,
+    "oRAPM": -2.634,
+    "dRAPM": -2.828,
+    "netRAPM": -5.462,
+    "rawNetRating": -16.6
+  },
+  {
+    "playerName": "alexandre_sarr",
+    "teamName": "Perth Wildcats",
+    "games": 27,
+    "oRAPM": -3.383,
+    "dRAPM": -2.107,
+    "netRAPM": -5.49,
+    "rawNetRating": -9.9
+  },
+  {
+    "playerName": "Jack Purchase",
+    "teamName": "Brisbane Bullets / Perth Wildcats",
+    "games": 38,
+    "oRAPM": -3.543,
+    "dRAPM": -2.065,
+    "netRAPM": -5.608,
+    "rawNetRating": -22.2
+  },
+  {
+    "playerName": "majok_majok",
+    "teamName": "Perth Wildcats / South East Melbourne Phoenix",
+    "games": 54,
+    "oRAPM": -1.592,
+    "dRAPM": -4.155,
+    "netRAPM": -5.747,
+    "rawNetRating": -5.4
+  },
+  {
+    "playerName": "Keanu Rasmussen",
+    "teamName": "Adelaide 36ers",
+    "games": 34,
+    "oRAPM": -3.026,
+    "dRAPM": -2.879,
+    "netRAPM": -5.905,
+    "rawNetRating": -10.9
+  },
+  {
+    "playerName": "michael_frazier ii",
+    "teamName": "Perth Wildcats / Illawarra Hawks",
+    "games": 23,
+    "oRAPM": -2.168,
+    "dRAPM": -3.839,
+    "netRAPM": -6.007,
+    "rawNetRating": -12.2
+  },
+  {
+    "playerName": "ousmane_dieng",
+    "teamName": "New Zealand Breakers",
+    "games": 23,
+    "oRAPM": -3.644,
+    "dRAPM": -2.486,
+    "netRAPM": -6.13,
+    "rawNetRating": -17.4
+  },
+  {
+    "playerName": "Lachlan Dent",
+    "teamName": "Illawarra Hawks / Sydney Kings",
+    "games": 32,
+    "oRAPM": -5.092,
+    "dRAPM": -1.2,
+    "netRAPM": -6.292,
+    "rawNetRating": -16.7
+  },
+  {
+    "playerName": "Kody Stattmann",
+    "teamName": "Cairns Taipans / South East Melbourne Phoenix / Brisbane Bullets",
+    "games": 61,
+    "oRAPM": -4.166,
+    "dRAPM": -2.316,
+    "netRAPM": -6.482,
+    "rawNetRating": -18.4
+  },
+  {
+    "playerName": "abdel_nader",
+    "teamName": "South East Melbourne Phoenix",
+    "games": 8,
+    "oRAPM": -4.03,
+    "dRAPM": -2.672,
+    "netRAPM": -6.702,
+    "rawNetRating": -34.8
+  },
+  {
+    "playerName": "Jonah Antonio",
+    "teamName": "Cairns Taipans / Illawarra Hawks",
+    "games": 71,
+    "oRAPM": -4.413,
+    "dRAPM": -2.699,
+    "netRAPM": -7.112,
+    "rawNetRating": -15.7
+  },
+  {
+    "playerName": "Biwali Bayles",
+    "teamName": "Illawarra Hawks / Sydney Kings",
+    "games": 75,
+    "oRAPM": -7.406,
+    "dRAPM": -0.56,
+    "netRAPM": -7.966,
+    "rawNetRating": -10.7
+  },
+  {
+    "playerName": "Taine Murray",
+    "teamName": "Brisbane Bullets",
+    "games": 28,
+    "oRAPM": -4.362,
+    "dRAPM": -3.814,
+    "netRAPM": -8.176,
+    "rawNetRating": -23.9
+  },
+  {
+    "playerName": "Lachlan Barker",
+    "teamName": "Cairns Taipans / Melbourne United / Tasmania JackJumpers / South East Melbourne Phoenix",
+    "games": 75,
+    "oRAPM": -4.532,
+    "dRAPM": -3.868,
+    "netRAPM": -8.4,
+    "rawNetRating": -17.6
+  },
+  {
+    "playerName": "Jacob Holt",
+    "teamName": "Brisbane Bullets",
+    "games": 22,
+    "oRAPM": -3.38,
+    "dRAPM": -5.178,
+    "netRAPM": -8.558,
+    "rawNetRating": -29.4
+  }
+]
