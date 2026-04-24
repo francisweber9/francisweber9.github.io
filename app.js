@@ -807,11 +807,13 @@
         }
 
         const series = selectedPlayers.map((player, idx) => {
-          const points = (player.points || [])
-            .map((p) => ({ x: Number(p.g), y: p[metric] }))
-            .filter((p) => Number.isFinite(p.x) && Number.isFinite(p.y))
+          const allPoints = (player.points || [])
+            .map((p) => ({ x: Number(p.g), y: Number(p[metric]) }))
+            .filter((p) => Number.isFinite(p.x))
             .sort((a, b) => a.x - b.x);
-          return { id: player.id, name: player.name, color: dpmPalette[idx % dpmPalette.length], points };
+          const points = allPoints.filter((p) => Number.isFinite(p.y));
+          const careerMaxX = allPoints.length ? allPoints[allPoints.length - 1].x : 0;
+          return { id: player.id, name: player.name, color: dpmPalette[idx % dpmPalette.length], points, careerMaxX };
         });
 
         const hasPoints = series.some((s) => s.points.length > 0);
@@ -823,7 +825,7 @@
         }
 
         const allPoints = series.flatMap((s) => s.points);
-        const maxX = Math.max(1, ...allPoints.map((p) => p.x));
+        const maxX = Math.max(1, ...series.map((s) => s.careerMaxX || 0));
         const minYPoint = Math.min(...allPoints.map((p) => p.y));
         const maxYPoint = Math.max(...allPoints.map((p) => p.y));
         const yPad = Math.max(0.2, (maxYPoint - minYPoint) * 0.12);
