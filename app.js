@@ -20,26 +20,46 @@
         tab.addEventListener("click", () => activateTopTab(tab.dataset.pane));
       });
 
-      const subTabs = document.querySelectorAll(".subtab");
-      const subPanes = [
+      const nblSubTabs = document.querySelectorAll("#pane-nbl .subtab");
+      const nblSubPanes = [
         document.getElementById("subpane-rapm"),
         document.getElementById("subpane-wowy"),
         document.getElementById("subpane-lineup")
       ];
 
       function activateSubTab(targetPane) {
-        subTabs.forEach((tab) => {
+        nblSubTabs.forEach((tab) => {
           const active = tab.dataset.pane === targetPane;
           tab.setAttribute("aria-selected", active ? "true" : "false");
         });
-
-        subPanes.forEach((pane) => {
+        nblSubPanes.forEach((pane) => {
           pane.classList.toggle("active", pane.id === `subpane-${targetPane}`);
         });
       }
 
-      subTabs.forEach((tab) => {
+      nblSubTabs.forEach((tab) => {
         tab.addEventListener("click", () => activateSubTab(tab.dataset.pane));
+      });
+
+      const nbaSubTabs = document.querySelectorAll("#pane-nba .subtab");
+      const nbaSubPanes = [
+        document.getElementById("subpane-shotmaps"),
+        document.getElementById("subpane-gamestory"),
+        document.getElementById("subpane-headshots")
+      ];
+
+      function activateNbaSubTab(targetPane) {
+        nbaSubTabs.forEach((tab) => {
+          const active = tab.dataset.pane === targetPane;
+          tab.setAttribute("aria-selected", active ? "true" : "false");
+        });
+        nbaSubPanes.forEach((pane) => {
+          pane.classList.toggle("active", pane.id === `subpane-${targetPane}`);
+        });
+      }
+
+      nbaSubTabs.forEach((tab) => {
+        tab.addEventListener("click", () => activateNbaSubTab(tab.dataset.pane));
       });
 
       const RAPM_SOURCES = {
@@ -65,7 +85,7 @@
       const NBA_TATUM_SHOTS_URL = "analytics/data/nba/jayson_tatum_shots_2025.csv";
       const NBA_TATUM_ZONE_URL = "analytics/data/nba/tatum_zone_colours_2025.csv";
       const NBA_ZONE_SVG_URL = "analytics/images/nba/total.svg";
-      const NBA_LEAGUE_BINS_URL = "analytics/data/nba/league_shot_bins_2025.csv";
+      const NBA_LEAGUE_BINS_URL = "analytics/data/nba/league_shot_bins_by_decade.csv";
       let wowyData = null;
       let dpmData = null;
 
@@ -89,9 +109,22 @@
       const nbaShotSummary = document.getElementById("nba-shot-summary");
       const nbaSvgZones = document.getElementById("nba-svg-zones");
       const nbaZoneStatsLayer = document.getElementById("nba-zone-stats-layer");
-      const nbaCourtContainer = document.getElementById("nba-court-container");
-      const nbaShot3d = document.getElementById("nba-shot-3d");
-      const nbaViewToggle = document.getElementById("nba-view-toggle");
+      const nbaBinsPlot = document.getElementById("nba-bins-plot");
+      const nbaBinsSummary = document.getElementById("nba-bins-summary");
+      const DECADE_ORDER = ["1990s", "2000s", "2010s", "2020s"];
+      const DECADE_YEAR_RANGES = { "1990s": "1997–1999", "2000s": "2000–2009", "2010s": "2010–2019", "2020s": "2020–2026" };
+      let nbaDecadeIdx = DECADE_ORDER.indexOf("2020s");
+      let nbaScaleMode = "all";
+      let nbaGlobalScale = null;
+      const nbaPrevBtn = document.getElementById("nba-decade-prev");
+      const nbaNextBtn = document.getElementById("nba-decade-next");
+      const nbaDecadePips = document.querySelectorAll(".nba-decade-pip");
+      const nbaScaleAllBtn = document.getElementById("nba-scale-all");
+      const nbaScaleDecadeBtn = document.getElementById("nba-scale-decade");
+      let nbaSpinTimer = null;
+      let nbaSpinTheta = 0;
+      let nbaLastCamera = null;
+      const nbaBinsRenderCache = new Map();
       let nbaShotsCache = [];
       let nbaLeagueBinsCache = [];
       const nbaZoneMap = {
@@ -303,17 +336,35 @@
         nbaShotLayer.appendChild(frag);
       }
 
+      function zonePercentageToColor(playerPct, leaguePct) {
+        const RANGE = 0.15; // ±15% from league average
+        const ratio = leaguePct > 0 ? (playerPct - leaguePct) / leaguePct : 0;
+        const t = Math.max(-1, Math.min(1, ratio / RANGE)); // -1 = below avg, +1 = above avg
+        // blue #2b59c3 — neutral #eceae4 — red #c62d2d (matches 3D scale: low=blue, high=red)
+        const lerp = (a, b, f) => Math.round(a + (b - a) * f);
+        const f = (t + 1) / 2; // map [-1,1] → [0,1]
+        if (f < 0.5) {
+          const s = f / 0.5;
+          return `rgb(${lerp(43, 236, s)}, ${lerp(89, 234, s)}, ${lerp(195, 228, s)})`;
+        } else {
+          const s = (f - 0.5) / 0.5;
+          return `rgb(${lerp(236, 198, s)}, ${lerp(234, 45, s)}, ${lerp(228, 45, s)})`;
+        }
+      }
+
       function colorNbaZones(zoneRows) {
         if (!nbaSvgZones) return;
         const tatum = zoneRows.find((r) => normalizeForSearch(r.player_name) === "jayson tatum");
-        if (!tatum) return;
+        const league = zoneRows.find((r) => normalizeForSearch(r.player_name) === "league");
+        if (!tatum || !league) return;
         nbaSvgZones.querySelectorAll("path[id]").forEach((path) => {
           const id = path.id;
           const zoneKey = Object.keys(nbaZoneMap).find((k) => nbaZoneMap[k] === id);
           if (!zoneKey) return;
-          const fill = tatum[zoneKey];
-          if (fill) {
-            path.style.fill = fill;
+          const playerPct = Number(tatum[`${zoneKey}_percentage`]);
+          const leaguePct = Number(league[`${zoneKey}_percentage`]);
+          if (Number.isFinite(playerPct) && Number.isFinite(leaguePct)) {
+            path.style.fill = zonePercentageToColor(playerPct, leaguePct);
             path.style.fillOpacity = "0.8";
           }
         });
@@ -348,41 +399,62 @@
         nbaZoneStatsLayer.appendChild(frag);
       }
 
-      function renderNbaShot3d(binRows) {
-        if (!nbaShot3d || typeof Plotly === "undefined") return;
+      function computeGlobalColorScale(binRows) {
+        // "All-Decades" bounds should span the extrema of decade scales:
+        // global min = min(decade cMin), global max = max(decade cMax).
+        const decadeScales = DECADE_ORDER
+          .map((decade) => {
+            const mesh = buildNbaBinsDecadeMesh(binRows, decade, null);
+            if (!mesh) return null;
+            return { cMin: mesh.cMin, cMax: mesh.cMax };
+          })
+          .filter(Boolean);
+
+        if (!decadeScales.length) return { cMin: 0.9, cMax: 1.2 };
+
+        const cMin = Math.min(...decadeScales.map((s) => s.cMin));
+        const cMax = Math.max(...decadeScales.map((s) => s.cMax));
+        return { cMin, cMax };
+      }
+
+      function buildNbaBinsDecadeMesh(binRows, decade, globalScale = null) {
         const PRIOR_ATTEMPTS = 20;
         const LOW_ATTEMPT_BLEND = 4;
         const rows = binRows
           .map((r) => ({
+            decade: String(r.decade || ""),
             x: Number(r.x_center),
             y: Number(r.y_center),
             attempts: Number(r.attempts),
             pps: Number(r.pps),
           }))
+          .filter((r) => r.decade === decade)
           .filter((r) => Number.isFinite(r.x) && Number.isFinite(r.y) && Number.isFinite(r.attempts));
-        if (!rows.length) return;
+        if (!rows.length) return null;
 
         const xVals = Array.from(new Set(rows.map((r) => r.x))).sort((a, b) => a - b);
         const yVals = Array.from(new Set(rows.map((r) => r.y))).sort((a, b) => a - b);
-        const xi = new Map(xVals.map((v, i) => [v, i]));
-        const yi = new Map(yVals.map((v, i) => [v, i]));
+        const xStep = xVals.length > 1 ? Math.min(...xVals.slice(1).map((v, i) => v - xVals[i])) : 20;
+        const yStep = yVals.length > 1 ? Math.min(...yVals.slice(1).map((v, i) => v - yVals[i])) : 20;
+        const BIN_SIZE = Math.max(2, Math.min(xStep, yStep));
+        const xMid = (xVals[0] + xVals[xVals.length - 1]) / 2;
+        const yMid = (yVals[0] + yVals[yVals.length - 1]) / 2;
 
-        const z = Array.from({ length: yVals.length }, () => Array(xVals.length).fill(0));
-        const c = Array.from({ length: yVals.length }, () => Array(xVals.length).fill(1.05));
-        let maxAttempts = 1;
         const weightedRows = rows.filter((r) => r.attempts > 0 && Number.isFinite(r.pps));
         const leaguePps =
           weightedRows.reduce((acc, r) => acc + r.pps * r.attempts, 0) /
             Math.max(1, weightedRows.reduce((acc, r) => acc + r.attempts, 0)) || 1.05;
 
         const adjustedRows = rows.map((r) => {
+          const cx = r.x - xMid;
+          const cy = r.y - yMid;
           if (!(r.attempts > 0) || !Number.isFinite(r.pps)) {
-            return { ...r, adjPps: leaguePps };
+            return { ...r, cx, cy, adjPps: leaguePps };
           }
-          // Empirical-Bayes shrinkage prevents tiny bins (e.g. 1/1 for 3) from dominating the color scale.
+          // Empirical-Bayes shrinkage prevents tiny bins from dominating the color scale.
           const shrunk = (r.pps * r.attempts + leaguePps * PRIOR_ATTEMPTS) / (r.attempts + PRIOR_ATTEMPTS);
           const blend = Math.min(1, r.attempts / LOW_ATTEMPT_BLEND);
-          return { ...r, adjPps: leaguePps + (shrunk - leaguePps) * blend };
+          return { ...r, cx, cy, adjPps: leaguePps + (shrunk - leaguePps) * blend };
         });
 
         function weightedQuantile(items, q) {
@@ -400,83 +472,288 @@
           return sorted[sorted.length - 1]?.adjPps ?? leaguePps;
         }
 
-        const cMin = weightedQuantile(adjustedRows, 0.08);
-        const cMax = weightedQuantile(adjustedRows, 0.92);
-
+        const cxVals = Array.from(new Set(adjustedRows.map((r) => r.cx))).sort((a, b) => a - b);
+        const cyVals = Array.from(new Set(adjustedRows.map((r) => r.cy))).sort((a, b) => a - b);
+        const xIdx = new Map(cxVals.map((v, i) => [v, i]));
+        const yIdx = new Map(cyVals.map((v, i) => [v, i]));
+        const ppsGrid = Array.from({ length: cyVals.length }, () => Array(cxVals.length).fill(leaguePps));
+        const attGrid = Array.from({ length: cyVals.length }, () => Array(cxVals.length).fill(0));
         adjustedRows.forEach((r) => {
-          const xIdx = xi.get(r.x);
-          const yIdx = yi.get(r.y);
-          z[yIdx][xIdx] = r.attempts;
-          c[yIdx][xIdx] = Math.max(cMin, Math.min(cMax, r.adjPps));
-          if (r.attempts > maxAttempts) maxAttempts = r.attempts;
+          const ix = xIdx.get(r.cx);
+          const iy = yIdx.get(r.cy);
+          if (ix == null || iy == null) return;
+          ppsGrid[iy][ix] = r.adjPps;
+          attGrid[iy][ix] = Math.max(0, r.attempts);
         });
+
+        // Gaussian neighborhood smoothing for color only (volume/height stays raw attempts).
+        const radius = 2;
+        const sigma2 = 1.2 * 1.2;
+        const smoothedPpsByKey = new Map();
+        adjustedRows.forEach((r) => {
+          const ix = xIdx.get(r.cx);
+          const iy = yIdx.get(r.cy);
+          if (ix == null || iy == null) return;
+          let num = 0;
+          let den = 0;
+          for (let dy = -radius; dy <= radius; dy++) {
+            for (let dx = -radius; dx <= radius; dx++) {
+              const nx = ix + dx;
+              const ny = iy + dy;
+              if (nx < 0 || nx >= cxVals.length || ny < 0 || ny >= cyVals.length) continue;
+              const dist2 = dx * dx + dy * dy;
+              const kernel = Math.exp(-dist2 / (2 * sigma2));
+              const attW = Math.sqrt(attGrid[ny][nx] + 1);
+              const w = kernel * attW;
+              num += ppsGrid[ny][nx] * w;
+              den += w;
+            }
+          }
+          const smooth = den > 0 ? num / den : r.adjPps;
+          smoothedPpsByKey.set(`${r.cx}|${r.cy}`, smooth);
+        });
+
+        const colorRows = adjustedRows.map((r) => {
+          const key = `${r.cx}|${r.cy}`;
+          return { ...r, colorPps: smoothedPpsByKey.get(key) ?? r.adjPps };
+        });
+
+        const cMin = globalScale?.cMin ?? weightedQuantile(
+          colorRows.map((r) => ({ ...r, adjPps: r.colorPps })),
+          0.08
+        );
+        const cMax = globalScale?.cMax ?? weightedQuantile(
+          colorRows.map((r) => ({ ...r, adjPps: r.colorPps })),
+          0.92
+        );
+        const attemptRows = colorRows.filter((r) => r.attempts > 0);
+        const attemptsSorted = attemptRows.map((r) => r.attempts).sort((a, b) => a - b);
+        const idx99 = Math.min(attemptsSorted.length - 1, Math.floor(attemptsSorted.length * 0.99));
+        const attemptsCap = Math.max(1, attemptsSorted[idx99] || 1);
+        const zMax = Math.pow(attemptsCap, 0.8);
+
+        const x = [];
+        const y = [];
+        const z = [];
+        const i = [];
+        const j = [];
+        const k = [];
+        const intensity = [];
+        let totalAttempts = 0;
+
+        function cubeMesh(row, baseIndex, zTop, pps) {
+          const x0 = row.cx - BIN_SIZE / 2;
+          const x1 = row.cx + BIN_SIZE / 2;
+          const y0 = row.cy - BIN_SIZE / 2;
+          const y1 = row.cy + BIN_SIZE / 2;
+          x.push(x0, x1, x1, x0, x0, x1, x1, x0);
+          y.push(y0, y0, y1, y1, y0, y0, y1, y1);
+          z.push(0, 0, 0, 0, zTop, zTop, zTop, zTop);
+          const tri = [
+            [0, 1, 2], [0, 2, 3],
+            [4, 5, 6], [4, 6, 7],
+            [0, 1, 5], [0, 5, 4],
+            [1, 2, 6], [1, 6, 5],
+            [2, 3, 7], [2, 7, 6],
+            [3, 0, 4], [3, 4, 7],
+          ];
+          tri.forEach((t) => {
+            i.push(baseIndex + t[0]);
+            j.push(baseIndex + t[1]);
+            k.push(baseIndex + t[2]);
+          });
+          for (let n = 0; n < 8; n++) intensity.push(pps);
+        }
+
+        colorRows
+          .filter((r) => r.attempts > 0)
+          .forEach((r) => {
+            totalAttempts += r.attempts;
+            const zTop = Math.pow(Math.min(attemptsCap, r.attempts), 0.8);
+            cubeMesh(r, x.length, zTop, r.colorPps);
+          });
+
+        const maxAbs = Math.max(
+          Math.abs(cxVals[0] ?? 0),
+          Math.abs(cxVals[cxVals.length - 1] ?? 0),
+          Math.abs(cyVals[0] ?? 0),
+          Math.abs(cyVals[cyVals.length - 1] ?? 0)
+        );
+
+        return {
+          x, y, z, i, j, k, intensity,
+          cMin, cMax, zMax, totalAttempts,
+          axisRange: [-maxAbs - BIN_SIZE, maxAbs + BIN_SIZE],
+        };
+      }
+
+      function renderNbaBinsPlot(binRows, decade, globalScale = null) {
+        if (!nbaBinsPlot || typeof Plotly === "undefined") return;
+        const SPIN_RADIUS = 1.80;
+        const SPIN_Z = 1.45;
+        const CAMERA_CENTER = { x: 0, y: 0, z: -0.12 };
+        const defaultTheta = Math.PI / 4;
+        const scaleKey = globalScale ? "all" : "decade";
+        const cacheKey = `${decade}::${scaleKey}`;
+        let mesh = nbaBinsRenderCache.get(cacheKey);
+        if (!mesh) {
+          mesh = buildNbaBinsDecadeMesh(binRows, decade, globalScale);
+          if (mesh) nbaBinsRenderCache.set(cacheKey, mesh);
+        }
+        if (!mesh) return;
+        if (nbaBinsSummary) {
+          nbaBinsSummary.textContent = `${DECADE_YEAR_RANGES[decade] ?? decade} · ${mesh.totalAttempts.toLocaleString()} attempts`;
+        }
+        const legendMax = document.getElementById("nba-3d-legend-max");
+        const legendMin = document.getElementById("nba-3d-legend-min");
+        if (legendMax) legendMax.textContent = mesh.cMax.toFixed(2);
+        if (legendMin) legendMin.textContent = mesh.cMin.toFixed(2);
+
+        const existingCamera = nbaBinsPlot?._fullLayout?.scene?.camera;
+        const chosenCamera = existingCamera || nbaLastCamera || {
+          eye: {
+            x: SPIN_RADIUS * Math.cos(defaultTheta),
+            y: SPIN_RADIUS * Math.sin(defaultTheta),
+            z: SPIN_Z,
+          },
+          center: CAMERA_CENTER,
+        };
+        if (Number.isFinite(chosenCamera?.eye?.x) && Number.isFinite(chosenCamera?.eye?.y)) {
+          nbaSpinTheta = Math.atan2(chosenCamera.eye.y, chosenCamera.eye.x);
+        } else if (!Number.isFinite(nbaSpinTheta)) {
+          nbaSpinTheta = defaultTheta;
+        }
+        nbaLastCamera = {
+          eye: {
+            x: Number(chosenCamera?.eye?.x) || SPIN_RADIUS * Math.cos(defaultTheta),
+            y: Number(chosenCamera?.eye?.y) || SPIN_RADIUS * Math.sin(defaultTheta),
+            z: Number(chosenCamera?.eye?.z) || SPIN_Z,
+          },
+          center: {
+            x: Number(chosenCamera?.center?.x) || CAMERA_CENTER.x,
+            y: Number(chosenCamera?.center?.y) || CAMERA_CENTER.y,
+            z: Number(chosenCamera?.center?.z) || CAMERA_CENTER.z,
+          },
+        };
 
         const layout = {
           margin: { l: 0, r: 0, b: 0, t: 0 },
+          uirevision: "nba-bins-scene",
           paper_bgcolor: "#eef2f8",
           plot_bgcolor: "#eef2f8",
-          showlegend: false,
           scene: {
-            aspectmode: "manual",
-            aspectratio: { x: 1.12, y: 1, z: 0.62 },
-            xaxis: { range: [-260, 260], showgrid: false, showticklabels: false, zeroline: false, title: "" },
-            yaxis: { range: [-60, 430], showgrid: false, showticklabels: false, zeroline: false, title: "" },
-            zaxis: { range: [0, maxAttempts * 1.08], showgrid: false, showticklabels: false, zeroline: false, title: "" },
-            camera: {
-              eye: { x: 1.28, y: 1.18, z: 0.9 },
-              up: { x: 0, y: 0, z: 1 },
+            xaxis: {
+              visible: false,
+              range: mesh.axisRange,
+              showbackground: false,
+              showgrid: false,
+              zeroline: false,
             },
+            yaxis: {
+              visible: false,
+              range: mesh.axisRange,
+              showbackground: false,
+              showgrid: false,
+              zeroline: false,
+            },
+            zaxis: {
+              title: "",
+              range: [0, mesh.zMax * 1.08],
+              showbackground: false,
+              showgrid: false,
+              zeroline: false,
+              tickfont: { size: 10, color: "#65728a" },
+              showticklabels: false,
+            },
+            aspectmode: "manual",
+            domain: { x: [-0.15, 0.75], y: [0.05, 0.97] },
+            aspectratio: { x: 1, y: 1, z: 0.86 },
+            camera: nbaLastCamera,
             dragmode: "turntable",
           },
         };
         Plotly.react(
-          nbaShot3d,
+          nbaBinsPlot,
           [
             {
-              type: "surface",
-              x: xVals,
-              y: yVals,
-              z,
-              surfacecolor: c,
+              type: "mesh3d",
+              x: mesh.x,
+              y: mesh.y,
+              z: mesh.z,
+              i: mesh.i,
+              j: mesh.j,
+              k: mesh.k,
+              intensity: mesh.intensity,
+              intensitymode: "vertex",
+              cmin: mesh.cMin,
+              cmax: mesh.cMax,
               colorscale: [
-                [0.0, "#d73027"],
-                [0.5, "#f7f7f7"],
-                [1.0, "#1a9850"],
+                [0.0, "#2b59c3"],
+                [0.5, "#eceae4"],
+                [1.0, "#c62d2d"],
               ],
-              cmin: cMin,
-              cmax: cMax,
-              cmid: leaguePps,
-              opacity: 0.96,
-              hovertemplate:
-                "X %{x:.0f}<br>Y %{y:.0f}<br>Attempts %{z:.0f}<br>PPS %{surfacecolor:.3f}<extra></extra>",
-              colorbar: {
-                title: "PPS",
-                titleside: "right",
-                thickness: 10,
-                len: 0.7,
-                x: 0.98,
-              },
+              flatshading: false,
+              opacity: 1,
+              hoverinfo: "skip",
+              showlegend: false,
+              showscale: false,
             },
           ],
           layout,
           { displayModeBar: false, responsive: true }
-        );
+        ).then(() => startNbaBinsSpin());
       }
 
-      async function setNbaView(view) {
-        if (!nbaCourtContainer || !nbaShot3d || !nbaViewToggle) return;
-        const show3d = view === "3d";
-        nbaCourtContainer.style.display = show3d ? "none" : "";
-        nbaShot3d.style.display = show3d ? "block" : "none";
-        nbaViewToggle.querySelectorAll("button[data-view]").forEach((btn) => {
-          btn.dataset.active = btn.dataset.view === view ? "true" : "false";
+      function prewarmNbaBinsCache(binRows, globalScale = null) {
+        const scaleKey = globalScale ? "all" : "decade";
+        DECADE_ORDER.forEach((decade) => {
+          const cacheKey = `${decade}::${scaleKey}`;
+          if (nbaBinsRenderCache.has(cacheKey)) return;
+          const mesh = buildNbaBinsDecadeMesh(binRows, decade, globalScale);
+          if (mesh) nbaBinsRenderCache.set(cacheKey, mesh);
         });
-        if (show3d && typeof Plotly !== "undefined") {
+      }
+
+      function startNbaBinsSpin() {
+        if (!nbaBinsPlot || typeof Plotly === "undefined") return;
+        if (nbaSpinTimer) return;
+        // Fixed-elevation isometric orbit: same top-down angle, full 360 around center.
+        const radius = 1.80;
+        const zFixed = 1.45;
+        if (!Number.isFinite(nbaSpinTheta)) nbaSpinTheta = Math.PI / 4;
+        nbaSpinTimer = setInterval(() => {
+          nbaSpinTheta += 0.016;
+          const x = radius * Math.cos(nbaSpinTheta);
+          const y = radius * Math.sin(nbaSpinTheta);
+          nbaLastCamera = {
+            eye: { x, y, z: zFixed },
+            center: { x: 0, y: 0, z: -0.12 },
+          };
+          Plotly.relayout(nbaBinsPlot, {
+            "scene.camera.eye.x": x,
+            "scene.camera.eye.y": y,
+            "scene.camera.eye.z": zFixed,
+            "scene.camera.center.x": 0,
+            "scene.camera.center.y": 0,
+            "scene.camera.center.z": -0.12,
+          }).catch(() => {});
+        }, 45);
+      }
+
+      async function initNbaBinsPlot() {
+        if (!nbaBinsPlot) return;
+        try {
           if (!nbaLeagueBinsCache.length) {
             nbaLeagueBinsCache = await fetchCsvStrict(NBA_LEAGUE_BINS_URL);
           }
-          renderNbaShot3d(nbaLeagueBinsCache);
-          Plotly.Plots.resize(nbaShot3d);
+          nbaBinsRenderCache.clear();
+          nbaGlobalScale = computeGlobalColorScale(nbaLeagueBinsCache);
+          updateNbaDecade();
+          updateNbaScaleMode();
+          renderNbaBinsPlot(nbaLeagueBinsCache, DECADE_ORDER[nbaDecadeIdx], activeNbaScale());
+          setTimeout(() => prewarmNbaBinsCache(nbaLeagueBinsCache, activeNbaScale()), 0);
+        } catch (error) {
+          if (nbaBinsSummary) nbaBinsSummary.textContent = `Failed to load bins: ${error.message}`;
         }
       }
 
@@ -516,7 +793,6 @@
           nbaShotsCache = shots;
           renderNbaShotChart(shots);
           renderNbaZoneStats(shots, zoneRows);
-          setNbaView("2d");
         } catch (error) {
           nbaShotSummary.textContent = `Failed to load shot chart: ${error.message}`;
         }
@@ -1344,14 +1620,58 @@
       });
       wowyLuckToggle.addEventListener("change", () => renderWOWYTable());
       dpmMetric.addEventListener("change", () => renderDpmChart());
-      nbaViewToggle?.addEventListener("click", (event) => {
-        const button = event.target.closest("button[data-view]");
-        if (!button) return;
-        const view = String(button.dataset.view || "2d");
-        setNbaView(view === "3d" ? "3d" : "2d").catch((error) => {
-          if (nbaShotSummary) nbaShotSummary.textContent = `3D load failed: ${error.message}`;
+      function updateNbaDecade() {
+        nbaDecadePips.forEach((pip, i) => pip.classList.toggle("active", i === nbaDecadeIdx));
+        if (nbaPrevBtn) nbaPrevBtn.disabled = nbaDecadeIdx === 0;
+        if (nbaNextBtn) nbaNextBtn.disabled = nbaDecadeIdx === DECADE_ORDER.length - 1;
+      }
+
+      nbaDecadePips.forEach((pip, i) => {
+        pip.style.cursor = "pointer";
+        pip.addEventListener("click", () => {
+          if (i === nbaDecadeIdx || !nbaLeagueBinsCache.length) return;
+          nbaDecadeIdx = i;
+          updateNbaDecade();
+          renderNbaBinsPlot(nbaLeagueBinsCache, DECADE_ORDER[nbaDecadeIdx], activeNbaScale());
         });
       });
+
+      function activeNbaScale() {
+        return nbaScaleMode === "all" ? nbaGlobalScale : null;
+      }
+
+      function updateNbaScaleMode() {
+        if (nbaScaleAllBtn) nbaScaleAllBtn.dataset.active = nbaScaleMode === "all" ? "true" : "false";
+        if (nbaScaleDecadeBtn) nbaScaleDecadeBtn.dataset.active = nbaScaleMode === "decade" ? "true" : "false";
+      }
+
+      function setNbaScaleMode(mode) {
+        if (mode !== "all" && mode !== "decade") return;
+        if (nbaScaleMode === mode) return;
+        nbaScaleMode = mode;
+        updateNbaScaleMode();
+        if (!nbaLeagueBinsCache.length) return;
+        renderNbaBinsPlot(nbaLeagueBinsCache, DECADE_ORDER[nbaDecadeIdx], activeNbaScale());
+        setTimeout(() => prewarmNbaBinsCache(nbaLeagueBinsCache, activeNbaScale()), 0);
+      }
+
+      nbaPrevBtn?.addEventListener("click", () => {
+        if (nbaDecadeIdx > 0) {
+          nbaDecadeIdx--;
+          updateNbaDecade();
+          renderNbaBinsPlot(nbaLeagueBinsCache, DECADE_ORDER[nbaDecadeIdx], activeNbaScale());
+        }
+      });
+
+      nbaNextBtn?.addEventListener("click", () => {
+        if (nbaDecadeIdx < DECADE_ORDER.length - 1) {
+          nbaDecadeIdx++;
+          updateNbaDecade();
+          renderNbaBinsPlot(nbaLeagueBinsCache, DECADE_ORDER[nbaDecadeIdx], activeNbaScale());
+        }
+      });
+      nbaScaleAllBtn?.addEventListener("click", () => setNbaScaleMode("all"));
+      nbaScaleDecadeBtn?.addEventListener("click", () => setNbaScaleMode("decade"));
       dpmSearch.addEventListener("focus", () => renderDpmSearchResults());
       dpmSearch.addEventListener("input", () => renderDpmSearchResults());
       dpmSearch.addEventListener("keydown", (event) => {
@@ -1405,3 +1725,4 @@
       initWOWY();
       initDpm();
       initNbaShotChart();
+      initNbaBinsPlot();

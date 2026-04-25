@@ -128,10 +128,67 @@
         padding: 16px;
       }
 
+      .nba-intro {
+        margin-bottom: 16px;
+      }
+
+      .nba-intro-label {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 5px;
+      }
+
+      .nba-intro .section-copy {
+        margin-bottom: 0;
+      }
+
+      .nba-panel-desc {
+        margin: 10px 0 0;
+        font-size: 15px;
+        color: var(--muted);
+        line-height: 1.55;
+        width: 75%;
+        margin-left: calc((25% - 34px) / 2);
+        min-height: 42px;
+      }
+
       .nba-shotcard {
         border: 1px solid var(--line);
         background: #fcfbf8;
-        padding: 12px;
+        padding: 20px;
+        overflow: hidden;
+      }
+
+      .nba-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+        align-items: stretch;
+      }
+
+      .nba-panel {
+        min-width: 0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .nba-panel .nba-plot-wrap {
+        flex: 1;
+        align-items: flex-start;
+      }
+
+      .nba-panel-sub {
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 12px;
+        width: 75%;
+        margin-left: calc((25% - 34px) / 2);
+        min-height: 18px;
       }
 
       .nba-shotcard-head {
@@ -140,11 +197,14 @@
         justify-content: space-between;
         gap: 10px;
         flex-wrap: wrap;
+        margin-bottom: 6px;
       }
 
       .nba-shotcard h3 {
         margin: 0;
-        font-size: 18px;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
       }
 
       .nba-shot-summary {
@@ -166,25 +226,87 @@
         gap: 6px;
       }
 
-      .nba-view-toggle {
-        display: inline-flex;
-        border: 1px solid #d4dcea;
-        margin-top: 6px;
+      .nba-decade-stepper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin: 8px 0 6px;
       }
 
-      .nba-view-toggle button {
-        border: 0;
+      .nba-decade-nav {
+        appearance: none;
+        border: 1px solid var(--line);
         background: #fff;
-        color: #546177;
-        font-size: 11px;
-        font-weight: 700;
-        padding: 4px 10px;
+        color: var(--ink);
+        width: 26px;
+        height: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 13px;
+        flex-shrink: 0;
+      }
+
+      .nba-decade-nav:disabled {
+        opacity: 0.25;
+        cursor: default;
+      }
+
+      .nba-decade-pips {
+        display: flex;
+        gap: 2px;
+      }
+
+      .nba-decade-pip {
+        padding: 3px 10px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+        border: 1px solid transparent;
+        letter-spacing: 0.01em;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .nba-decade-pip:not(.active):hover {
+        color: var(--ink);
+        background: #f8f7f4;
+        border-color: var(--line);
+      }
+
+      .nba-decade-pip.active {
+        color: var(--ink);
+        background: #f2f0eb;
+        border-color: var(--line);
+      }
+
+      .nba-scale-toggle {
+        display: inline-flex;
+        border: 1px solid var(--line);
+        margin: 2px auto 8px;
+      }
+
+      .nba-scale-toggle button {
+        appearance: none;
+        border: 0;
+        border-right: 1px solid var(--line);
+        background: #fff;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 600;
+        padding: 6px 10px;
         cursor: pointer;
       }
 
-      .nba-view-toggle button[data-active="true"] {
-        background: #eaf0fb;
-        color: #1b2a46;
+      .nba-scale-toggle button:last-child {
+        border-right: 0;
+      }
+
+      .nba-scale-toggle button[data-active="true"] {
+        background: #f2f0eb;
+        color: var(--ink);
       }
 
       .nba-shot-legend .dot {
@@ -202,11 +324,18 @@
         background: #d75454;
       }
 
+      .nba-plot-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
       .nba-shot-frame {
         position: relative;
-        width: min(338px, 100%);
+        flex: 0 0 75%;
         aspect-ratio: 2002 / 1880;
-        margin: 0 auto;
+        overflow: hidden;
       }
 
       .nba-court-container {
@@ -224,7 +353,8 @@
         inset: 0;
         border: 1px solid #d8d2c7;
         background: #eef2f8;
-        display: none;
+        display: block;
+        overflow: hidden;
       }
 
       #nba-svg-zones,
@@ -315,10 +445,54 @@
         opacity: 0.75;
       }
 
+      .nba-color-legend {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        flex-shrink: 0;
+        align-self: stretch;
+        width: 24px;
+      }
+
+      .nba-color-legend-bar {
+        width: 18px;
+        flex: 1;
+        background: linear-gradient(to bottom, #c62d2d, #eceae4, #2b59c3);
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        border-radius: 3px;
+      }
+      .nba-color-legend-bar--2d {
+        background: linear-gradient(to bottom, #c62d2d, #eceae4, #2b59c3);
+      }
+
+      .nba-color-legend-label {
+        font-size: 9px;
+        font-weight: 700;
+        color: #4a5568;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+      }
+
       .nba-shot-foot {
-        margin-top: 8px;
+        margin-top: 16px;
+        padding-top: 12px;
+        border-top: 1px solid var(--line);
         font-size: 11px;
         color: var(--muted);
+      }
+
+      @media (max-width: 980px) {
+        .nba-grid {
+          grid-template-columns: 1fr;
+          gap: 24px;
+        }
+        .nba-panel-sub,
+        .nba-panel-desc {
+          width: 100%;
+          margin-left: 0;
+          min-height: 0;
+        }
       }
 
       .rapm-controls {

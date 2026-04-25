@@ -30,10 +30,10 @@
             <p class="section-copy">Sub-sections for RAPM, WOWY analysis, and lineup evaluation.</p>
 
             <div class="subtabs" role="tablist" aria-label="Analytics subtabs">
-              <button class="subtab" role="tab" id="subtab-wowy" aria-selected="false" aria-controls="subpane-wowy" data-pane="wowy">
+              <button class="subtab" role="tab" id="subtab-wowy" aria-selected="true" aria-controls="subpane-wowy" data-pane="wowy">
                 WOWY Analysis
               </button>
-              <button class="subtab" role="tab" id="subtab-rapm" aria-selected="true" aria-controls="subpane-rapm" data-pane="rapm">
+              <button class="subtab" role="tab" id="subtab-rapm" aria-selected="false" aria-controls="subpane-rapm" data-pane="rapm">
                 RAPM
               </button>
               <button class="subtab" role="tab" id="subtab-lineup" aria-selected="false" aria-controls="subpane-lineup" data-pane="lineup">
@@ -139,31 +139,94 @@
 
           <section class="pane" role="tabpanel" id="pane-nba" aria-labelledby="tab-nba">
             <h2 class="section-title">Visualisation (NBA)</h2>
-            <p class="section-copy">Jayson Tatum shot chart (2025 season) using the same 2D court-coordinate method from the NBA project.</p>
-            <div class="nba-shotcard">
-              <div class="nba-shotcard-head">
-                <h3>Jayson Tatum - 2025 Shot Chart</h3>
-                <div id="nba-shot-summary" class="nba-shot-summary">Loading shot data...</div>
-              </div>
-              <div id="nba-view-toggle" class="nba-view-toggle" role="group" aria-label="Shot chart view toggle">
-                <button type="button" data-view="2d" data-active="true">2D</button>
-                <button type="button" data-view="3d" data-active="false">3D</button>
-              </div>
-              <div class="nba-shot-legend">
-                <span><i class="dot made"></i> Made</span>
-                <span><i class="dot miss"></i> Missed</span>
-              </div>
-              <div id="nba-shot-frame" class="nba-shot-frame">
-                <div id="nba-court-container" class="nba-court-container" aria-label="Jayson Tatum shot chart">
-                  <svg id="nba-svg-zones" viewBox="0 0 2002 1880" preserveAspectRatio="xMidYMid meet"></svg>
-                  <img id="nba-court-overlay" src="analytics/images/nba/zones_bones.png" alt="Basketball court" />
-                  <div id="nba-shot-layer" class="nba-shot-layer"></div>
-                  <div id="nba-zone-stats-layer" class="nba-zone-stats-layer"></div>
-                </div>
-                <div id="nba-shot-3d" class="nba-shot-3d" aria-label="Jayson Tatum 3D shot chart"></div>
-              </div>
-              <div class="nba-shot-foot">2D source: <code>analytics/data/nba/jayson_tatum_shots_2025.csv</code> · 3D source: <code>analytics/data/nba/league_shot_bins_2025.csv</code></div>
+            <p class="section-copy">Interactive NBA visualisations across shot location, game flow, and player appearance data.</p>
+
+            <div class="subtabs" role="tablist" aria-label="Visualisation subtabs">
+              <button class="subtab" role="tab" id="subtab-shotmaps" aria-selected="true" aria-controls="subpane-shotmaps" data-pane="shotmaps">
+                Shot Location Maps
+              </button>
+              <button class="subtab" role="tab" id="subtab-gamestory" aria-selected="false" aria-controls="subpane-gamestory" data-pane="gamestory">
+                Game Story
+              </button>
+              <button class="subtab" role="tab" id="subtab-headshots" aria-selected="false" aria-controls="subpane-headshots" data-pane="headshots">
+                Headshot Graphs
+              </button>
             </div>
+
+            <section class="pane active" role="tabpanel" id="subpane-shotmaps" aria-labelledby="subtab-shotmaps">
+              <div class="nba-intro">
+                <p class="section-copy">Uses x,y shot location data to identify efficiency zones and prominent shot locations.</p>
+              </div>
+              <div class="nba-shotcard">
+                <div class="nba-grid">
+                  <div class="nba-panel">
+                    <div class="nba-shotcard-head">
+                      <h3>2D Shot Chart — Jayson Tatum 2025</h3>
+                    </div>
+                    <div class="nba-shot-legend">
+                      <span><i class="dot made"></i> Made</span>
+                      <span><i class="dot miss"></i> Missed</span>
+                    </div>
+                    <div class="nba-plot-wrap">
+                      <div class="nba-shot-frame">
+                        <div id="nba-court-container" class="nba-court-container" aria-label="Jayson Tatum shot chart">
+                          <svg id="nba-svg-zones" viewBox="0 0 2002 1880" preserveAspectRatio="xMidYMid meet"></svg>
+                          <img id="nba-court-overlay" src="analytics/images/nba/zones_bones.png" alt="Basketball court" />
+                          <div id="nba-shot-layer" class="nba-shot-layer"></div>
+                          <div id="nba-zone-stats-layer" class="nba-zone-stats-layer"></div>
+                        </div>
+                      </div>
+                      <div class="nba-color-legend">
+                        <span class="nba-color-legend-label">+15%</span>
+                        <div class="nba-color-legend-bar nba-color-legend-bar--2d"></div>
+                        <span class="nba-color-legend-label">−15%</span>
+                      </div>
+                    </div>
+                    <div id="nba-shot-summary" class="nba-shot-summary nba-panel-sub">Loading shot data...</div>
+                    <p class="nba-panel-desc">Single season shot chart for Jayson Tatum, breaking down zone efficiency.</p>
+                  </div>
+                  <div class="nba-panel">
+                    <div class="nba-shotcard-head">
+                      <h3>3D League Shot Bins</h3>
+                    </div>
+                    <div class="nba-decade-stepper">
+                      <button class="nba-decade-nav" id="nba-decade-prev" aria-label="Previous decade">&#8592;</button>
+                      <div class="nba-decade-pips">
+                        <span class="nba-decade-pip" data-decade="1990s">1990s</span>
+                        <span class="nba-decade-pip" data-decade="2000s">2000s</span>
+                        <span class="nba-decade-pip" data-decade="2010s">2010s</span>
+                        <span class="nba-decade-pip" data-decade="2020s">2020s</span>
+                      </div>
+                      <button class="nba-decade-nav" id="nba-decade-next" aria-label="Next decade">&#8594;</button>
+                    </div>
+                    <div class="nba-plot-wrap">
+                      <div class="nba-shot-frame">
+                        <div id="nba-bins-plot" class="nba-shot-3d" aria-label="League decade PPS bins"></div>
+                      </div>
+                      <div class="nba-color-legend">
+                        <span class="nba-color-legend-label" id="nba-3d-legend-max">—</span>
+                        <div class="nba-color-legend-bar"></div>
+                        <span class="nba-color-legend-label" id="nba-3d-legend-min">—</span>
+                      </div>
+                    </div>
+                    <div id="nba-bins-summary" class="nba-shot-summary nba-panel-sub">Loading bins...</div>
+                    <p class="nba-panel-desc">League wide shot data, split by decade, visualising the change in shot type approach and efficiency since 2000. <br> Notably, the rise in three point and decline in mid-range attempts has lead to improved average efficiency, and the distribution shaping around the three point line.</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="pane" role="tabpanel" id="subpane-gamestory" aria-labelledby="subtab-gamestory">
+              <div class="content-box">
+                <p>Game story visualisations coming soon.</p>
+              </div>
+            </section>
+
+            <section class="pane" role="tabpanel" id="subpane-headshots" aria-labelledby="subtab-headshots">
+              <div class="content-box">
+                <p>Headshot graph visualisations coming soon.</p>
+              </div>
+            </section>
           </section>
 
           <section class="pane" role="tabpanel" id="pane-nbl1" aria-labelledby="tab-nbl1">
