@@ -144,16 +144,64 @@
 
       .nba-intro .section-copy {
         margin-bottom: 0;
+        max-width: none;
+        width: 100%;
+      }
+
+      #pane-nba > .section-copy,
+      #pane-nbl > .section-copy,
+      #pane-nbl1 > .section-copy {
+        max-width: none;
+      }
+
+      .nbl-intro {
+        margin-bottom: 18px;
+      }
+
+      .tech-stack-inline {
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 10px;
+      }
+
+      .tech-stack-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .tech-chip-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .tech-chip {
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid #d8d6cf;
+        background: #f7f5ef;
+        color: #4f5d73;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 1;
+        padding: 5px 8px;
+        white-space: nowrap;
       }
 
       .nba-panel-desc {
-        margin: 10px 0 0;
+        margin: 0;
         font-size: 15px;
-        color: var(--muted);
+        color: var(--ink);
         line-height: 1.55;
-        width: 75%;
-        margin-left: calc((25% - 34px) / 2);
-        min-height: 42px;
+        width: 100%;
+        min-height: 0;
+        text-align: left;
       }
 
       .nba-shotcard {
@@ -178,26 +226,28 @@
       }
 
       .nba-panel .nba-plot-wrap {
-        flex: 1;
         align-items: flex-start;
+        margin-bottom: 10px;
       }
 
       .nba-panel-sub {
-        margin-top: 8px;
-        color: var(--muted);
-        font-size: 12px;
-        width: 75%;
-        margin-left: calc((25% - 34px) / 2);
-        min-height: 18px;
+        margin: 0;
+        color: var(--ink);
+        font-size: 15px;
+        line-height: 1.55;
+        width: 100%;
+        min-height: 0;
+        text-align: center;
       }
 
       .nba-shotcard-head {
         display: flex;
         align-items: baseline;
-        justify-content: space-between;
+        justify-content: center;
         gap: 10px;
         flex-wrap: wrap;
         margin-bottom: 6px;
+        text-align: center;
       }
 
       .nba-shotcard h3 {
@@ -208,16 +258,71 @@
       }
 
       .nba-shot-summary {
-        color: var(--muted);
-        font-size: 12px;
+        color: var(--ink);
+        font-size: 15px;
+        line-height: 1.55;
+      }
+
+      .nba-caption {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: stretch;
+      }
+
+      .nba-process-card {
+        margin-top: 18px;
+        border-top: 1px solid #e1ded6;
+        padding-top: 14px;
+      }
+
+      .nba-process-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+        align-items: start;
+      }
+
+      .nba-process-panel {
+        padding: 0;
+      }
+
+      .nba-process-panel h3 {
+        margin: 0 0 10px;
+      }
+
+      .nba-process-panel ul {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--ink);
+        font-size: 15px;
+        line-height: 1.55;
+      }
+
+      .nba-process-panel li + li {
+        margin-top: 4px;
+      }
+
+      .nba-process-copy {
+        margin: 0;
+        color: var(--ink);
+        font-size: 15px;
+        line-height: 1.55;
+      }
+
+      .nba-process-copy + .nba-process-copy {
+        margin-top: 10px;
       }
 
       .nba-shot-legend {
         display: flex;
+        justify-content: center;
         gap: 12px;
         margin: 8px 0 10px;
-        font-size: 12px;
-        color: #374151;
+        font-size: 15px;
+        color: var(--ink);
+        line-height: 1.55;
       }
 
       .nba-shot-legend span {
@@ -317,11 +422,11 @@
       }
 
       .nba-shot-legend .dot.made {
-        background: #1b9b56;
+        background: #555;
       }
 
       .nba-shot-legend .dot.miss {
-        background: #d75454;
+        background: #555;
       }
 
       .nba-plot-wrap {
@@ -388,22 +493,22 @@
 
       .nba-shot {
         position: absolute;
-        width: 2.2%;
+        width: 1.1%;
         aspect-ratio: 1;
         transform: translate(-50%, -50%);
         z-index: 5;
       }
 
       .nba-shot.made {
-        border: 1px solid #1a9a52;
-        background: #43d86a2b;
+        border: 1.5px solid #555;
+        background: rgba(85, 85, 85, 0.25);
         border-radius: 50%;
       }
 
       .nba-shot.miss {
         border: 0;
         background: transparent;
-        color: #d13f3f;
+        color: #555;
         border-radius: 0;
         display: inline-flex;
         align-items: center;
@@ -455,6 +560,19 @@
         width: 24px;
       }
 
+      .nba-color-legend-axis {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        font-size: 9px;
+        font-weight: 600;
+        color: var(--muted);
+        letter-spacing: 0.04em;
+        white-space: nowrap;
+        text-transform: uppercase;
+        align-self: center;
+        flex-shrink: 0;
+      }
+
       .nba-color-legend-bar {
         width: 18px;
         flex: 1;
@@ -482,10 +600,242 @@
         color: var(--muted);
       }
 
+      .nba-style-shell {
+        border: 1px solid var(--line);
+        background: #fcfbf8;
+        padding: 18px;
+      }
+
+      .nba-style-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        align-items: end;
+        margin-bottom: 10px;
+      }
+
+      .nba-style-control {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 260px;
+        flex: 1;
+      }
+
+      .nba-style-control-small {
+        max-width: 160px;
+        min-width: 140px;
+        flex: 0 0 auto;
+      }
+
+      .nba-style-control label {
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      .nba-style-control input,
+      .nba-style-control select {
+        border: 1px solid var(--line);
+        background: #fff;
+        color: var(--ink);
+        font-size: 14px;
+        padding: 8px 10px;
+        height: 38px;
+      }
+
+      .nba-style-meta {
+        color: var(--muted);
+        font-size: 13px;
+        margin-bottom: 10px;
+      }
+
+      .nba-style-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.55fr) minmax(360px, 0.75fr);
+        gap: 18px;
+        align-items: start;
+      }
+
+      .nba-style-grid .nba-style-panel:first-child {
+        min-width: 0;
+      }
+
+      .nba-style-grid .nba-style-panel:last-child {
+        max-width: 560px;
+        width: 100%;
+        justify-self: end;
+      }
+
+      .nba-style-panel h3 {
+        margin: 0 0 8px;
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      #nba-style-scatter {
+        width: 100%;
+        display: block;
+        border: 1px solid var(--line);
+        background: #eef4fb;
+        border-color: #f5f9ff;
+      }
+
+      #nba-style-scatter .nba-style-point {
+        cursor: pointer;
+      }
+
+      .nba-style-table-wrap {
+        max-height: 460px;
+      }
+
+      .nba-style-row-selected {
+        background: #f7fafc;
+      }
+
+      .nba-style-row[data-style-player] {
+        cursor: pointer;
+      }
+
+      .nba-style-row[data-style-player]:hover {
+        background: #f9fafb;
+      }
+
+      .nba-style-row td:nth-child(2) {
+        font-variant-numeric: tabular-nums;
+        text-align: center;
+        min-width: 64px;
+      }
+
+      .nba-style-row td:nth-child(3) {
+        color: #4b5563;
+      }
+
+      .nba-style-row td:nth-child(4),
+      #nba-style-table th:nth-child(4) {
+        width: 88px;
+        min-width: 88px;
+        max-width: 88px;
+        text-align: center;
+      }
+
+      .nba-style-mix {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .nba-style-mix-pie {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: 1px solid #c9d4e5;
+        position: relative;
+        flex-shrink: 0;
+      }
+
+      .nba-style-mix-pie::after {
+        content: "";
+        position: absolute;
+        inset: 5px;
+        border-radius: 50%;
+        background: #fff;
+      }
+
+      .nba-style-mix-empty {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .nba-style-cluster-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 30px;
+        padding: 2px 7px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #fff;
+        background: var(--cluster, #6b7280);
+        margin-right: 6px;
+      }
+
+      .nba-headshot-shell {
+        border: 1px solid var(--line);
+        background: #fcfbf8;
+        padding: 18px;
+      }
+
+      .nba-headshot-meta {
+        margin: 0 0 10px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .nba-headshot-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 10px;
+      }
+
+      .nba-headshot-head .nba-headshot-meta {
+        margin: 0;
+      }
+
+      .nba-export-button {
+        appearance: none;
+        border: 1px solid var(--line);
+        background: #faf9f6;
+        color: var(--ink);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        padding: 10px 14px;
+        cursor: pointer;
+        transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+        white-space: nowrap;
+      }
+
+      .nba-export-button:hover {
+        background: #f2efe8;
+        border-color: #c9c1b2;
+      }
+
+      .nba-export-button:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+
+      .nba-headshot-frame {
+        border: 1px solid var(--line);
+        background: #eef4fb;
+        width: min(860px, 100%);
+        margin: 0 auto;
+      }
+
+      #nba-headshot-scatter {
+        width: 100%;
+        display: block;
+      }
+
       @media (max-width: 980px) {
         .nba-grid {
           grid-template-columns: 1fr;
           gap: 24px;
+        }
+        .nba-style-grid {
+          grid-template-columns: 1fr;
+        }
+        .nba-process-grid {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+        .nba-headshot-head {
+          flex-direction: column;
+          align-items: flex-start;
         }
         .nba-panel-sub,
         .nba-panel-desc {
@@ -1194,4 +1544,82 @@
           font-size: 13px;
           padding: 9px 10px;
         }
+      }
+
+      /* ── Computer Vision section ── */
+      .cv-flow {
+        display: block;
+      }
+
+      .cv-flow h3 {
+        margin: 14px 0 4px;
+      }
+
+      .cv-flow h3:first-child {
+        margin-top: 0;
+      }
+
+      .cv-flow .nba-process-copy {
+        margin-bottom: 10px;
+      }
+
+      .cv-center {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+      }
+
+      .cv-clear {
+        clear: both;
+      }
+
+      .cv-figure {
+        margin: 0;
+        max-width: 40%;
+      }
+
+      .cv-figure .cv-img {
+        width: 100%;
+        max-width: none;
+      }
+
+      .cv-caption {
+        margin-top: 5px;
+        font-size: 12px;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .cv-img {
+        display: block;
+        width: auto;
+        height: auto;
+        border: 1px solid var(--line);
+      }
+
+      .cv-img--goal {
+        max-width: 55%;
+      }
+
+      .cv-img--wide {
+        max-width: 40%;
+      }
+
+      .cv-img--workflow {
+        max-width: 36%;
+      }
+
+      .cv-pipeline-title {
+        float: right;
+        clear: right;
+        margin: 0 0 4px 18px;
+        width: 18%;
+        text-align: center;
+      }
+
+      .cv-img--pipeline {
+        float: right;
+        clear: right;
+        max-width: 18%;
+        margin: 0 0 12px 18px;
       }

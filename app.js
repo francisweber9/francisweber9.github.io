@@ -44,7 +44,7 @@
       const nbaSubTabs = document.querySelectorAll("#pane-nba .subtab");
       const nbaSubPanes = [
         document.getElementById("subpane-shotmaps"),
-        document.getElementById("subpane-gamestory"),
+        document.getElementById("subpane-style"),
         document.getElementById("subpane-headshots")
       ];
 
@@ -86,6 +86,9 @@
       const NBA_TATUM_ZONE_URL = "analytics/data/nba/tatum_zone_colours_2025.csv";
       const NBA_ZONE_SVG_URL = "analytics/images/nba/total.svg";
       const NBA_LEAGUE_BINS_URL = "analytics/data/nba/league_shot_bins_by_decade.csv";
+      const NBA_STYLE_PROFILE_URL = "analytics/data/nba/playtype_style_profiles_3y.csv";
+      const NBA_STYLE_SIMILARITY_URL = "analytics/data/nba/playtype_style_similarity_3y.csv";
+      const NBA_STYLE_HEADSHOTS_URL = "analytics/data/nba/playtype_style_headshots.csv";
       let wowyData = null;
       let dpmData = null;
 
@@ -121,12 +124,43 @@
       const nbaDecadePips = document.querySelectorAll(".nba-decade-pip");
       const nbaScaleAllBtn = document.getElementById("nba-scale-all");
       const nbaScaleDecadeBtn = document.getElementById("nba-scale-decade");
+      const nbaStylePlayerSearch = document.getElementById("nba-style-player-search");
+      const nbaStyleSearchResults = document.getElementById("nba-style-search-results");
+      const nbaStyleMeta = document.getElementById("nba-style-meta");
+      const nbaStyleScatter = document.getElementById("nba-style-scatter");
+      const nbaStyleBody = document.getElementById("nba-style-body");
       let nbaSpinTimer = null;
       let nbaSpinTheta = 0;
       let nbaLastCamera = null;
       const nbaBinsRenderCache = new Map();
       let nbaShotsCache = [];
       let nbaLeagueBinsCache = [];
+      let nbaStyleProfiles = [];
+      let nbaStyleSimilarity = [];
+      let nbaStyleById = {};
+      let nbaStyleNeighborsById = {};
+      let nbaStyleHeadshotById = {};
+      let nbaStyleShareKeys = [];
+      let nbaStyleSelectedId = "";
+      const nbaStylePalette = ["#1f77b4", "#d62728", "#2ca02c", "#9467bd", "#e377c2", "#17becf", "#bcbd22", "#ff7f0e"];
+      const nbaStyleClusterColors = ["#4f86e5", "#ef6f6c", "#42a56f", "#b07ae6", "#f4a259", "#2a9d8f", "#c1121f", "#6d597a"];
+      const nbaStyleClusterNames = {
+        1: "Interior Bigs",
+        2: "Offensive Engines",
+        3: "Spotup Shooters",
+        4: "Hybrid Bigs",
+        5: "Combo Guards",
+        6: "Stretch Bigs",
+      };
+      const nbaStyleClusterLabelAnchors = {
+        1: { x: 0.04, y: 0.72, anchor: "start" },
+        2: { x: 0.76, y: 0.13, anchor: "end" },
+        3: { x: 0.88, y: 0.95, anchor: "end" },
+        4: { x: 0.29, y: 0.84, anchor: "middle" },
+        5: { x: 1, y: 0.55, anchor: "end" },
+        6: { x: 0.53, y: 0.91, anchor: "middle" },
+      };
+      let nbaStyleClusterData = { k: 0, clusters: [], byPlayerId: {} };
       const nbaZoneMap = {
         LeftThree: "LeftThree",
         LeftClose: "LeftClose",
@@ -397,6 +431,560 @@
           frag.appendChild(stat);
         });
         nbaZoneStatsLayer.appendChild(frag);
+      }
+
+      function toFinite(value, fallback = 0) {
+        const n = Number(value);
+        return Number.isFinite(n) ? n : fallback;
+      }
+
+      function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+      }
+
+      function quantile(values, q) {
+        if (!values.length) return 0;
+        const sorted = [...values].sort((a, b) => a - b);
+        const qq = clamp(q, 0, 1);
+        const pos = (sorted.length - 1) * qq;
+        const base = Math.floor(pos);
+        const rest = pos - base;
+        const next = sorted[Math.min(sorted.length - 1, base + 1)];
+        return sorted[base] + rest * (next - sorted[base]);
+      }
+
+      function styleLabelFromShareKey(key) {
+        const raw = String(key || "").replace(/^share_/, "");
+        if (raw === "PRBallHandler") return "P&R Ball Handler";
+        if (raw === "PRRollMan") return "P&R Roll Man";
+        return raw;
+      }
+
+      function styleColorForKey(key) {
+        const idx = nbaStyleShareKeys.indexOf(key);
+        return nbaStylePalette[idx % nbaStylePalette.length];
+      }
+
+      function dist2(a, b) {
+        const dx = toFinite(a.x) - toFinite(b.x);
+        const dy = toFinite(a.y) - toFinite(b.y);
+        return dx * dx + dy * dy;
+      }
+
+      function buildNbaStyleClusters(rows, requestedK = 6, maxIter = 50) {
+        const pts = rows
+          .map((r) => ({
+            id: String(r.player_id || ""),
+            x: toFinite(r.pc1),
+            y: toFinite(r.pc2),
+          }))
+          .filter((p) => p.id);
+        if (!pts.length) return { k: 0, clusters: [], byPlayerId: {} };
+
+        const k = Math.max(2, Math.min(requestedK, Math.floor(Math.sqrt(pts.length))));
+        const centroids = [];
+        const firstIdx = pts.reduce((best, p, idx) => {
+          if (best < 0) return idx;
+          const b = pts[best];
+          if (p.x < b.x) return idx;
+          if (p.x === b.x && p.y < b.y) return idx;
+          return best;
+        }, -1);
+        centroids.push({ x: pts[firstIdx].x, y: pts[firstIdx].y });
+        while (centroids.length < k) {
+          let best = null;
+          pts.forEach((p) => {
+            const d = Math.min(...centroids.map((c) => dist2(p, c)));
+            if (!best || d > best.d) best = { p, d };
+          });
+          centroids.push({ x: best.p.x, y: best.p.y });
+        }
+
+        let assignments = new Array(pts.length).fill(0);
+        for (let iter = 0; iter < maxIter; iter++) {
+          let changed = false;
+          for (let i = 0; i < pts.length; i++) {
+            let bestK = 0;
+            let bestD = Number.POSITIVE_INFINITY;
+            for (let ci = 0; ci < centroids.length; ci++) {
+              const d = dist2(pts[i], centroids[ci]);
+              if (d < bestD) {
+                bestD = d;
+                bestK = ci;
+              }
+            }
+            if (assignments[i] !== bestK) {
+              assignments[i] = bestK;
+              changed = true;
+            }
+          }
+          const sums = Array.from({ length: k }, () => ({ x: 0, y: 0, n: 0 }));
+          for (let i = 0; i < pts.length; i++) {
+            const a = assignments[i];
+            sums[a].x += pts[i].x;
+            sums[a].y += pts[i].y;
+            sums[a].n += 1;
+          }
+          for (let ci = 0; ci < k; ci++) {
+            if (sums[ci].n > 0) {
+              centroids[ci].x = sums[ci].x / sums[ci].n;
+              centroids[ci].y = sums[ci].y / sums[ci].n;
+            }
+          }
+          if (!changed) break;
+        }
+
+        const clusters = Array.from({ length: k }, (_, ci) => ({
+          clusterId: ci,
+          color: nbaStyleClusterColors[ci % nbaStyleClusterColors.length],
+          points: [],
+          centroid: { x: centroids[ci].x, y: centroids[ci].y },
+          rx: 0,
+          ry: 0,
+        }));
+        const byPlayerId = {};
+        for (let i = 0; i < pts.length; i++) {
+          const ci = assignments[i];
+          const p = pts[i];
+          clusters[ci].points.push(p);
+          byPlayerId[p.id] = ci;
+        }
+
+        clusters.forEach((c) => {
+          if (!c.points.length) {
+            c.rx = 0.4;
+            c.ry = 0.4;
+            return;
+          }
+          const mx = c.points.reduce((s, p) => s + p.x, 0) / c.points.length;
+          const my = c.points.reduce((s, p) => s + p.y, 0) / c.points.length;
+          const sx = Math.sqrt(c.points.reduce((s, p) => s + (p.x - mx) ** 2, 0) / c.points.length);
+          const sy = Math.sqrt(c.points.reduce((s, p) => s + (p.y - my) ** 2, 0) / c.points.length);
+          c.centroid = { x: mx, y: my };
+          c.rx = Math.max(0.25, sx * 2.35);
+          c.ry = Math.max(0.25, sy * 2.35);
+        });
+
+        return { k, clusters, byPlayerId };
+      }
+
+      function renderNbaStyleScatter(selectedId, selectedCompIds) {
+        if (!nbaStyleScatter || !nbaStyleProfiles.length) return;
+        const width = 760;
+        const height = 460;
+        const margin = { top: 24, right: 20, bottom: 44, left: 44 };
+        const plotW = width - margin.left - margin.right;
+        const plotH = height - margin.top - margin.bottom;
+        const xs = nbaStyleProfiles.map((r) => toFinite(r.pc1));
+        const ys = nbaStyleProfiles.map((r) => toFinite(r.pc2));
+        const minX = Math.min(...xs);
+        const maxX = Math.max(...xs);
+        const minY = Math.min(...ys);
+        const maxY = Math.max(...ys);
+        const spanX = Math.max(1e-6, maxX - minX);
+        const spanY = Math.max(1e-6, maxY - minY);
+        const padX = spanX * 0.08;
+        const padY = spanY * 0.08;
+        const x0 = minX - padX;
+        const x1 = maxX + padX;
+        const y0 = minY - padY;
+        const y1 = maxY + padY;
+        const xScale = (x) => margin.left + ((x - x0) / (x1 - x0)) * plotW;
+        const yScale = (y) => margin.top + ((y1 - y) / (y1 - y0)) * plotH;
+        const compSet = new Set(selectedCompIds.map((id) => String(id)));
+        const byId = {};
+        nbaStyleProfiles.forEach((row) => {
+          const id = String(row.player_id || "");
+          byId[id] = {
+            id,
+            name: String(row.player_name || ""),
+            x: toFinite(row.pc1),
+            y: toFinite(row.pc2),
+            sx: xScale(toFinite(row.pc1)),
+            sy: yScale(toFinite(row.pc2)),
+            cluster: nbaStyleClusterData.byPlayerId[id],
+          };
+        });
+
+        const meshEdgeSet = new Set();
+        (nbaStyleClusterData.clusters || []).forEach((cluster) => {
+          const clusterPoints = (cluster.points || []).map((p) => byId[p.id]).filter(Boolean);
+          clusterPoints.forEach((p) => {
+            const nearest = clusterPoints
+              .filter((q) => q.id !== p.id)
+              .map((q) => ({ id: q.id, d: (p.x - q.x) ** 2 + (p.y - q.y) ** 2 }))
+              .sort((a, b) => a.d - b.d)
+              .slice(0, 3);
+            nearest.forEach((n) => {
+              const a = p.id < n.id ? p.id : n.id;
+              const b = p.id < n.id ? n.id : p.id;
+              meshEdgeSet.add(`${a}|${b}`);
+            });
+          });
+        });
+
+        const meshLines = Array.from(meshEdgeSet)
+          .map((key) => {
+            const [a, b] = key.split("|");
+            const pa = byId[a];
+            const pb = byId[b];
+            if (!pa || !pb) return "";
+            const cluster = pa.cluster;
+            const color = nbaStyleClusterColors[Number(cluster) % nbaStyleClusterColors.length] || "#6b7280";
+            return `<line x1="${pa.sx.toFixed(2)}" y1="${pa.sy.toFixed(2)}" x2="${pb.sx.toFixed(2)}" y2="${pb.sy.toFixed(2)}" stroke="${color}" stroke-opacity="0.18" stroke-width="0.9"></line>`;
+          })
+          .join("");
+
+        const selectedLinks = (nbaStyleNeighborsById[selectedId] || [])
+          .slice(0, Math.max(4, selectedCompIds.length))
+          .map((n) => String(n.comp_player_id || ""))
+          .filter((id) => byId[id])
+          .map((id) => {
+            const pa = byId[selectedId];
+            const pb = byId[id];
+            return `<line x1="${pa.sx.toFixed(2)}" y1="${pa.sy.toFixed(2)}" x2="${pb.sx.toFixed(2)}" y2="${pb.sy.toFixed(2)}" stroke="#4f6f95" stroke-opacity="0.82" stroke-width="1.5"></line>`;
+          })
+          .join("");
+
+        const possVals = nbaStyleProfiles.map((r) => toFinite(r.total_possessions, 0));
+        const minPoss = Math.min(...possVals);
+        const maxPoss = Math.max(...possVals);
+        const possRange = Math.max(1, maxPoss - minPoss);
+
+        const pointHalos = nbaStyleProfiles
+          .map((row) => {
+            const id = String(row.player_id || "");
+            const isSelected = id === selectedId;
+            const isComp = compSet.has(id);
+            const cx = xScale(toFinite(row.pc1));
+            const cy = yScale(toFinite(row.pc2));
+            const clusterId = nbaStyleClusterData.byPlayerId[id];
+            const clusterColor = nbaStyleClusterColors[Number(clusterId) % nbaStyleClusterColors.length] || "#94a3b8";
+            const possNorm = Math.sqrt((toFinite(row.total_possessions, minPoss) - minPoss) / possRange);
+            const rCore = isSelected ? 7.2 : isComp ? 5.2 : 2.4 + possNorm * 3.0;
+            const rHalo = rCore * (isSelected ? 2.5 : isComp ? 2.1 : 1.75);
+            const haloOpacity = isSelected ? 0.22 : isComp ? 0.16 : 0.1;
+            return `<circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="${rHalo.toFixed(2)}" fill="${clusterColor}" fill-opacity="${haloOpacity}"></circle>`;
+          })
+          .join("");
+
+        const allPoints = nbaStyleProfiles
+          .map((row) => {
+            const id = String(row.player_id || "");
+            const isSelected = id === selectedId;
+            const isComp = compSet.has(id);
+            const cx = xScale(toFinite(row.pc1));
+            const cy = yScale(toFinite(row.pc2));
+            const clusterId = nbaStyleClusterData.byPlayerId[id];
+            const clusterColor = nbaStyleClusterColors[Number(clusterId) % nbaStyleClusterColors.length] || "#94a3b8";
+            const possNorm = Math.sqrt((toFinite(row.total_possessions, minPoss) - minPoss) / possRange);
+            const r = isSelected ? 7.2 : isComp ? 5.2 : 2.4 + possNorm * 3.0;
+            const fill = isSelected ? "#0f172a" : clusterColor;
+            const stroke = isSelected ? "#ffffff" : "none";
+            const strokeWidth = isSelected ? 1.8 : 0;
+            const opacity = isSelected ? "0.98" : isComp ? "0.93" : "0.84";
+            return `<circle class="nba-style-point" data-player-id="${htmlEscape(id)}" cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="${r.toFixed(2)}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" fill-opacity="${opacity}"><title>${htmlEscape(row.player_name || "")}</title></circle>`;
+          })
+          .join("");
+
+        const selectedLabel = (() => {
+          if (!byId[selectedId]) return "";
+          const text = String(byId[selectedId].name || "");
+          const textW = Math.max(52, text.length * 7.1);
+          const plotLeft = margin.left + 8;
+          const plotRight = margin.left + plotW - 8;
+          const px = byId[selectedId].sx + 12;
+          const py = byId[selectedId].sy - 12;
+          const x = Math.max(plotLeft, Math.min(plotRight - textW, px));
+          const y = Math.max(margin.top + 14, Math.min(margin.top + plotH - 6, py));
+          return `
+            <text x="${x.toFixed(2)}" y="${(y + 2).toFixed(2)}" fill="#10243f" font-size="12" font-weight="800" letter-spacing="0.005em">${htmlEscape(text)}</text>
+          `;
+        })();
+
+        const outerClusterLabels = (nbaStyleClusterData.clusters || [])
+          .map((cluster, idx) => {
+            const clusterNum = idx + 1;
+            const name = nbaStyleClusterNames[clusterNum] || "Cluster";
+            const labelText = `C${clusterNum} ${name}`;
+            const pts = (cluster.points || []).map((p) => ({
+              x: xScale(p.x),
+              y: yScale(p.y),
+            }));
+            if (!pts.length) return "";
+            const anchorCfg = nbaStyleClusterLabelAnchors[clusterNum];
+            const defaultCfg = { x: 0.5, y: 0.5, anchor: "middle" };
+            const cfg = anchorCfg || defaultCfg;
+            const textW = Math.max(72, labelText.length * 6.8);
+            const rawX = margin.left + plotW * cfg.x;
+            const rawY = margin.top + plotH * cfg.y;
+            const anchor = cfg.anchor || "middle";
+            const leftPad = 8;
+            const rightPad = 8;
+            const minX = margin.left + leftPad + (anchor === "start" ? 0 : anchor === "middle" ? textW / 2 : textW);
+            const maxX = margin.left + plotW - rightPad - (anchor === "start" ? textW : anchor === "middle" ? textW / 2 : 0);
+            const labelX = Math.max(minX, Math.min(maxX, rawX));
+            const labelY = Math.max(margin.top + 14, Math.min(margin.top + plotH - 6, rawY));
+            const centroidX = xScale(cluster.centroid.x);
+            const centroidY = yScale(cluster.centroid.y);
+            return `
+              <g>
+                <line
+                  x1="${centroidX.toFixed(2)}"
+                  y1="${centroidY.toFixed(2)}"
+                  x2="${labelX.toFixed(2)}"
+                  y2="${(labelY - 6).toFixed(2)}"
+                  stroke="${cluster.color}"
+                  stroke-opacity="0.25"
+                  stroke-width="1.15"
+                ></line>
+                <text
+                  x="${labelX.toFixed(2)}"
+                  y="${labelY.toFixed(2)}"
+                  text-anchor="${anchor}"
+                  fill="${cluster.color}"
+                  font-size="11.5"
+                  font-weight="800"
+                  letter-spacing="0.008em"
+                >${htmlEscape(labelText)}</text>
+              </g>
+            `;
+          })
+          .join("");
+
+        nbaStyleScatter.innerHTML = `
+          <defs>
+            <linearGradient id="nba-style-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#eef4fb"></stop>
+              <stop offset="100%" stop-color="#dfe9f6"></stop>
+            </linearGradient>
+            <filter id="nba-style-glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="2.2" result="coloredBlur"></feGaussianBlur>
+              <feMerge>
+                <feMergeNode in="coloredBlur"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+              </feMerge>
+            </filter>
+          </defs>
+          <rect x="0" y="0" width="${width}" height="${height}" fill="url(#nba-style-bg)"></rect>
+          <rect x="${margin.left}" y="${margin.top}" width="${plotW}" height="${plotH}" fill="#f5f9ff" stroke="none"></rect>
+          <g filter="url(#nba-style-glow)">${meshLines}</g>
+          <g filter="url(#nba-style-glow)">${selectedLinks}</g>
+          ${pointHalos}
+          ${allPoints}
+          ${outerClusterLabels}
+          ${selectedLabel}
+          <text x="${margin.left + 8}" y="${height - 12}" fill="#5b708e" font-size="11">PC1: possession-type mix axis</text>
+          <text x="${margin.left + 238}" y="${height - 12}" fill="#5b708e" font-size="11">PC2: secondary style axis</text>
+        `;
+      }
+
+      function styleMixBarHtml(row) {
+        const parts = nbaStyleShareKeys
+          .map((key) => ({ key, value: Math.max(0, toFinite(row[key])) }))
+          .filter((p) => p.value > 0);
+        if (!parts.length) return '<span class="nba-style-mix-empty">-</span>';
+
+        const total = parts.reduce((sum, p) => sum + p.value, 0);
+        let cursor = 0;
+        const stops = parts
+          .map((p) => {
+            const span = total > 0 ? (p.value / total) * 100 : 0;
+            const start = cursor;
+            const end = Math.min(100, cursor + span);
+            cursor = end;
+            return `${styleColorForKey(p.key)} ${start.toFixed(2)}% ${end.toFixed(2)}%`;
+          })
+          .join(", ");
+        const tooltip = parts
+          .map((p) => `${styleLabelFromShareKey(p.key)} ${(total > 0 ? (p.value / total) * 100 : 0).toFixed(1)}%`)
+          .join(" · ");
+
+        return `<span class="nba-style-mix" title="${htmlEscape(tooltip)}"><span class="nba-style-mix-pie" style="background:conic-gradient(${stops});"></span></span>`;
+      }
+
+      function closeNbaStyleSearchResults() {
+        nbaStyleSearchResults?.classList.remove("open");
+      }
+
+      function renderNbaStyleSearchResults() {
+        if (!nbaStyleProfiles.length || !nbaStyleSearchResults) return;
+        const q = normalizeForSearch(nbaStylePlayerSearch?.value || "");
+        const players = nbaStyleProfiles
+          .filter((p) => {
+            if (!q) return true;
+            return normalizeForSearch(p.player_name).includes(q);
+          })
+          .sort((a, b) => {
+            const qa = normalizeForSearch(a.player_name);
+            const qb = normalizeForSearch(b.player_name);
+            const aStarts = q && qa.startsWith(q) ? 0 : 1;
+            const bStarts = q && qb.startsWith(q) ? 0 : 1;
+            if (aStarts !== bStarts) return aStarts - bStarts;
+            const ap = toFinite(a.total_possessions, 0);
+            const bp = toFinite(b.total_possessions, 0);
+            if (bp !== ap) return bp - ap;
+            return String(a.player_name || "").localeCompare(String(b.player_name || ""));
+          })
+          .slice(0, 12);
+
+        if (!players.length) {
+          nbaStyleSearchResults.innerHTML = "";
+          closeNbaStyleSearchResults();
+          return;
+        }
+
+        nbaStyleSearchResults.innerHTML = players
+          .map((p) => {
+            const pid = String(p.player_id || "");
+            const headshot = nbaStyleHeadshotById[pid];
+            const avatar = headshot
+              ? `<span class="dpm-search-avatar"><img src="${htmlEscape(headshot)}" alt="${htmlEscape(p.player_name || "")}" loading="lazy" /></span>`
+              : `<span class="dpm-search-avatar">${htmlEscape(initials(p.player_name || ""))}</span>`;
+            const seasons = String(p.seasons || "");
+            const poss = Math.round(toFinite(p.total_possessions, 0)).toLocaleString();
+            return `
+              <button type="button" class="dpm-search-option" data-style-pick="${htmlEscape(p.player_id)}" role="option">
+                ${avatar}
+                <span class="dpm-search-text">
+                  <span class="dpm-search-name">${htmlEscape(p.player_name || "")}</span>
+                  <span class="dpm-search-years">${htmlEscape(seasons)} · ${poss} poss</span>
+                </span>
+              </button>
+            `;
+          })
+          .join("");
+        nbaStyleSearchResults.classList.add("open");
+      }
+
+      function renderNbaStyleSimilarity() {
+        if (!nbaStyleProfiles.length || !nbaStyleBody || !nbaStyleMeta) return;
+        const selected = nbaStyleById[nbaStyleSelectedId];
+        if (!selected) return;
+        const clusterId = nbaStyleClusterData.byPlayerId[nbaStyleSelectedId];
+
+        const neighbors = (nbaStyleNeighborsById[nbaStyleSelectedId] || []).slice(0, 8);
+        const compIds = neighbors.map((n) => String(n.comp_player_id || ""));
+        renderNbaStyleScatter(nbaStyleSelectedId, compIds);
+
+        nbaStyleMeta.textContent =
+          `${selected.player_name} · ${selected.seasons} · ${Math.round(toFinite(selected.total_possessions)).toLocaleString()} tracked possessions` +
+          ` · Archetype: ${selected.style_archetype}` +
+          ` · Cluster ${Number.isFinite(clusterId) ? clusterId + 1 : "-"}`;
+
+        const selectedColor = nbaStyleClusterColors[Number(clusterId) % nbaStyleClusterColors.length] || "#111827";
+        const selectedRow = `
+          <tr class="nba-style-row nba-style-row-selected">
+            <td>${htmlEscape(selected.player_name)}</td>
+            <td>1.000</td>
+            <td><span class="nba-style-cluster-pill" style="--cluster:${selectedColor}">C${Number.isFinite(clusterId) ? clusterId + 1 : "-"}</span> ${htmlEscape(selected.style_archetype)}</td>
+            <td>${styleMixBarHtml(selected)}</td>
+          </tr>
+        `;
+        const compRows = neighbors
+          .map((n) => {
+            const comp = nbaStyleById[String(n.comp_player_id || "")];
+            if (!comp) return "";
+            const compCluster = nbaStyleClusterData.byPlayerId[String(comp.player_id || "")];
+            const compColor = nbaStyleClusterColors[Number(compCluster) % nbaStyleClusterColors.length] || "#6b7280";
+            return `
+              <tr class="nba-style-row" data-style-player="${htmlEscape(comp.player_id)}">
+                <td>${htmlEscape(comp.player_name)}</td>
+                <td>${toFinite(n.similarity).toFixed(3)}</td>
+                <td><span class="nba-style-cluster-pill" style="--cluster:${compColor}">C${Number.isFinite(compCluster) ? compCluster + 1 : "-"}</span> ${htmlEscape(comp.style_archetype)}</td>
+                <td>${styleMixBarHtml(comp)}</td>
+              </tr>
+            `;
+          })
+          .join("");
+
+        nbaStyleBody.innerHTML = selectedRow + compRows;
+      }
+
+      function pickNbaStylePlayer(rawValue) {
+        const val = String(rawValue || "").trim().toLowerCase();
+        if (!val) return false;
+        const exact = nbaStyleProfiles.find((r) => String(r.player_name || "").toLowerCase() === val);
+        const partial = nbaStyleProfiles.find((r) => String(r.player_name || "").toLowerCase().includes(val));
+        const picked = exact || partial;
+        if (!picked) return false;
+        nbaStyleSelectedId = String(picked.player_id || "");
+        if (nbaStylePlayerSearch) nbaStylePlayerSearch.value = picked.player_name;
+        closeNbaStyleSearchResults();
+        renderNbaStyleSimilarity();
+        return true;
+      }
+
+      async function initNbaStyleSimilarity() {
+        if (!nbaStyleMeta || !nbaStyleBody) return;
+        try {
+          const [profilesRaw, simRaw, headshotsRaw] = await Promise.all([
+            fetchCsvStrict(NBA_STYLE_PROFILE_URL),
+            fetchCsvStrict(NBA_STYLE_SIMILARITY_URL),
+            fetchCsvStrict(NBA_STYLE_HEADSHOTS_URL).catch(() => []),
+          ]);
+          nbaStyleProfiles = profilesRaw.map((row) => {
+            const out = { ...row };
+            Object.keys(out).forEach((k) => {
+              if (k === "player_name" || k === "style_archetype" || k === "seasons" || k === "player_id") return;
+              out[k] = toFinite(out[k], 0);
+            });
+            out.player_id = String(row.player_id || "");
+            out.player_name = String(row.player_name || "").trim();
+            return out;
+          }).filter((r) => r.player_id && r.player_name);
+
+          nbaStyleSimilarity = simRaw.map((row) => ({
+            ...row,
+            player_id: String(row.player_id || ""),
+            comp_player_id: String(row.comp_player_id || ""),
+            similarity: toFinite(row.similarity, 0),
+            comp_rank: toFinite(row.comp_rank, 0),
+          }));
+          nbaStyleHeadshotById = Object.fromEntries(
+            headshotsRaw
+              .map((row) => ({
+                id: String(row.player_id || "").trim(),
+                path: String(row.headshot_path || "").trim(),
+                ok: Number(row.headshot_available || 0) === 1,
+              }))
+              .filter((r) => r.id && r.ok && r.path)
+              .map((r) => [r.id, r.path])
+          );
+
+          nbaStyleProfiles.sort((a, b) => {
+            const pa = toFinite(a.total_possessions, 0);
+            const pb = toFinite(b.total_possessions, 0);
+            if (pb !== pa) return pb - pa;
+            return String(a.player_name || "").localeCompare(String(b.player_name || ""));
+          });
+          nbaStyleById = Object.fromEntries(nbaStyleProfiles.map((r) => [r.player_id, r]));
+          nbaStyleClusterData = buildNbaStyleClusters(nbaStyleProfiles, 6);
+          nbaStyleShareKeys = Object.keys(nbaStyleProfiles[0] || {}).filter((k) => k.startsWith("share_")).sort((a, b) => {
+            const av = nbaStyleProfiles.reduce((s, r) => s + toFinite(r[a]), 0);
+            const bv = nbaStyleProfiles.reduce((s, r) => s + toFinite(r[b]), 0);
+            return bv - av;
+          });
+
+          nbaStyleNeighborsById = {};
+          nbaStyleSimilarity.forEach((row) => {
+            if (!row.player_id || !row.comp_player_id) return;
+            if (!nbaStyleNeighborsById[row.player_id]) nbaStyleNeighborsById[row.player_id] = [];
+            nbaStyleNeighborsById[row.player_id].push(row);
+          });
+          Object.values(nbaStyleNeighborsById).forEach((list) => list.sort((a, b) => a.comp_rank - b.comp_rank));
+
+          nbaStyleSelectedId = nbaStyleProfiles[0]?.player_id || "";
+          if (nbaStylePlayerSearch && nbaStyleProfiles[0]) {
+            nbaStylePlayerSearch.value = nbaStyleProfiles[0].player_name;
+          }
+          renderNbaStyleSearchResults();
+          renderNbaStyleSimilarity();
+        } catch (error) {
+          nbaStyleMeta.textContent = `Failed to load style similarity data: ${error.message}`;
+          nbaStyleBody.innerHTML = '<tr><td colspan="4">Style similarity data unavailable.</td></tr>';
+          if (nbaStyleScatter) nbaStyleScatter.innerHTML = "";
+        }
       }
 
       function computeGlobalColorScale(binRows) {
@@ -746,6 +1334,7 @@
           if (!nbaLeagueBinsCache.length) {
             nbaLeagueBinsCache = await fetchCsvStrict(NBA_LEAGUE_BINS_URL);
           }
+          nbaDecadeIdx = DECADE_ORDER.indexOf("2020s");
           nbaBinsRenderCache.clear();
           nbaGlobalScale = computeGlobalColorScale(nbaLeagueBinsCache);
           updateNbaDecade();
@@ -1041,7 +1630,6 @@
         }
 
         const modeLabel = rapmMode === "luck" ? "luck-adjusted RAPM" : "raw RAPM";
-        rapmStatus.textContent = `Showing ${modeLabel} (${rows.length}/${modeRows.length} players)`;
 
         const ordered = sortedRows(rows);
         const rangeORapm = getColumnRange(modeRows, "oRAPM");
@@ -1672,6 +2260,60 @@
       });
       nbaScaleAllBtn?.addEventListener("click", () => setNbaScaleMode("all"));
       nbaScaleDecadeBtn?.addEventListener("click", () => setNbaScaleMode("decade"));
+      nbaStylePlayerSearch?.addEventListener("focus", () => renderNbaStyleSearchResults());
+      nbaStylePlayerSearch?.addEventListener("input", () => renderNbaStyleSearchResults());
+      nbaStylePlayerSearch?.addEventListener("change", () => {
+        if (!pickNbaStylePlayer(nbaStylePlayerSearch.value) && nbaStyleProfiles.length) {
+          nbaStylePlayerSearch.value = nbaStyleById[nbaStyleSelectedId]?.player_name || "";
+        }
+      });
+      nbaStylePlayerSearch?.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          const first = nbaStyleSearchResults?.querySelector("[data-style-pick]");
+          if (first) {
+            const pid = String(first.getAttribute("data-style-pick") || "");
+            if (pid && nbaStyleById[pid]) {
+              nbaStyleSelectedId = pid;
+              nbaStylePlayerSearch.value = nbaStyleById[pid].player_name || "";
+              closeNbaStyleSearchResults();
+              renderNbaStyleSimilarity();
+              return;
+            }
+          }
+          if (!pickNbaStylePlayer(nbaStylePlayerSearch.value) && nbaStyleProfiles.length) {
+            nbaStylePlayerSearch.value = nbaStyleById[nbaStyleSelectedId]?.player_name || "";
+          }
+        }
+      });
+      nbaStyleSearchResults?.addEventListener("click", (event) => {
+        const pick = event.target.closest("[data-style-pick]");
+        if (!pick) return;
+        const pid = String(pick.getAttribute("data-style-pick") || "");
+        if (!pid || !nbaStyleById[pid]) return;
+        nbaStyleSelectedId = pid;
+        if (nbaStylePlayerSearch) nbaStylePlayerSearch.value = nbaStyleById[pid].player_name || "";
+        closeNbaStyleSearchResults();
+        renderNbaStyleSimilarity();
+      });
+      nbaStyleScatter?.addEventListener("click", (event) => {
+        const point = event.target.closest(".nba-style-point");
+        if (!point) return;
+        const pid = String(point.getAttribute("data-player-id") || "");
+        if (!pid || !nbaStyleById[pid]) return;
+        nbaStyleSelectedId = pid;
+        if (nbaStylePlayerSearch) nbaStylePlayerSearch.value = nbaStyleById[pid].player_name || "";
+        renderNbaStyleSimilarity();
+      });
+      nbaStyleBody?.addEventListener("click", (event) => {
+        const row = event.target.closest("[data-style-player]");
+        if (!row) return;
+        const pid = String(row.getAttribute("data-style-player") || "");
+        if (!pid || !nbaStyleById[pid]) return;
+        nbaStyleSelectedId = pid;
+        if (nbaStylePlayerSearch) nbaStylePlayerSearch.value = nbaStyleById[pid].player_name || "";
+        renderNbaStyleSimilarity();
+      });
       dpmSearch.addEventListener("focus", () => renderDpmSearchResults());
       dpmSearch.addEventListener("input", () => renderDpmSearchResults());
       dpmSearch.addEventListener("keydown", (event) => {
@@ -1699,6 +2341,7 @@
       });
       document.addEventListener("click", (event) => {
         if (!event.target.closest(".dpm-search-wrap")) closeDpmSearchResults();
+        if (!event.target.closest(".nba-style-search-wrap")) closeNbaStyleSearchResults();
       });
 
       async function initRAPM() {
@@ -1726,3 +2369,4 @@
       initDpm();
       initNbaShotChart();
       initNbaBinsPlot();
+      initNbaStyleSimilarity();

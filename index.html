@@ -20,7 +20,7 @@
             Visualisation (NBA)
           </button>
           <button class="tab" role="tab" id="tab-nbl1" aria-selected="false" aria-controls="pane-nbl1" data-pane="nbl1">
-            Computer Vision Statistic Automation (NBL1)
+            Computer Vision Statistic Automation (Thesis)
           </button>
         </div>
 
@@ -37,13 +37,22 @@
                 RAPM
               </button>
               <button class="subtab" role="tab" id="subtab-lineup" aria-selected="false" aria-controls="subpane-lineup" data-pane="lineup">
-                Lineup Evaluation
+                Blended Impact Metric
               </button>
             </div>
 
-            <section class="pane active" role="tabpanel" id="subpane-rapm" aria-labelledby="subtab-rapm">
+            <section class="pane" role="tabpanel" id="subpane-rapm" aria-labelledby="subtab-rapm">
+              <div class="nba-intro nbl-intro">
+                <p class="section-copy">RAPM is a ridge regression model that estimates each player's individual impact on offence and defence, controlling for the quality of teammates and opponents they shared the floor with.</p>
+                <div class="tech-stack-inline">
+                  <span class="tech-stack-label">Tech Stack</span>
+                  <div class="tech-chip-row">
+                    <span class="tech-chip">Data Processing: Python, Pandas, NumPy</span>
+                    <span class="tech-chip">Visualisation: JavaScript, HTML</span>
+                  </div>
+                </div>
+              </div>
               <div class="rapm-controls">
-                <div class="status" id="rapm-status">Loading RAPM data...</div>
                 <div class="rapm-tools">
                   <input id="rapm-search" class="search-input" type="search" placeholder="Search player..." aria-label="Search player" />
                   <div class="toggle" role="group" aria-label="RAPM mode">
@@ -69,9 +78,29 @@
                   <tbody id="rapm-body"></tbody>
                 </table>
               </div>
+              <div class="nba-process-card">
+                <div class="nba-process-grid">
+                  <div class="nba-process-panel" style="grid-column: 1 / -1;">
+                    <h3>RAPM Process</h3>
+                    <p class="nba-process-copy">Using the same lineup play by play data, RAPM takes a different approach to player impact than WOWY. Rather than splitting team performance by whether one player is on or off the floor, RAPM treats each possession as an observation and uses the ten players on court to explain the result of that possession. This lets us estimate player impact while controlling for the teammates and opponents they shared the floor with.</p>
+                    <p class="nba-process-copy">The main issue here is sample size. In the NBL, players often share a large portion of their minutes together, so a standard regression becomes unstable very quickly. To deal with this, ridge regularisation pulls player estimates back toward zero, which gives us more stable and reliable coefficients, especially for players with lower minute totals or heavy lineup overlap.</p>
+                    <p class="nba-process-copy">The model is run separately for offence and defence, producing an oRAPM and dRAPM which combine into a net figure for each player. The table places those estimates next to raw net rating so you can compare modelled impact against actual lineup results. The luck adjusted toggle applies the same three point normalisation used in WOWY, which keeps the two frameworks directly comparable.</p>
+                  </div>
+                </div>
+              </div>
             </section>
 
-            <section class="pane" role="tabpanel" id="subpane-wowy" aria-labelledby="subtab-wowy">
+            <section class="pane active" role="tabpanel" id="subpane-wowy" aria-labelledby="subtab-wowy">
+              <div class="nba-intro nbl-intro">
+                <p class="section-copy">WOWY splits team performance by whether a given player is on or off the floor, giving a direct read on how lineups perform with and without them. A luck adjustment is applied to three-point attempts in each split to strip out shooting variance.</p>
+                <div class="tech-stack-inline">
+                  <span class="tech-stack-label">Tech Stack</span>
+                  <div class="tech-chip-row">
+                    <span class="tech-chip">Data Processing: Python, Pandas, NumPy</span>
+                    <span class="tech-chip">Visualisation: JavaScript, HTML</span>
+                  </div>
+                </div>
+              </div>
               <div class="wowy-controls">
                 <div>
                   <label for="wowy-team">Team</label>
@@ -102,9 +131,30 @@
                   <tbody id="wowy-body"></tbody>
                 </table>
               </div>
+              <div class="nba-process-card">
+                <div class="nba-process-grid">
+                  <div class="nba-process-panel" style="grid-column: 1 / -1;">
+                    <h3>WOWY Process</h3>
+                    <p class="nba-process-copy">The first step in producing advanced on-off based analytics for the NBL is assessing the range of accessible data. By far the most valuable is play by play data, which describes events at a game clock state. Not only does this timestamp each statistical event, it also provides starters and substitutions. From this, we can infer two key factors at any given point in time: the full court lineups for both teams, and which team is on offense or defense for each possession.</p>
+                    <p class="nba-process-copy">This establishes the foundation for most advanced basketball analytics, allowing us to evaluate player impact beyond simple counting stats. Typically, possession level lineup data needs to already be provided, but by reconstructing lineups directly from the play by play, we can infer that structure ourselves.</p>
+                    <p class="nba-process-copy">WOWY (With or Without You) Lineups is a framework that allows us to evaluate team impact through lineup state splits. Using the lineup attributed play by play data produced, we can assign points scored, points allowed, and shooting outcomes to each player on/off state, then calculate offensive, defensive, and net ratings on a 100 possession basis. Analytically, WOWY is useful because it shows how team performance changes depending on whether a player is on or off the floor, helping separate true contextual impact from raw box score output. </p>
+                    <p class="nba-process-copy"> The luck adjustment stabilises for the biggest source of statistical noise in WOWY splits, being three-point variance. Research has shown that 750 attempts are required to get a true estimate of a player’s skill from a 3PT%, and that team defence has minimal impact on the opponent raw 3PT%. Therefore I applied this expected percentage to the three point shots taken in each possession segment, replacing volatile make/miss outcomes with a skill baseline so on/off ratings reflect the process more than shooting swings.</p>
+                  </div>
+                </div>
+              </div>
             </section>
 
             <section class="pane" role="tabpanel" id="subpane-lineup" aria-labelledby="subtab-lineup">
+              <div class="nba-intro nbl-intro">
+                <p class="section-copy">My Blended Impact Metric combines RAPM estimates with box score numbers trained on historical priors to produce a single player impact figure, plotted across career games so development curves can be compared directly across players.</p>
+                <div class="tech-stack-inline">
+                  <span class="tech-stack-label">Tech Stack</span>
+                  <div class="tech-chip-row">
+                    <span class="tech-chip">Data Processing: Python, Pandas, NumPy</span>
+                    <span class="tech-chip">Visualisation: JavaScript, HTML</span>
+                  </div>
+                </div>
+              </div>
               <div class="dpm-controls">
                 <div>
                   <label for="dpm-search">Select Players to Compare (max 3)</label>
@@ -119,9 +169,9 @@
                 <div>
                   <label for="dpm-metric">Metric</label>
                   <select id="dpm-metric">
-                    <option value="n">Net LeBron</option>
-                    <option value="o">Off LeBron</option>
-                    <option value="d">Def LeBron</option>
+                    <option value="n">Net Blended</option>
+                    <option value="o">Off Blended</option>
+                    <option value="d">Def Blended</option>
                   </select>
                 </div>
               </div>
@@ -130,23 +180,28 @@
               <div class="dpm-chart-wrap">
                 <svg id="dpm-chart" viewBox="0 0 1200 460" preserveAspectRatio="xMidYMid meet" aria-label="DPM trajectory chart"></svg>
               </div>
-              <div class="dpm-note">X-axis: career games. Y-axis: selected LeBron metric with fixed zero line.</div>
-              <div class="content-box">
-                <p>Trajectory tracker loaded from `NBL/data/lebron` source.</p>
+              <div class="nba-process-card">
+                <div class="nba-process-grid">
+                  <div class="nba-process-panel" style="grid-column: 1 / -1;">
+                    <h3>Blended Impact Metric Process</h3>
+                    <p class="nba-process-copy">My Blended Impact Metric estimates offensive and defensive value per 100 possessions by anchoring a box score signal to longer horizon impact data. I first trained ridge models to map a player's box profile to luck adjusted RAPM outcomes, then combined that box projection with an anchor built from each player's historical luck adjusted RAPM and box prior.</p>
+                    <p class="nba-process-copy">This gives a rating that is more stable than raw box production but still responsive to changes in role and form, with separate offensive, defensive, and net components. In practice it functions as a context aware, noise controlled read on true on court impact rather than a direct summary of traditional counting stats.</p>
+                  </div>
+                </div>
               </div>
             </section>
           </section>
 
           <section class="pane" role="tabpanel" id="pane-nba" aria-labelledby="tab-nba">
             <h2 class="section-title">Visualisation (NBA)</h2>
-            <p class="section-copy">Interactive NBA visualisations across shot location, game flow, and player appearance data.</p>
+            <p class="section-copy">Interactive NBA visualisations that make spatial and advanced analytics more intuitive, across shot location, game flow, and player appearance data.</p>
 
             <div class="subtabs" role="tablist" aria-label="Visualisation subtabs">
               <button class="subtab" role="tab" id="subtab-shotmaps" aria-selected="true" aria-controls="subpane-shotmaps" data-pane="shotmaps">
                 Shot Location Maps
               </button>
-              <button class="subtab" role="tab" id="subtab-gamestory" aria-selected="false" aria-controls="subpane-gamestory" data-pane="gamestory">
-                Game Story
+              <button class="subtab" role="tab" id="subtab-style" aria-selected="false" aria-controls="subpane-style" data-pane="style">
+                Playtype Style Similarity
               </button>
               <button class="subtab" role="tab" id="subtab-headshots" aria-selected="false" aria-controls="subpane-headshots" data-pane="headshots">
                 Headshot Graphs
@@ -156,6 +211,13 @@
             <section class="pane active" role="tabpanel" id="subpane-shotmaps" aria-labelledby="subtab-shotmaps">
               <div class="nba-intro">
                 <p class="section-copy">Uses x,y shot location data to identify efficiency zones and prominent shot locations.</p>
+                <div class="tech-stack-inline">
+                  <span class="tech-stack-label">Tech Stack</span>
+                  <div class="tech-chip-row">
+                    <span class="tech-chip">Data Processing: Python, Pandas</span>
+                    <span class="tech-chip">Visualisation: JavaScript, Plotly.js, SVG + HTML, Adobe Illustrator</span>
+                  </div>
+                </div>
               </div>
               <div class="nba-shotcard">
                 <div class="nba-grid">
@@ -181,9 +243,12 @@
                         <div class="nba-color-legend-bar nba-color-legend-bar--2d"></div>
                         <span class="nba-color-legend-label">−15%</span>
                       </div>
+                      <span class="nba-color-legend-axis">FG%</span>
                     </div>
-                    <div id="nba-shot-summary" class="nba-shot-summary nba-panel-sub">Loading shot data...</div>
-                    <p class="nba-panel-desc">Single season shot chart for Jayson Tatum, breaking down zone efficiency.</p>
+                    <div class="nba-caption">
+                      <div id="nba-shot-summary" class="nba-shot-summary nba-panel-sub">Loading shot data...</div>
+                      <p class="nba-panel-desc"><br>Single season shot chart for Jayson Tatum, breaking down zone efficiency.</p>
+                    </div>
                   </div>
                   <div class="nba-panel">
                     <div class="nba-shotcard-head">
@@ -195,7 +260,7 @@
                         <span class="nba-decade-pip" data-decade="1990s">1990s</span>
                         <span class="nba-decade-pip" data-decade="2000s">2000s</span>
                         <span class="nba-decade-pip" data-decade="2010s">2010s</span>
-                        <span class="nba-decade-pip" data-decade="2020s">2020s</span>
+                        <span class="nba-decade-pip active" data-decade="2020s">2020s</span>
                       </div>
                       <button class="nba-decade-nav" id="nba-decade-next" aria-label="Next decade">&#8594;</button>
                     </div>
@@ -208,32 +273,175 @@
                         <div class="nba-color-legend-bar"></div>
                         <span class="nba-color-legend-label" id="nba-3d-legend-min">—</span>
                       </div>
+                      <span class="nba-color-legend-axis">Points / Shot</span>
                     </div>
-                    <div id="nba-bins-summary" class="nba-shot-summary nba-panel-sub">Loading bins...</div>
-                    <p class="nba-panel-desc">League wide shot data, split by decade, visualising the change in shot type approach and efficiency since 2000. <br> Notably, the rise in three point and decline in mid-range attempts has lead to improved average efficiency, and the distribution shaping around the three point line.</p>
+                    <div class="nba-caption">
+                      <div id="nba-bins-summary" class="nba-shot-summary nba-panel-sub">Loading bins...</div>
+                      <p class="nba-panel-desc"><br>League wide shot data, split by decade, visualising the change in shot type approach and efficiency since 1996. <br> Notably, the rise in three point and decline in mid-range attempts has lead to improved average efficiency, and the distribution shaping around the three point line.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="nba-process-card">
+                  <div class="nba-process-grid">
+                    <div class="nba-process-panel">
+                      <h3>2D Shot Chart Process</h3>
+                        <p class="nba-process-copy">Each NBA shot attempt since 1996 (play by play era) has an x and y location in relative inches attributed to it. From this, I drew basketball court map regions to the exact scale in Adobe Illustrator, and created a python script that maps a x,y coordinate to the corresponding pixel region on the SVG court image </p>
+                        <p class="nba-process-copy">Aggregating all shots through pandasdb, I was able to calculate the league average FG% for each zone, and then create a colour map encoding for player specific FG% deltas to visualise efficiency. Rendering the makes and misses, layered on the SVG, allows for shot volume identification, and crisp scaling on resizing the display</li>
+                    </div>
+                    <div class="nba-process-panel">
+                      <h3>3D Shot Bins Process</h3>
+                      <p class="nba-process-copy">To analyse league wide shot evolution, I grouped attempts into decade buckets (1990s, 2000s, 2010s, 2020s), then aggregated shot outcomes inside fixed spatial bins (1ft&sup2) to compute points per shot for each bin. This creates a consistent way to compare efficiency profiles across eras from the same court geometry.</p>
+                      <p class="nba-process-copy">For the 3D visual, bin height is scaled by shot volume to produce a 3D histogram, demonstrating high traffic . Plotly renders the interactive bar surface with decade switching, and by keeping a consistent colour scale, the chart captures not only how shot diet has shifted, but also the broader rise in league wide scoring efficiency.</p>
+                    </div>
                   </div>
                 </div>
               </div>
             </section>
 
-            <section class="pane" role="tabpanel" id="subpane-gamestory" aria-labelledby="subtab-gamestory">
-              <div class="content-box">
-                <p>Game story visualisations coming soon.</p>
+            <section class="pane" role="tabpanel" id="subpane-style" aria-labelledby="subtab-style">
+              <div class="nba-intro">
+                <p class="section-copy">Uses playtype possession profiles (PCA) and nearest-neighbor similarity to map stylistic archetypes and closest player matches. This measures similarity in how players distribute possessions by action type, not the efficiency outputs of those actions.</p>
+                <div class="tech-stack-inline">
+                  <span class="tech-stack-label">Tech Stack</span>
+                  <div class="tech-chip-row">
+                    <span class="tech-chip">Data Processing: Python, Pandas, scikit-learn</span>
+                    <span class="tech-chip">Visualisation: JavaScript, SVG + HTML</span>
+                  </div>
+                </div>
+              </div>
+              <div class="nba-style-shell">
+                <div class="nba-style-controls">
+                  <div class="nba-style-control">
+                    <label for="nba-style-player-search">Player</label>
+                    <div class="dpm-search-wrap nba-style-search-wrap">
+                      <div class="dpm-search-row">
+                        <input id="nba-style-player-search" type="search" autocomplete="off" placeholder="Search player style..." />
+                      </div>
+                      <div id="nba-style-search-results" class="dpm-search-results" role="listbox" aria-label="Style player search results"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="nba-style-meta" class="nba-style-meta">Loading playtype style data...</div>
+
+                <div class="nba-style-grid">
+                  <div class="nba-style-panel">
+                    <h3>Style Map (2016–Present)</h3>
+                    <svg id="nba-style-scatter" viewBox="0 0 760 460" preserveAspectRatio="xMidYMid meet" aria-label="NBA playtype style similarity map"></svg>
+                  </div>
+                  <div class="nba-style-panel">
+                    <h3>Closest Style Matches</h3>
+                    <div class="table-wrap nba-style-table-wrap">
+                      <table id="nba-style-table">
+                        <thead>
+                          <tr>
+                            <th>Player</th>
+                            <th>Similarity</th>
+                            <th>Archetype</th>
+                            <th>Style Mix (POSS share)</th>
+                          </tr>
+                        </thead>
+                        <tbody id="nba-style-body"></tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="nba-process-card">
+                  <div class="nba-process-grid">
+                    <div class="nba-process-panel" style="grid-column: 1 / -1;">
+                      <h3>Playtype Similarity Process</h3>
+                      <p class="nba-process-copy">For each player, I build a playtype-distribution vector across the tracked offensive actions (for example: Isolation, P&amp;R Ball Handler, Spot Up, Handoff, Cut, Post Up), using possession share as the feature space. This maps every player into the same N-dimensional style space, so comparisons are based on distribution of possesions, avoiding impact of heavy raw volume totals.</p>
+                      <p class="nba-process-copy">I standardise those vectors and apply PCA to project the N-dimensional distribution space into a 2D embedding that preserves the strongest style variance. Clustering and local network links are then computed in that same embedding to expose archetype neighborhoods. Nearest player similarity is measured from distance in the original style space so the analytics stay tied to the underlying possession-mix profile.</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </section>
 
+
             <section class="pane" role="tabpanel" id="subpane-headshots" aria-labelledby="subtab-headshots">
-              <div class="content-box">
-                <p>Headshot graph visualisations coming soon.</p>
+              <p class="section-copy">Uses per-game scoring outputs to plot TS% vs PPG, with each player shown as a headshot marker.</p>
+              <div class="nba-headshot-shell">
+                <div class="nba-headshot-frame">
+                  <img src="analytics/images/nba/headshotPlot.png" alt="NBA headshot TS% vs PPG chart" style="width:100%;max-width:820px;display:block;margin:0 auto;" />
+                </div>
+              </div>
+              <div class="nba-process-card">
+                <div class="nba-process-grid">
+                  <div class="nba-process-panel" style="grid-column: 1 / -1;">
+                    <h3>Headshot Graph Process</h3>
+                    <p class="nba-process-copy">This graph maps each player by scoring volume and scoring efficiency, using points per game on the x-axis and true shooting percentage on the y-axis to separate role and output in one view. Plotting headshots instead of abstract markers makes high-density comparison readable while still preserving player identity.</p>
+                    <p class="nba-process-copy">The quadrant framework is anchored to league-average splits, which turns the chart into a quick classification tool: efficient volume scorers, efficient role players, inefficient volume scorers, and inefficient role players. That gives the plot analytical structure beyond a simple scatter of season averages.</p>
+                  </div>
+                </div>
               </div>
             </section>
           </section>
 
           <section class="pane" role="tabpanel" id="pane-nbl1" aria-labelledby="tab-nbl1">
-            <h2 class="section-title">Computer Vision Statistic Automation (NBL1)</h2>
-            <p class="section-copy">Vision-assisted workflows to automate stat extraction and reduce manual tagging from NBL1 footage.</p>
-            <div class="content-box">
-              <p>Include pipeline summaries, demo clips, and technical notes here.</p>
+            <h2 class="section-title">Computer Vision Statistic Automation (Thesis)</h2>
+            <p class="section-copy">My undergraduate thesis, in which I developed a computer vision workflow to automate stat extraction in single angle basketball footage.</p>
+
+            <div class="cv-flow">
+              <h3>Goal</h3>
+              <p class="nba-process-copy">Develop a computer vision pipeline that automates the collection of basketball box score statistics from single angle camera footage. This creates the foundation for more advanced analytics that are difficult or impossible to capture through human collection, such as player movement speed, shot quality, spatial tendencies, court location data, and defensive schemes.</p>
+              <div class="cv-center">
+                <figure class="cv-figure" style="max-width: 55%;">
+                  <img class="cv-img" style="width: 100%;" src="clips/Goal.gif" alt="Goal demonstration" />
+                  <figcaption class="cv-caption">Raw video input (left) to pipeline output (right)</figcaption>
+                </figure>
+              </div>
+
+              <h3 class="cv-pipeline-title">Pipeline</h3>
+              <img class="cv-img cv-img--pipeline" src="clips/pipeline.png" alt="Pipeline diagram" />
+              <h3>Workflow</h3>
+              <p class="nba-process-copy">Using 10 games of raw broadcast footage from local NBL1 competition, 4,000 frames were manually annotated to train four specialised YOLOv11 models for basketball detection, jersey number detection, player vs referee classification, and made basket recognition.</p>
+              <div class="cv-center">
+                <img class="cv-img cv-img--workflow" src="clips/Workflow.png" alt="Workflow overview" />
+              </div>
+
+              <h3>YOLO + SAM2 Integration</h3>
+              <p class="nba-process-copy">By integrating the player detection model with Meta's Segment Anything Model 2 (SAM2), persistent segmentation and tracking of unseen footage was achieved. YOLO detections were used as prompts for SAM2, allowing individual players to be separated at the pixel level and followed through motion, overlap, and temporary occlusion.</p>
+              <div class="cv-center">
+                <img class="cv-img cv-img--wide" src="clips/YoloToSam.png" alt="YOLO to SAM2 integration" style="max-width: 80%;" />
+              </div>
+
+              <p class="nba-process-copy">While this segmentation process was mostly effective, additional logic was required to improve stability in game conditions. Player movement trajectories were analysed across frames to confirm identity continuity and reduce tracking swaps, while a separate YOLO basketball detector combined with spatial rules helped maintain reliable player association during heavy occlusion, contested rebounds, and crowded paint situations.</p>
+              <div class="cv-center">
+                <figure class="cv-figure">
+                  <img class="cv-img cv-img--wide" src="clips/SAM.gif" alt="SAM2 tracking demonstration" />
+                  <figcaption class="cv-caption">SAM2 persistent player segmentation across frames</figcaption>
+                </figure>
+              </div>
+
+              <h3>Movement &amp; Positioning</h3>
+              <p class="nba-process-copy">The generated player masks were then used to estimate movement trajectories, velocities, and court positioning over time. This spatial information enabled the extraction of player paths, off ball movement, and positional context beyond standard box score data.</p>
+              <div class="cv-center">
+                  <figure class="cv-figure">
+                  <img class="cv-img cv-img--wide" src="clips/Passing.gif" alt="SAM2 tracking demonstration" />
+                  <figcaption class="cv-caption">Player Passing Tracking from Ball Mask Distance</figcaption>
+                </figure>
+              </div>
+
+              <h3>Player Identification</h3>
+              <p class="nba-process-copy">For player identification, detected jersey numbers were matched to segmented player masks, while a zero shot colour classification model was used to determine team colours. Combining these outputs allowed tracked players to be assigned persistent identities throughout the game.</p>
+              <div class="cv-center">
+                <img class="cv-img cv-img--wide" src="clips/NumberYOLO.png" alt="Jersey number YOLO detection" />
+              </div>
+
+              <h3>Scoring Event Detection</h3>
+              <p class="nba-process-copy">Ball trajectory analysis, made shot detections, and player proximity to the release point were combined with court zone logic to infer the scorer and classify point value (two or three points). This produced an automated event log of made baskets linked to individual players and teams.</p>
+              <div class="cv-center">
+                <img class="cv-img cv-img--wide" src="clips/BallTrajectory.png" alt="Ball trajectory analysis" />
+              </div>
+
+              <p class="nba-process-copy">Overall, the system transforms raw broadcast video into structured statistical and positional datasets, demonstrating how low cost single camera footage can be used for advanced basketball analytics without dedicated tracking infrastructure.</p>
+              <div class="cv-center">
+                <figure class="cv-figure">
+                  <img class="cv-img" style="width: 100%;" src="clips/Pullup.gif" alt="Detected scoring event output" />
+                  <figcaption class="cv-caption">Final pipeline output: automated detection and attribution of a scoring event in live footage</figcaption>
+                </figure>
+              </div>
             </div>
           </section>
         </div>
