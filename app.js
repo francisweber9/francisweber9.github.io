@@ -1850,9 +1850,9 @@
       }
 
       function metricLabel(key) {
-        if (key === "o") return "Off LeBron";
-        if (key === "d") return "Def LeBron";
-        return "Net LeBron";
+        if (key === "o") return "Off Blended";
+        if (key === "d") return "Def Blended";
+        return "Net Blended";
       }
 
       function movingAverage(points, windowSize = 9) {
@@ -2115,7 +2115,7 @@
           .map((s) => `<span class="dpm-legend-item"><span class="dpm-swatch" style="background:${s.color}"></span>${htmlEscape(s.name)}</span>`)
           .join("");
 
-        dpmMeta.textContent = `Showing ${metricLabel(metric)} trajectory · 0-line fixed · ${selectedPlayers.length} player${selectedPlayers.length > 1 ? "s" : ""}.`;
+        dpmMeta.textContent = `Showing ${metricLabel(metric)} trajectory · ${selectedPlayers.length} player${selectedPlayers.length > 1 ? "s" : ""}.`;
       }
 
       async function initDpm() {

@@ -27,7 +27,7 @@
         <div class="panes">
           <section class="pane active" role="tabpanel" id="pane-nbl" aria-labelledby="tab-nbl">
             <h2 class="section-title">Analytical Modelling (NBL)</h2>
-            <p class="section-copy">Sub-sections for RAPM, WOWY analysis, and lineup evaluation.</p>
+            <p class="section-copy">Advanced analytics modelling for the Australian NBL, built from raw play by play data to produce player impact estimates beyond what traditional box scores capture.</p>
 
             <div class="subtabs" role="tablist" aria-label="Analytics subtabs">
               <button class="subtab" role="tab" id="subtab-wowy" aria-selected="true" aria-controls="subpane-wowy" data-pane="wowy">
@@ -146,7 +146,7 @@
 
             <section class="pane" role="tabpanel" id="subpane-lineup" aria-labelledby="subtab-lineup">
               <div class="nba-intro nbl-intro">
-                <p class="section-copy">My Blended Impact Metric combines RAPM estimates with box score numbers trained on historical priors to produce a single player impact figure, plotted across career games so development curves can be compared directly across players.</p>
+                <p class="section-copy">A Blended Impact Metric that combines RAPM estimates with box score numbers trained on historical priors to produce a single player impact figure, plotted across career games so development curves can be compared directly across players.</p>
                 <div class="tech-stack-inline">
                   <span class="tech-stack-label">Tech Stack</span>
                   <div class="tech-chip-row">
@@ -338,7 +338,7 @@
                             <th>Player</th>
                             <th>Similarity</th>
                             <th>Archetype</th>
-                            <th>Style Mix (POSS share)</th>
+                            <th>Style Mix</th>
                           </tr>
                         </thead>
                         <tbody id="nba-style-body"></tbody>
@@ -370,9 +370,8 @@
                 <div class="nba-process-grid">
                   <div class="nba-process-panel" style="grid-column: 1 / -1;">
                     <h3>Headshot Graph Process</h3>
-                    <p class="nba-process-copy">This graph maps each player by scoring volume and scoring efficiency, using points per game on the x-axis and true shooting percentage on the y-axis to separate role and output in one view. Plotting headshots instead of abstract markers makes high-density comparison readable while still preserving player identity.</p>
-                    <p class="nba-process-copy">The quadrant framework is anchored to league-average splits, which turns the chart into a quick classification tool: efficient volume scorers, efficient role players, inefficient volume scorers, and inefficient role players. That gives the plot analytical structure beyond a simple scatter of season averages.</p>
-                  </div>
+                    <p class="nba-process-copy">Player headshots are plotted by points per game and true shooting percentage, positioning each player visually within the league landscape of scoring output and efficiency.</p>
+                    </div>
                 </div>
               </div>
             </section>
@@ -381,6 +380,14 @@
           <section class="pane" role="tabpanel" id="pane-nbl1" aria-labelledby="tab-nbl1">
             <h2 class="section-title">Computer Vision Statistic Automation (Thesis)</h2>
             <p class="section-copy">My undergraduate thesis, in which I developed a computer vision workflow to automate stat extraction in single angle basketball footage.</p>
+
+            <div class="tech-stack-inline" style="margin-bottom: 18px;">
+              <span class="tech-stack-label">Tech Stack</span>
+              <div class="tech-chip-row">
+                <span class="tech-chip">Computer Vision: YOLOv11, SAM2.1</span>
+                <span class="tech-chip">Processing: Python, NumPy, OpenCV</span>
+              </div>
+            </div>
 
             <div class="cv-flow">
               <h3>Goal</h3>

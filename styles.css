@@ -422,11 +422,12 @@
       }
 
       .nba-shot-legend .dot.made {
-        background: #555;
+        background: rgba(34, 197, 94, 0.35);
+        border: 1.5px solid #22c55e;
       }
 
       .nba-shot-legend .dot.miss {
-        background: #555;
+        background: #000;
       }
 
       .nba-plot-wrap {
@@ -500,15 +501,15 @@
       }
 
       .nba-shot.made {
-        border: 1.5px solid #555;
-        background: rgba(85, 85, 85, 0.25);
+        border: 1.5px solid #22c55e;
+        background: rgba(34, 197, 94, 0.35);
         border-radius: 50%;
       }
 
       .nba-shot.miss {
         border: 0;
         background: transparent;
-        color: #555;
+        color: #000;
         border-radius: 0;
         display: inline-flex;
         align-items: center;
