@@ -136,6 +136,73 @@
                   <div class="nba-process-panel" style="grid-column: 1 / -1;">
                     <h3>WOWY Process</h3>
                     <p class="nba-process-copy">The first step in producing advanced on-off based analytics for the NBL is assessing the range of accessible data. By far the most valuable is play by play data, which describes events at a game clock state. Not only does this timestamp each statistical event, it also provides starters and substitutions. From this, we can infer two key factors at any given point in time: the full court lineups for both teams, and which team is on offense or defense for each possession.</p>
+                    <div class="wowy-process-table-title-wrap">
+                      <h4 class="wowy-process-table-title">Play-by-Play Excerpt: Cleaning and inference method tags</h4>
+                    </div>
+                    <div class="table-wrap wowy-process-table-wrap">
+                      <table class="wowy-process-table">
+                        <thead>
+                          <tr>
+                            <th>period</th>
+                            <th>clock</th>
+                            <th>event</th>
+                            <th>team</th>
+                            <th>name</th>
+                            <th>identifier</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>1</td>
+                            <td>10:00</td>
+                            <td>jump ball won</td>
+                            <td>Sydney Kings</td>
+                            <td>Xavier Cooks</td>
+                            <td><span class="wowy-process-flag wowy-process-lineup">X. Cooks identified</span></td>
+                          </tr>
+                          <tr>
+                            <td>1</td>
+                            <td>9:54</td>
+                            <td>3pt jumpshot missed</td>
+                            <td>Sydney Kings</td>
+                            <td>Jaylin Galloway</td>
+                            <td><span class="wowy-process-flag wowy-process-lineup">J. Galloway identified</span></td>
+                          </tr>
+                          <tr>
+                            <td>1</td>
+                            <td>9:54</td>
+                            <td>rebound defensive</td>
+                            <td>Adelaide 36ers</td>
+                            <td>Zylan Cheatham</td>
+                            <td><span class="wowy-process-flag wowy-process-lineup">Z. Cheatham identified</span>, <span class="wowy-process-flag wowy-process-poss">possession</span></td>
+                          </tr>
+                          <tr>
+                            <td>1</td>
+                            <td>9:30</td>
+                            <td>2pt driving layup missed</td>
+                            <td>Adelaide 36ers</td>
+                            <td>Zylan Cheatham</td>
+                            <td>NA</td>
+                          </tr>
+                          <tr>
+                            <td>1</td>
+                            <td>9:30</td>
+                            <td>block</td>
+                            <td>Sydney Kings</td>
+                            <td>Xavier Cooks</td>
+                            <td>NA</td>
+                          </tr>
+                          <tr>
+                            <td>1</td>
+                            <td>9:30</td>
+                            <td>rebound defensive</td>
+                            <td>NA</td>
+                            <td>NA</td>
+                            <td><span class="wowy-process-flag wowy-process-poss">possession</span></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                     <p class="nba-process-copy">This establishes the foundation for most advanced basketball analytics, allowing us to evaluate player impact beyond simple counting stats. Typically, possession level lineup data needs to already be provided, but by reconstructing lineups directly from the play by play, we can infer that structure ourselves.</p>
                     <p class="nba-process-copy">WOWY (With or Without You) Lineups is a framework that allows us to evaluate team impact through lineup state splits. Using the lineup attributed play by play data produced, we can assign points scored, points allowed, and shooting outcomes to each player on/off state, then calculate offensive, defensive, and net ratings on a 100 possession basis. Analytically, WOWY is useful because it shows how team performance changes depending on whether a player is on or off the floor, helping separate true contextual impact from raw box score output. </p>
                     <p class="nba-process-copy"> The luck adjustment stabilises for the biggest source of statistical noise in WOWY splits, being three-point variance. Research has shown that 750 attempts are required to get a true estimate of a player’s skill from a 3PT%, and that team defence has minimal impact on the opponent raw 3PT%. Therefore I applied this expected percentage to the three point shots taken in each possession segment, replacing volatile make/miss outcomes with a skill baseline so on/off ratings reflect the process more than shooting swings.</p>
